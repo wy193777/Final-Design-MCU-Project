@@ -12,21 +12,16 @@
       <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_flash.c</file>
       <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_gpio.c</file>
       <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_i2c.c</file>
-      <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_aes.c</file>
-      <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_beep.c</file>
-      <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_dma.c</file>
-      <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_exti.c</file>
       <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_clk.c</file>
-      <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_tim2.c</file>
-      <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_rtc.c</file>
       <file>$PROJ_DIR$\Debug\List\eeprom.lst</file>
-      <file>$TOOLKIT_DIR$\lib\dbgstm8smd.a</file>
       <file>$PROJ_DIR$\Debug\List\icc_measure.lst</file>
-      <file>$PROJ_DIR$\Debug\Obj\stm8l_discovery_lcd.pbi</file>
       <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_lcd.c</file>
-      <file>$PROJ_DIR$\Project\Discover\src\delay.c</file>
+      <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_itc.c</file>
+      <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_rst.c</file>
+      <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_tim4.c</file>
       <file>$PROJ_DIR$\Project\Discover\src\main.c</file>
       <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_irtim.c</file>
+      <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_spi.c</file>
       <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_tim1.c</file>
       <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_wfe.c</file>
       <file>$PROJ_DIR$\Debug\Obj\icc_measure.pbi</file>
@@ -41,12 +36,12 @@
       <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_wwdg.c</file>
       <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_tim3.c</file>
       <file>$PROJ_DIR$\Debug\Obj\stm8l15x_clk.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\stm8l15x_dma.pbi</file>
       <file>$PROJ_DIR$\Debug\List\stm8l15x_pwr.lst</file>
       <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_syscfg.c</file>
       <file>$PROJ_DIR$\Debug\Obj\stm8l15x_flash.pbi</file>
       <file>$PROJ_DIR$\Debug\Obj\discover_functions.o</file>
       <file>$PROJ_DIR$\Debug\Obj\stm8l15x_rst.pbi</file>
-      <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x_clk.h</file>
       <file>$PROJ_DIR$\Debug\Obj\stm8l15x_adc.pbi</file>
       <file>$PROJ_DIR$\Debug\Obj\stm8l15x_it.pbi</file>
       <file>$PROJ_DIR$\Debug\List\stm8l15x_gpio.lst</file>
@@ -54,7 +49,6 @@
       <file>$PROJ_DIR$\Project\Discover\inc\stm8l15x_it.h</file>
       <file>$PROJ_DIR$\Debug\Obj\stm8l15x_lcd.pbi</file>
       <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x_lcd.h</file>
-      <file>$PROJ_DIR$\Debug\List\stm8l15x_adc.lst</file>
       <file>$PROJ_DIR$\Debug\Obj\stm8l15x_iwdg.pbi</file>
       <file>$PROJ_DIR$\Project\Discover\src\discover_functions.c</file>
       <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x_dma.h</file>
@@ -65,11 +59,7 @@
       <file>$PROJ_DIR$\Debug\Exe\Discover.out</file>
       <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x_flash.h</file>
       <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x_pwr.h</file>
-      <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x.h</file>
       <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x_i2c.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\stm8l15x_pwr.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\stm8l15x_adc.o</file>
-      <file>$PROJ_DIR$\Project\Discover\inc\stm8l_discovery_lcd.h</file>
       <file>$PROJ_DIR$\Debug\Obj\stm8l15x_usart.pbi</file>
       <file>$PROJ_DIR$\Debug\List\stm8l15x_beep.lst</file>
       <file>$PROJ_DIR$\Debug\Obj\stm8l15x_aes.o</file>
@@ -94,7 +84,6 @@
       <file>$PROJ_DIR$\Project\Discover\inc\stm8l15x_conf.h</file>
       <file>$PROJ_DIR$\Debug\List\stm8l15x_lcd.lst</file>
       <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x_syscfg.h</file>
-      <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x_adc.h</file>
       <file>$PROJ_DIR$\Debug\Obj\icc_measure.o</file>
       <file>$PROJ_DIR$\Debug\Obj\stm8l15x_irtim.pbi</file>
       <file>$PROJ_DIR$\Debug\List\stm8l15x_itc.lst</file>
@@ -117,7 +106,6 @@
       <file>$PROJ_DIR$\Debug\Obj\main.o</file>
       <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x_tim4.h</file>
       <file>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x_iwdg.h</file>
-      <file>$PROJ_DIR$\Project\Discover\src\stm8l_discovery_lcd.c</file>
       <file>$PROJ_DIR$\Debug\Obj\stm8l15x_aes.pbi</file>
       <file>$PROJ_DIR$\Debug\Obj\Discover.pbd</file>
       <file>$PROJ_DIR$\Debug\Obj\stm8l15x_tim5.pbi</file>
@@ -188,7 +176,7 @@
       <file>$PROJ_DIR$\Debug\Obj\stm8l15x_iwdg.o</file>
     </outputs>
     <file>
-      <name>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_dac.c</name>
+      <name>$PROJ_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_beep.c</name>
       <outputs>
         <tool>
           <name>BICOMP</name>
@@ -294,10 +282,6 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 154 59 85 40 79 173</file>
-        </tool>
-        <tool>
-          <name>ICCSTM8</name>
           <file> 154 59 85 40 79 173</file>
         </tool>
       </inputs>
@@ -454,17 +438,6 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 160</file>
-        </tool>
-        <tool>
-          <name>ICCSTM8</name>
-          <file> 135 163</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 84 59 85 40 154 79 173</file>
         </tool>
         <tool>
           <name>ICCSTM8</name>
