@@ -1,6 +1,6 @@
 ###############################################################################
 #                                                                             #
-# IAR C/C++ Compiler V1.30.1.50036 for STM8             11/Mar/2014  16:34:46 #
+# IAR C/C++ Compiler V1.30.1.50036 for STM8             11/Mar/2014  17:54:55 #
 # Copyright 2010-2011 IAR Systems AB.                                         #
 #                                                                             #
 #    Source file  =  F:\Skydrive\Final Design\Servo Motor                     #
@@ -41,9 +41,9 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
      12          
      13          /* Private typedef -----------------------------------------------------------*/
      14          /* Private define ------------------------------------------------------------*/
-     15          #define TIM1_PERIOD             65535
-     16          #define TIM1_PRESCALER              39999
-     17          #define TIM1_REPTETION_COUNTER      0
+     15          #define TIM2_PERIOD             65535
+     16          #define TIM2_PRESCALER              39999
+     17          #define TIM2_REPTETION_COUNTER      0
      18          
      19          /* Private macro -------------------------------------------------------------*/
      20          /* Private variables ---------------------------------------------------------*/
@@ -66,7 +66,7 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
      25          /* Private function prototypes -----------------------------------------------*/
      26          static void CLK_Config(void);
      27          static void GPIO_Config(void);
-     28          static void TIM1_Config(void);
+     28          static void TIM2_Config(void);
      29          /* Private functions ---------------------------------------------------------*/
      30          
      31          /**
@@ -88,8 +88,8 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
    \   000003 CD0000                CALL      L:GPIO_Config
      43            
      44             /* TIM1 configuration -------------------------------------------*/
-     45            TIM1_Config();
-   \   000006 CD0000                CALL      L:TIM1_Config
+     45            TIM2_Config();
+   \   000006 CD0000                CALL      L:TIM2_Config
      46          
      47            /* Infinite loop */
      48            while (1)
@@ -106,11 +106,11 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
      55          static void CLK_Config(void)
      56          {
      57            /* Enable TIM1 clock */
-     58            CLK_PeripheralClockConfig(CLK_Peripheral_TIM1, ENABLE);
+     58            CLK_PeripheralClockConfig(CLK_Peripheral_TIM2, ENABLE);
    \                     CLK_Config:
    \   000000 35010000              MOV       S:?b0, #0x1
-   \   000004 A611                  LD        A, #0x11
-   \   000006 CC0000                JP        L:CLK_PeripheralClockConfig
+   \   000004 4F                    CLR       A
+   \   000005 CC0000                JP        L:CLK_PeripheralClockConfig
      59          }
      60          
 
@@ -118,11 +118,11 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
      61          static void GPIO_Config(void)
      62          {
      63            /* GPIOD configuration: TIM1 channel 1 (PD2), channel 2 (PD4) and channel 3 (PD5) */
-     64            GPIO_Init(GPIOD, GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_5, GPIO_Mode_Out_PP_Low_Fast);
+     64            GPIO_Init(GPIOB, GPIO_Pin_0, GPIO_Mode_Out_PP_Low_Fast);
    \                     GPIO_Config:
    \   000000 35E00000              MOV       S:?b0, #0xe0
-   \   000004 A634                  LD        A, #0x34
-   \   000006 AE500F                LDW       X, #0x500f
+   \   000004 A601                  LD        A, #0x1
+   \   000006 AE5005                LDW       X, #0x5005
    \   000009 CD0000                CALL      L:GPIO_Init
      65            GPIO_Init(GPIOE, GPIO_Pin_7, GPIO_Mode_Out_PP_High_Fast);
    \   00000C 35F00000              MOV       S:?b0, #0xf0
@@ -139,136 +139,54 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
      73            */
 
    \                                 In section .near_func.text, align 1
-     74          static void TIM1_Config(void)
+     74          static void TIM2_Config(void)
      75          {
      76            /*
      77            - TIM1CLK = 2 MHz
      78            - TIM1 counter clock = TIM1CLK / TIM1_PRESCALER+1 = 2 MHz/39999+1 = 50 Hz
      79            */
      80            /* Time base configuration */
-     81            TIM1_TimeBaseInit(TIM1_PRESCALER, TIM1_CounterMode_Up, TIM1_PERIOD, TIM1_REPTETION_COUNTER);
-   \                     TIM1_Config:
-   \   000000 3F00                  CLR       S:?b0
-   \   000002 90AEFFFF              LDW       Y, #0xffff
-   \   000006 4F                    CLR       A
-   \   000007 AE9C3F                LDW       X, #0x9c3f
-   \   00000A CD0000                CALL      L:TIM1_TimeBaseInit
+     81            TIM2_TimeBaseInit(TIM2_Prescaler_1, TIM2_CounterMode_Up, 0xff);
+   \                     TIM2_Config:
+   \   000000 AE00FF                LDW       X, #0xff
+   \   000003 3F00                  CLR       S:?b0
+   \   000005 4F                    CLR       A
+   \   000006 CD0000                CALL      L:TIM2_TimeBaseInit
      82          
      83            /*
      84            - The TIM1 CCR1 register value is equal to 3000: 
      85            - So the TIM1 Channel 1 generates a periodic signal with a frequency equal to 50 Hz.
-     86            - PD2
+     86            - PB0
      87            */
      88            /* PWM1 Mode configuration: Channel1 */
-     89            TIM1_OC1Init(TIM1_OCMode_PWM1, TIM1_OutputState_Enable, TIM1_OutputNState_Disable,
-     90                         CCR1_Val, TIM1_OCPolarity_Low, TIM1_OCNPolarity_Low, TIM1_OCIdleState_Set,
-     91                         TIM1_OCNIdleState_Set);
-   \   00000D 352A0000              MOV       S:?b5, #0x2a
-   \   000011 35550000              MOV       S:?b4, #0x55
-   \   000015 35880000              MOV       S:?b3, #0x88
-   \   000019 35220000              MOV       S:?b2, #0x22
-   \   00001D CE0000                LDW       X, L:CCR1_Val
-   \   000020 3F00                  CLR       S:?b1
-   \   000022 35110000              MOV       S:?b0, #0x11
-   \   000026 A660                  LD        A, #0x60
-   \   000028 CD0000                CALL      L:TIM1_OC1Init
-     92            TIM1_CCxCmd(TIM1_Channel_1, ENABLE);
-   \   00002B 35010000              MOV       S:?b0, #0x1
-   \   00002F 4F                    CLR       A
-   \   000030 CD0000                CALL      L:TIM1_CCxCmd
-     93            TIM1_SetCompare1(15000);
-   \   000033 AE3A98                LDW       X, #0x3a98
-   \   000036 CD0000                CALL      L:TIM1_SetCompare1
-     94            TIM1_OC1PreloadConfig(ENABLE);
-   \   000039 A601                  LD        A, #0x1
-   \   00003B CD0000                CALL      L:TIM1_OC1PreloadConfig
-     95          
-     96            /*
-     97            - The TIM1 CCR2 register is equal to 16384:
-     98            - CC2 update rate = TIM1 counter clock / CCR2_Val = 61.03 Hz
-     99            - So the TIM1 channel 2 generates a periodic signal with a frequency equal to 30.51 Hz.
-    100            */
-    101            /* Toggle Mode configuration: Channel2 */
-    102            TIM1_OC2Init(TIM1_OCMode_Toggle, TIM1_OutputState_Enable, TIM1_OutputNState_Disable,
-    103                         CCR2_Val, TIM1_OCPolarity_Low, TIM1_OCNPolarity_Low, TIM1_OCIdleState_Set,
-    104                         TIM1_OCNIdleState_Set);
-   \   00003E 352A0000              MOV       S:?b5, #0x2a
-   \   000042 35550000              MOV       S:?b4, #0x55
-   \   000046 35880000              MOV       S:?b3, #0x88
-   \   00004A 35220000              MOV       S:?b2, #0x22
-   \   00004E CE0000                LDW       X, L:CCR2_Val
-   \   000051 3F00                  CLR       S:?b1
-   \   000053 35110000              MOV       S:?b0, #0x11
-   \   000057 A630                  LD        A, #0x30
-   \   000059 CD0000                CALL      L:TIM1_OC2Init
-    105            TIM1_OC2PreloadConfig(DISABLE);
-   \   00005C 4F                    CLR       A
-   \   00005D CD0000                CALL      L:TIM1_OC2PreloadConfig
-    106          
-    107            /*
-    108            -The TIM1 CCR3 register is equal to 8192:
-    109            - CC3 update rate = TIM1 counter clock / CCR3_Val = 123.01 Hz
-    110            - So the TIM1 channel 3 generates a periodic signal with a frequency equal to 61.5 Hz.
-    111            */
-    112            /* Toggle Mode configuration: Channel3 */
-    113            TIM1_OC3Init(TIM1_OCMode_Toggle, TIM1_OutputState_Enable, TIM1_OutputNState_Disable,
-    114                         CCR3_Val, TIM1_OCPolarity_Low, TIM1_OCNPolarity_Low, TIM1_OCIdleState_Set,
-    115                         TIM1_OCNIdleState_Set);
-   \   000060 352A0000              MOV       S:?b5, #0x2a
-   \   000064 35550000              MOV       S:?b4, #0x55
-   \   000068 35880000              MOV       S:?b3, #0x88
-   \   00006C 35220000              MOV       S:?b2, #0x22
-   \   000070 CE0000                LDW       X, L:CCR3_Val
-   \   000073 3F00                  CLR       S:?b1
-   \   000075 35110000              MOV       S:?b0, #0x11
-   \   000079 A630                  LD        A, #0x30
-   \   00007B CD0000                CALL      L:TIM1_OC3Init
-    116            TIM1_OC3PreloadConfig(DISABLE);
-   \   00007E 4F                    CLR       A
-   \   00007F CD0000                CALL      L:TIM1_OC3PreloadConfig
-    117          
-    118            TIM1_ARRPreloadConfig(ENABLE);
-   \   000082 A601                  LD        A, #0x1
-   \   000084 CD0000                CALL      L:TIM1_ARRPreloadConfig
-    119          
-    120            /* TIM1 Interrupt enable */
-    121            TIM1_ITConfig(TIM1_IT_CC1, ENABLE);
-   \   000087 35010000              MOV       S:?b0, #0x1
-   \   00008B A602                  LD        A, #0x2
-   \   00008D CD0000                CALL      L:TIM1_ITConfig
-    122            TIM1_ITConfig(TIM1_IT_CC2, ENABLE);
-   \   000090 35010000              MOV       S:?b0, #0x1
-   \   000094 A604                  LD        A, #0x4
-   \   000096 CD0000                CALL      L:TIM1_ITConfig
-    123            TIM1_ITConfig(TIM1_IT_CC3, ENABLE);
-   \   000099 35010000              MOV       S:?b0, #0x1
-   \   00009D A608                  LD        A, #0x8
-   \   00009F CD0000                CALL      L:TIM1_ITConfig
-    124            enableInterrupts();
-   \   0000A2 9A                    rim
-    125          
-    126            /* Enable TIM1 outputs */
-    127            TIM1_CtrlPWMOutputs(ENABLE);
-   \   0000A3 A601                  LD        A, #0x1
-   \   0000A5 CD0000                CALL      L:TIM1_CtrlPWMOutputs
-    128            /* TIM1 enable counter */
-    129            TIM1_Cmd(ENABLE);
-   \   0000A8 A601                  LD        A, #0x1
-   \   0000AA CC0000                JP        L:TIM1_Cmd
-    130          }
-    131          
-    132          #ifdef  USE_FULL_ASSERT
-    133          
-    134          void assert_failed(uint8_t* file, uint32_t line)
-    135          {
-    136            /* User can add his own implementation to report the file name and line number,
-    137               ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-    138          
-    139            /* Infinite loop */
-    140            while (1)
-    141            {}
-    142          }
-    143          #endif
+     89            
+     90            TIM2_OC1Init(TIM2_OCMode_PWM2, TIM2_OutputState_Enable, 0, TIM2_OCPolarity_High, TIM2_OCIdleState_Set);
+   \   000009 35010000              MOV       S:?b2, #0x1
+   \   00000D 3F00                  CLR       S:?b1
+   \   00000F 5F                    CLRW      X
+   \   000010 35010000              MOV       S:?b0, #0x1
+   \   000014 A670                  LD        A, #0x70
+   \   000016 CD0000                CALL      L:TIM2_OC1Init
+     91            TIM2_Cmd(ENABLE);
+   \   000019 A601                  LD        A, #0x1
+   \   00001B CD0000                CALL      L:TIM2_Cmd
+     92            TIM2_SetCompare1(0x77);
+   \   00001E AE0077                LDW       X, #0x77
+   \   000021 CC0000                JP        L:TIM2_SetCompare1
+     93          }
+     94          
+     95          #ifdef  USE_FULL_ASSERT
+     96          
+     97          void assert_failed(uint8_t* file, uint32_t line)
+     98          {
+     99            /* User can add his own implementation to report the file name and line number,
+    100               ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+    101          
+    102            /* Infinite loop */
+    103            while (1)
+    104            {}
+    105          }
+    106          #endif
 
    Section sizes:
 
@@ -278,16 +196,16 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
      CCR2_Val          2
      CCR3_Val          2
      main             11
-     CLK_Config        9
+     CLK_Config        8
      GPIO_Config      24
-     TIM1_Config     173
+     TIM2_Config      36
 
  
-   6 bytes in section .near.data
- 217 bytes in section .near_func.text
+  6 bytes in section .near.data
+ 79 bytes in section .near_func.text
  
- 217 bytes of CODE memory
-   6 bytes of DATA memory
+ 79 bytes of CODE memory
+  6 bytes of DATA memory
 
 Errors: none
 Warnings: none
