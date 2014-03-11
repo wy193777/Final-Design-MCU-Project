@@ -27,7 +27,7 @@
     <Windows>
       
       
-    <Wnd1>
+    <Wnd2>
         <Tabs>
           <Tab>
             <Identity>TabID-22994-8711</Identity>
@@ -37,20 +37,20 @@
           </Tab>
         <Tab><Identity>TabID-27539-12478</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab></Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd1><Wnd4><Tabs><Tab><Identity>TabID-22495-10484</Identity><TabName>Workspace</TabName><Factory>Workspace</Factory><Session><NodeDict><ExpandedNode>Discover</ExpandedNode><ExpandedNode>Discover/delay.c</ExpandedNode><ExpandedNode>Discover/main.c</ExpandedNode></NodeDict></Session></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd4></Windows>
+      <SelectedTab>0</SelectedTab></Wnd2><Wnd4><Tabs><Tab><Identity>TabID-22495-10484</Identity><TabName>Workspace</TabName><Factory>Workspace</Factory><Session><NodeDict><ExpandedNode>Discover</ExpandedNode><ExpandedNode>Discover/delay.c</ExpandedNode><ExpandedNode>Discover/main.c</ExpandedNode></NodeDict></Session></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd4></Windows>
     <Editor>
       
       
       
       
-    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Project\Discover\src\main.c</Filename><XPos>0</XPos><YPos>77</YPos><SelStart>2651</SelStart><SelEnd>2651</SelEnd></Tab><ActiveTab>0</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Project\Discover\inc\stm8l15x_conf.h</Filename><XPos>0</XPos><YPos>30</YPos><SelStart>1778</SelStart><SelEnd>1778</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x_tim1.h</Filename><XPos>0</XPos><YPos>33</YPos><SelStart>843</SelStart><SelEnd>843</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Project\Discover\src\main.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>2690</SelStart><SelEnd>2690</SelEnd></Tab><ActiveTab>0</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Project\Discover\inc\stm8l15x_conf.h</Filename><XPos>0</XPos><YPos>30</YPos><SelStart>1778</SelStart><SelEnd>1778</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x_tim1.h</Filename><XPos>0</XPos><YPos>33</YPos><SelStart>843</SelStart><SelEnd>843</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
     <Positions>
       
       
       
       
       
-    <Top><Row0><Sizes><Toolbar-027c4140><key>iaridepm.enu1</key></Toolbar-027c4140></Sizes></Row0><Row1><Sizes/></Row1><Row2><Sizes><Toolbar-0c94e1a0><key>debuggergui.enu1</key></Toolbar-0c94e1a0></Sizes></Row2></Top><Left><Row0><Sizes><Wnd4><Rect><Top>-2</Top><Left>-2</Left><Bottom>483</Bottom><Right>363</Right><x>-2</x><y>-2</y><xscreen>271</xscreen><yscreen>272</yscreen><sizeHorzCX>207822</sizeHorzCX><sizeHorzCY>375172</sizeHorzCY><sizeVertCX>279908</sizeVertCX><sizeVertCY>668966</sizeVertCY></Rect></Wnd4></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>197</Bottom><Right>1306</Right><x>-2</x><y>-2</y><xscreen>1308</xscreen><yscreen>199</yscreen><sizeHorzCX>1003067</sizeHorzCX><sizeHorzCY>274483</sizeHorzCY><sizeVertCX>207822</sizeVertCX><sizeVertCY>375172</sizeVertCY></Rect></Wnd1></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+    <Top><Row0><Sizes><Toolbar-037d4140><key>iaridepm.enu1</key></Toolbar-037d4140></Sizes></Row0><Row1><Sizes/></Row1></Top><Left><Row0><Sizes><Wnd4><Rect><Top>-2</Top><Left>-2</Left><Bottom>483</Bottom><Right>363</Right><x>-2</x><y>-2</y><xscreen>271</xscreen><yscreen>272</yscreen><sizeHorzCX>207822</sizeHorzCX><sizeHorzCY>375172</sizeHorzCY><sizeVertCX>279908</sizeVertCX><sizeVertCY>668966</sizeVertCY></Rect></Wnd4></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>197</Bottom><Right>1306</Right><x>-2</x><y>-2</y><xscreen>1308</xscreen><yscreen>199</yscreen><sizeHorzCX>1003067</sizeHorzCX><sizeHorzCY>274483</sizeHorzCY><sizeVertCX>207822</sizeVertCX><sizeVertCY>375172</sizeVertCY></Rect></Wnd2></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
   </Desktop>
 </Workspace>
 

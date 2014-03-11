@@ -89,6 +89,7 @@ static void TIM1_Config(void)
   TIM1_OC1Init(TIM1_OCMode_PWM1, TIM1_OutputState_Enable, TIM1_OutputNState_Disable,
                CCR1_Val, TIM1_OCPolarity_Low, TIM1_OCNPolarity_Low, TIM1_OCIdleState_Set,
                TIM1_OCNIdleState_Set);
+  TIM1_CCxCmd(TIM1_Channel_1, ENABLE);
   TIM1_SetCompare1(15000);
   TIM1_OC1PreloadConfig(ENABLE);
 
