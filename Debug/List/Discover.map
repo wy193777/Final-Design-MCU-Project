@@ -1,6 +1,6 @@
 ###############################################################################
 #                                                                             #
-# IAR ELF Linker V1.30.1.50036 for STM8                 11/Mar/2014  17:54:56 #
+# IAR ELF Linker V1.30.1.50036 for STM8                 11/Mar/2014  21:04:21 #
 # Copyright 2010-2011 IAR Systems AB.                                         #
 #                                                                             #
 #    Output file  =  F:\Skydrive\Final Design\Servo Motor                     #
@@ -107,28 +107,28 @@ __rt_version               = 4
     .intvec        const    0x008000   0x80  interrupt.o [4]
                           - 0x008080   0x80
 
-"P3":                                 0x299
+"P3":                                 0x2bd
   .near_func.text  ro code  0x008080   0xae  stm8l15x_gpio.o [1]
   .near_func.text  ro code  0x00812e   0x89  stm8l15x_clk.o [1]
   .near_func.text  ro code  0x0081b7   0x5d  stm8l15x_tim2.o [1]
-  .near_func.text  ro code  0x008214   0x2a  stm8l15x_tim2.o [1]
-  .near_func.text  ro code  0x00823e   0x24  main.o [1]
-  .near_func.text  ro code  0x008262   0x1c  stm8l15x_tim2.o [1]
-  .near_func.text  ro code  0x00827e   0x18  main.o [1]
-  .near_func.text  ro code  0x008296   0x18  vreg_util.o [4]
-  .near_func.text  ro code  0x0082ae   0x17  init.o [4]
-  .near_func.text  ro code  0x0082c5   0x14  __dbg_xxexit.o [3]
-  .near_func.text  ro code  0x0082d9   0x13  cstartup.o [4]
-  .near_func.text  ro code  0x0082ec    0xb  main.o [1]
-  .near_func.text  ro code  0x0082f7    0x8  main.o [1]
-  .near_func.text  ro code  0x0082ff    0x8  short.o [4]
-  .near_func.text  ro code  0x008307    0x5  cexit.o [4]
-  .near_func.text  ro code  0x00830c    0x3  interrupt.o [4]
-  .near_func.text  ro code  0x00830f    0x3  low_level_init.o [4]
-  .near_func.text  ro code  0x008312    0x3  exit.o [4]
-  .near_func.text  ro code  0x008315    0x3  unhandled_exception.o [4]
-  .near_func.text  ro code  0x008318    0x1  __dbg_break.o [3]
-                          - 0x008319  0x299
+  .near_func.text  ro code  0x008214   0x36  stm8l15x_tim2.o [1]
+  .near_func.text  ro code  0x00824a   0x2e  main.o [1]
+  .near_func.text  ro code  0x008278   0x2a  stm8l15x_tim2.o [1]
+  .near_func.text  ro code  0x0082a2   0x18  main.o [1]
+  .near_func.text  ro code  0x0082ba   0x18  vreg_util.o [4]
+  .near_func.text  ro code  0x0082d2   0x17  init.o [4]
+  .near_func.text  ro code  0x0082e9   0x14  __dbg_xxexit.o [3]
+  .near_func.text  ro code  0x0082fd   0x13  cstartup.o [4]
+  .near_func.text  ro code  0x008310    0xb  main.o [1]
+  .near_func.text  ro code  0x00831b    0x8  main.o [1]
+  .near_func.text  ro code  0x008323    0x8  short.o [4]
+  .near_func.text  ro code  0x00832b    0x5  cexit.o [4]
+  .near_func.text  ro code  0x008330    0x3  interrupt.o [4]
+  .near_func.text  ro code  0x008333    0x3  low_level_init.o [4]
+  .near_func.text  ro code  0x008336    0x3  exit.o [4]
+  .near_func.text  ro code  0x008339    0x3  unhandled_exception.o [4]
+  .near_func.text  ro code  0x00833c    0x1  __dbg_break.o [3]
+                          - 0x00833d  0x2bd
 
 
 *******************************************************************************
@@ -138,12 +138,12 @@ __rt_version               = 4
     Module                 ro code  ro data  rw data
     ------                 -------  -------  -------
 F:\Skydrive\Final Design\Servo Motor STM8L\Debug\Obj: [1]
-    main.o                      79
+    main.o                      89
     stm8l15x_clk.o             137
     stm8l15x_gpio.o            174
-    stm8l15x_tim2.o            163
+    stm8l15x_tim2.o            189
     ------------------------------------------------
-    Total:                     553
+    Total:                     589
 
 command line: [2]
     ------------------------------------------------
@@ -171,99 +171,101 @@ dlstm8smn.a: [4]
 
     Linker created                               256
 ----------------------------------------------------
-    Grand Total:               665      128      268
+    Grand Total:               701      128      268
 
 
 *******************************************************************************
 *** ENTRY LIST
 ***
 
-Entry                    Address  Size  Type      Object
------                    -------  ----  ----      ------
-?b0                     0x000000        Data  Gb  vregs.o [4]
-?b1                     0x000001        Data  Gb  vregs.o [4]
-?b10                    0x00000a        Data  Gb  vregs.o [4]
-?b11                    0x00000b        Data  Gb  vregs.o [4]
-?b2                     0x000002        Data  Gb  vregs.o [4]
-?b3                     0x000003        Data  Gb  vregs.o [4]
-?b4                     0x000004        Data  Gb  vregs.o [4]
-?b5                     0x000005        Data  Gb  vregs.o [4]
-?b6                     0x000006        Data  Gb  vregs.o [4]
-?b7                     0x000007        Data  Gb  vregs.o [4]
-?b8                     0x000008        Data  Gb  vregs.o [4]
-?b9                     0x000009        Data  Gb  vregs.o [4]
-?e0                     0x000001        Data  Gb  vregs.o [4]
-?e1                     0x000005        Data  Gb  vregs.o [4]
-?e2                     0x000009        Data  Gb  vregs.o [4]
-?l0                     0x000000        Data  Gb  vregs.o [4]
-?l1                     0x000004        Data  Gb  vregs.o [4]
-?l2                     0x000008        Data  Gb  vregs.o [4]
-?push_w4                0x008296        Code  Gb  vreg_util.o [4]
-?sll16_x_x_a            0x0082ff        Code  Gb  short.o [4]
-?w0                     0x000000        Data  Gb  vregs.o [4]
-?w1                     0x000002        Data  Gb  vregs.o [4]
-?w2                     0x000004        Data  Gb  vregs.o [4]
-?w3                     0x000006        Data  Gb  vregs.o [4]
-?w4                     0x000008        Data  Gb  vregs.o [4]
-?w5                     0x00000a        Data  Gb  vregs.o [4]
-CLK_Config              0x0082f7   0x8  Code  Lc  main.o [1]
+Entry                     Address  Size  Type      Object
+-----                     -------  ----  ----      ------
+?b0                      0x000000        Data  Gb  vregs.o [4]
+?b1                      0x000001        Data  Gb  vregs.o [4]
+?b10                     0x00000a        Data  Gb  vregs.o [4]
+?b11                     0x00000b        Data  Gb  vregs.o [4]
+?b2                      0x000002        Data  Gb  vregs.o [4]
+?b3                      0x000003        Data  Gb  vregs.o [4]
+?b4                      0x000004        Data  Gb  vregs.o [4]
+?b5                      0x000005        Data  Gb  vregs.o [4]
+?b6                      0x000006        Data  Gb  vregs.o [4]
+?b7                      0x000007        Data  Gb  vregs.o [4]
+?b8                      0x000008        Data  Gb  vregs.o [4]
+?b9                      0x000009        Data  Gb  vregs.o [4]
+?e0                      0x000001        Data  Gb  vregs.o [4]
+?e1                      0x000005        Data  Gb  vregs.o [4]
+?e2                      0x000009        Data  Gb  vregs.o [4]
+?l0                      0x000000        Data  Gb  vregs.o [4]
+?l1                      0x000004        Data  Gb  vregs.o [4]
+?l2                      0x000008        Data  Gb  vregs.o [4]
+?push_w4                 0x0082ba        Code  Gb  vreg_util.o [4]
+?sll16_x_x_a             0x008323        Code  Gb  short.o [4]
+?w0                      0x000000        Data  Gb  vregs.o [4]
+?w1                      0x000002        Data  Gb  vregs.o [4]
+?w2                      0x000004        Data  Gb  vregs.o [4]
+?w3                      0x000006        Data  Gb  vregs.o [4]
+?w4                      0x000008        Data  Gb  vregs.o [4]
+?w5                      0x00000a        Data  Gb  vregs.o [4]
+CLK_Config               0x00831b   0x8  Code  Lc  main.o [1]
 CLK_PeripheralClockConfig
-                        0x00812e  0x89  Code  Gb  stm8l15x_clk.o [1]
-CSTACK$$Base            0x000700         --   Gb  - Linker created -
-CSTACK$$Limit           0x000800         --   Gb  - Linker created -
-GPIO_Config             0x00827e  0x18  Code  Lc  main.o [1]
-GPIO_Init               0x008080  0xae  Code  Gb  stm8l15x_gpio.o [1]
-INTVEC$$Base            0x008000         --   Gb  - Linker created -
-INTVEC$$Limit           0x008080         --   Gb  - Linker created -
-Region$$Table$$Base   0x00000000         --   Gb  - Linker created -
-Region$$Table$$Limit  0x00000000         --   Gb  - Linker created -
-TIM2_Cmd                0x008271   0xd  Code  Gb  stm8l15x_tim2.o [1]
-TIM2_Config             0x00823e  0x24  Code  Lc  main.o [1]
-TIM2_OC1Init            0x0081b7  0x5d  Code  Gb  stm8l15x_tim2.o [1]
-TIM2_SetCompare1        0x008262   0xf  Code  Gb  stm8l15x_tim2.o [1]
-TIM2_TimeBaseInit       0x008214  0x2a  Code  Gb  stm8l15x_tim2.o [1]
-__DebugBreak            0x008318   0x1  Code  Gb  __dbg_break.o [3]
-__exit                  0x0082c5  0x14  Code  Gb  __dbg_xxexit.o [3]
-__iar_data_init2        0x0082ae  0x17  Code  Gb  init.o [4]
-__iar_program_start     0x0082d9        Code  Gb  cstartup.o [4]
+                         0x00812e  0x89  Code  Gb  stm8l15x_clk.o [1]
+CSTACK$$Base             0x000700         --   Gb  - Linker created -
+CSTACK$$Limit            0x000800         --   Gb  - Linker created -
+GPIO_Config              0x0082a2  0x18  Code  Lc  main.o [1]
+GPIO_Init                0x008080  0xae  Code  Gb  stm8l15x_gpio.o [1]
+INTVEC$$Base             0x008000         --   Gb  - Linker created -
+INTVEC$$Limit            0x008080         --   Gb  - Linker created -
+Region$$Table$$Base    0x00000000         --   Gb  - Linker created -
+Region$$Table$$Limit   0x00000000         --   Gb  - Linker created -
+TIM2_Cmd                 0x00823d   0xd  Code  Gb  stm8l15x_tim2.o [1]
+TIM2_Config              0x00824a  0x2e  Code  Lc  main.o [1]
+TIM2_CtrlPWMOutputs      0x008230   0xd  Code  Gb  stm8l15x_tim2.o [1]
+TIM2_OC1Init             0x0081b7  0x5d  Code  Gb  stm8l15x_tim2.o [1]
+TIM2_OC1PreloadConfig    0x008223   0xd  Code  Gb  stm8l15x_tim2.o [1]
+TIM2_SetCompare1         0x008214   0xf  Code  Gb  stm8l15x_tim2.o [1]
+TIM2_TimeBaseInit        0x008278  0x2a  Code  Gb  stm8l15x_tim2.o [1]
+__DebugBreak             0x00833c   0x1  Code  Gb  __dbg_break.o [3]
+__exit                   0x0082e9  0x14  Code  Gb  __dbg_xxexit.o [3]
+__iar_data_init2         0x0082d2  0x17  Code  Gb  init.o [4]
+__iar_program_start      0x0082fd        Code  Gb  cstartup.o [4]
 __iar_unhandled_exception
-                        0x008315        Code  Gb  unhandled_exception.o [4]
-__intvec                0x008000        Data  Gb  interrupt.o [4]
-__low_level_init        0x00830f   0x3  Code  Gb  low_level_init.o [4]
-_exit                   0x008307        Code  Gb  cexit.o [4]
-_interrupt_1            0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_10           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_11           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_12           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_13           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_14           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_15           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_16           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_17           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_18           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_19           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_2            0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_20           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_21           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_22           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_23           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_24           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_25           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_26           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_27           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_28           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_29           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_3            0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_30           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_31           0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_4            0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_5            0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_6            0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_7            0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_8            0x00830c        Code  Wk  interrupt.o [4]
-_interrupt_9            0x00830c        Code  Wk  interrupt.o [4]
-exit                    0x008312   0x3  Code  Gb  exit.o [4]
-main                    0x0082ec   0xb  Code  Gb  main.o [1]
+                         0x008339        Code  Gb  unhandled_exception.o [4]
+__intvec                 0x008000        Data  Gb  interrupt.o [4]
+__low_level_init         0x008333   0x3  Code  Gb  low_level_init.o [4]
+_exit                    0x00832b        Code  Gb  cexit.o [4]
+_interrupt_1             0x008330        Code  Wk  interrupt.o [4]
+_interrupt_10            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_11            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_12            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_13            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_14            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_15            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_16            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_17            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_18            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_19            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_2             0x008330        Code  Wk  interrupt.o [4]
+_interrupt_20            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_21            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_22            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_23            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_24            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_25            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_26            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_27            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_28            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_29            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_3             0x008330        Code  Wk  interrupt.o [4]
+_interrupt_30            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_31            0x008330        Code  Wk  interrupt.o [4]
+_interrupt_4             0x008330        Code  Wk  interrupt.o [4]
+_interrupt_5             0x008330        Code  Wk  interrupt.o [4]
+_interrupt_6             0x008330        Code  Wk  interrupt.o [4]
+_interrupt_7             0x008330        Code  Wk  interrupt.o [4]
+_interrupt_8             0x008330        Code  Wk  interrupt.o [4]
+_interrupt_9             0x008330        Code  Wk  interrupt.o [4]
+exit                     0x008336   0x3  Code  Gb  exit.o [4]
+main                     0x008310   0xb  Code  Gb  main.o [1]
 
 
 [1] = F:\Skydrive\Final Design\Servo Motor STM8L\Debug\Obj
@@ -271,7 +273,7 @@ main                    0x0082ec   0xb  Code  Gb  main.o [1]
 [3] = dbgstm8smd.a
 [4] = dlstm8smn.a
 
-  665 bytes of readonly  code memory
+  701 bytes of readonly  code memory
   128 bytes of readonly  data memory
   268 bytes of readwrite data memory
 

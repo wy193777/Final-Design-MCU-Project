@@ -1,6 +1,6 @@
 ###############################################################################
 #                                                                             #
-# IAR C/C++ Compiler V1.30.1.50036 for STM8             11/Mar/2014  17:54:55 #
+# IAR C/C++ Compiler V1.30.1.50036 for STM8             11/Mar/2014  21:04:21 #
 # Copyright 2010-2011 IAR Systems AB.                                         #
 #                                                                             #
 #    Source file  =  F:\Skydrive\Final Design\Servo Motor                     #
@@ -146,12 +146,7 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
      78            - TIM1 counter clock = TIM1CLK / TIM1_PRESCALER+1 = 2 MHz/39999+1 = 50 Hz
      79            */
      80            /* Time base configuration */
-     81            TIM2_TimeBaseInit(TIM2_Prescaler_1, TIM2_CounterMode_Up, 0xff);
-   \                     TIM2_Config:
-   \   000000 AE00FF                LDW       X, #0xff
-   \   000003 3F00                  CLR       S:?b0
-   \   000005 4F                    CLR       A
-   \   000006 CD0000                CALL      L:TIM2_TimeBaseInit
+     81           
      82          
      83            /*
      84            - The TIM1 CCR1 register value is equal to 3000: 
@@ -159,34 +154,45 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
      86            - PB0
      87            */
      88            /* PWM1 Mode configuration: Channel1 */
-     89            
-     90            TIM2_OC1Init(TIM2_OCMode_PWM2, TIM2_OutputState_Enable, 0, TIM2_OCPolarity_High, TIM2_OCIdleState_Set);
+     89            TIM2_TimeBaseInit(TIM2_Prescaler_1, TIM2_CounterMode_Up, 39999);
+   \                     TIM2_Config:
+   \   000000 AE9C3F                LDW       X, #0x9c3f
+   \   000003 3F00                  CLR       S:?b0
+   \   000005 4F                    CLR       A
+   \   000006 CD0000                CALL      L:TIM2_TimeBaseInit
+     90            TIM2_OC1Init(TIM2_OCMode_PWM1, TIM2_OutputState_Enable, 0, TIM2_OCPolarity_High, TIM2_OCIdleState_Set);
    \   000009 35010000              MOV       S:?b2, #0x1
    \   00000D 3F00                  CLR       S:?b1
    \   00000F 5F                    CLRW      X
    \   000010 35010000              MOV       S:?b0, #0x1
-   \   000014 A670                  LD        A, #0x70
+   \   000014 A660                  LD        A, #0x60
    \   000016 CD0000                CALL      L:TIM2_OC1Init
-     91            TIM2_Cmd(ENABLE);
+     91            TIM2_OC1PreloadConfig(ENABLE);
    \   000019 A601                  LD        A, #0x1
-   \   00001B CD0000                CALL      L:TIM2_Cmd
-     92            TIM2_SetCompare1(0x77);
-   \   00001E AE0077                LDW       X, #0x77
-   \   000021 CC0000                JP        L:TIM2_SetCompare1
-     93          }
-     94          
-     95          #ifdef  USE_FULL_ASSERT
+   \   00001B CD0000                CALL      L:TIM2_OC1PreloadConfig
+     92            TIM2_CtrlPWMOutputs(ENABLE);
+   \   00001E A601                  LD        A, #0x1
+   \   000020 CD0000                CALL      L:TIM2_CtrlPWMOutputs
+     93            TIM2_SetCompare1(3000);
+   \   000023 AE0BB8                LDW       X, #0xbb8
+   \   000026 CD0000                CALL      L:TIM2_SetCompare1
+     94            TIM2_Cmd(ENABLE);
+   \   000029 A601                  LD        A, #0x1
+   \   00002B CC0000                JP        L:TIM2_Cmd
+     95          }
      96          
-     97          void assert_failed(uint8_t* file, uint32_t line)
-     98          {
-     99            /* User can add his own implementation to report the file name and line number,
-    100               ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-    101          
-    102            /* Infinite loop */
-    103            while (1)
-    104            {}
-    105          }
-    106          #endif
+     97          #ifdef  USE_FULL_ASSERT
+     98          
+     99          void assert_failed(uint8_t* file, uint32_t line)
+    100          {
+    101            /* User can add his own implementation to report the file name and line number,
+    102               ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+    103          
+    104            /* Infinite loop */
+    105            while (1)
+    106            {}
+    107          }
+    108          #endif
 
    Section sizes:
 
@@ -198,13 +204,13 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
      main             11
      CLK_Config        8
      GPIO_Config      24
-     TIM2_Config      36
+     TIM2_Config      46
 
  
   6 bytes in section .near.data
- 79 bytes in section .near_func.text
+ 89 bytes in section .near_func.text
  
- 79 bytes of CODE memory
+ 89 bytes of CODE memory
   6 bytes of DATA memory
 
 Errors: none

@@ -78,7 +78,7 @@ static void TIM2_Config(void)
   - TIM1 counter clock = TIM1CLK / TIM1_PRESCALER+1 = 2 MHz/39999+1 = 50 Hz
   */
   /* Time base configuration */
-  TIM2_TimeBaseInit(TIM2_Prescaler_1, TIM2_CounterMode_Up, 0xff);
+ 
 
   /*
   - The TIM1 CCR1 register value is equal to 3000: 
@@ -86,10 +86,12 @@ static void TIM2_Config(void)
   - PB0
   */
   /* PWM1 Mode configuration: Channel1 */
-  
-  TIM2_OC1Init(TIM2_OCMode_PWM2, TIM2_OutputState_Enable, 0, TIM2_OCPolarity_High, TIM2_OCIdleState_Set);
+  TIM2_TimeBaseInit(TIM2_Prescaler_1, TIM2_CounterMode_Up, 39999);
+  TIM2_OC1Init(TIM2_OCMode_PWM1, TIM2_OutputState_Enable, 0, TIM2_OCPolarity_High, TIM2_OCIdleState_Set);
+  TIM2_OC1PreloadConfig(ENABLE);
+  TIM2_CtrlPWMOutputs(ENABLE);
+  TIM2_SetCompare1(3000);
   TIM2_Cmd(ENABLE);
-  TIM2_SetCompare1(0x77);
 }
 
 #ifdef  USE_FULL_ASSERT
