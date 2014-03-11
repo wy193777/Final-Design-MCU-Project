@@ -1,0 +1,129 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.30.1.50036 for STM8             26/Nov/2013  16:06:06 #
+# Copyright 2010-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  F:\Skydrive\Final Design\STM8L-Discovery\Project\Discove #
+#                    r\src\eeprom.c                                           #
+#    Command line =  "F:\Skydrive\Final Design\STM8L-Discovery\Project\Discov #
+#                    er\src\eeprom.c" -e -Ol --no_cse --no_unroll             #
+#                    --no_inline --no_code_motion --no_tbaa --no_cross_call   #
+#                    --debug --code_model small --data_model medium -o        #
+#                    "F:\Skydrive\Final Design\STM8L-Discovery\Debug\Obj\"    #
+#                    --dlib_config "D:\IAR Systems\Embedded Workbench         #
+#                    6.0\stm8\LIB\dlstm8smn.h" -D STM8L15X_MD -lCN            #
+#                    "F:\Skydrive\Final Design\STM8L-Discovery\Debug\List\"   #
+#                    --diag_suppress Pe177,Pe550 -I "F:\Skydrive\Final        #
+#                    Design\STM8L-Discovery\Project\Discover\inc\" -I         #
+#                    "F:\Skydrive\Final Design\STM8L-Discovery\Libraries\STM8 #
+#                    L15x_StdPeriph_Driver\inc\" --vregs 16                   #
+#    List file    =  F:\Skydrive\Final Design\STM8L-Discovery\Debug\List\eepr #
+#                    om.lst                                                   #
+#    Object file  =  F:\Skydrive\Final Design\STM8L-Discovery\Debug\Obj\eepro #
+#                    m.o                                                      #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+F:\Skydrive\Final Design\STM8L-Discovery\Project\Discover\src\eeprom.c
+      1          /*
+      2           * Copyright 2010 IAR Systems AB.
+      3           *
+      4           * Permission to use, copy, modify, and distribute this software for any
+      5           * purpose with or without fee is hereby granted, provided that the above
+      6           * copyright notice and this permission notice appear in all copies.
+      7           *
+      8           * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+      9           * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+     10           * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+     11           * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+     12           * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+     13           * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+     14           * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+     15           */
+     16          
+     17          #include "stm8l15x_flash.h"
+     18          
+     19          /*
+     20           * The user must implement the three extern-declared functions below
+     21           * in order for the compiler to be able to automatically write to the
+     22           * EEPROM memory when __eeprom variables are assigned to.
+     23           */
+     24          
+     25          
+     26          /*
+     27           * Wait for the last data EEPROM operation to finish.  Return 0 if the
+     28           * operation failed, otherwise non-zero.  You may want to handle
+     29           * errors here, since the utility functions below simply ignore
+     30           * errors, aborting multi-write operations early.
+     31           */
+
+   \                                 In section .near_func.text, align 1
+     32          int __eeprom_wait_for_last_operation(void)
+     33          {
+     34            FLASH_Status_TypeDef status = FLASH_WaitForLastOperation(FLASH_MemType_Data);
+   \                     __eeprom_wait_for_last_operation:
+   \   000000 A6F7                  LD        A, #0xf7
+   \   000002 CD0000                CALL      L:FLASH_WaitForLastOperation
+     35            return !!(status & (  FLASH_Status_Successful_Operation));
+   \   000005 A404                  AND       A, #0x4
+   \   000007 A100                  CP        A, #0x0
+   \   000009 2704                  JREQ      L:??__eeprom_wait_for_last_operation_0
+   \   00000B A601                  LD        A, #0x1
+   \   00000D 2001                  JRA       L:??__eeprom_wait_for_last_operation_1
+   \                     ??__eeprom_wait_for_last_operation_0:
+   \   00000F 4F                    CLR       A
+   \                     ??__eeprom_wait_for_last_operation_1:
+   \   000010 5F                    CLRW      X
+   \   000011 97                    LD        XL, A
+   \   000012 81                    RET
+     36          }
+     37          
+     38          /*
+     39           * Write one byte to the data EEPROM memory.
+     40           */
+
+   \                                 In section .near_func.text, align 1
+     41          void __eeprom_program_byte(unsigned char __near * dst, unsigned char v)
+     42          {
+     43            FLASH_ProgramByte((u32)dst, (u8)v);
+   \                     __eeprom_program_byte:
+   \   000000 BF00                  LDW       S:?w1, X
+   \   000002 5F                    CLRW      X
+   \   000003 BF00                  LDW       S:?w0, X
+   \   000005 CC0000                JP        L:FLASH_ProgramByte
+     44          }
+     45          
+     46          /*
+     47           * Write one 4-byte long word to the data EEPROM memory.  The address
+     48           * must be 4-byte aligned.
+     49           */
+
+   \                                 In section .near_func.text, align 1
+     50          void __eeprom_program_long(unsigned char __near * dst, unsigned long v)
+     51          {
+     52            FLASH_ProgramWord((u32)dst, (u32)v);
+   \                     __eeprom_program_long:
+   \   000000 CD0000                CALL      L:?mov_l1_l0
+   \   000003 BF00                  LDW       S:?w1, X
+   \   000005 5F                    CLRW      X
+   \   000006 BF00                  LDW       S:?w0, X
+   \   000008 CC0000                JP        L:FLASH_ProgramWord
+     53          }
+
+   Section sizes:
+
+     Function/Label                 Bytes
+     --------------                 -----
+     __eeprom_wait_for_last_operation
+                                      19
+     __eeprom_program_byte             8
+     __eeprom_program_long            11
+
+ 
+ 38 bytes in section .near_func.text
+ 
+ 38 bytes of CODE memory
+
+Errors: none
+Warnings: none

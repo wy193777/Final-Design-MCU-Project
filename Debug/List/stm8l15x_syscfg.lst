@@ -1,0 +1,640 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.30.1.50036 for STM8             26/Nov/2013  23:33:28 #
+# Copyright 2010-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  F:\Skydrive\Final Design\STM8L-Discovery1\Libraries\STM8 #
+#                    L15x_StdPeriph_Driver\src\stm8l15x_syscfg.c              #
+#    Command line =  "F:\Skydrive\Final Design\STM8L-Discovery1\Libraries\STM #
+#                    8L15x_StdPeriph_Driver\src\stm8l15x_syscfg.c" -e -Ol     #
+#                    --no_cse --no_unroll --no_inline --no_code_motion        #
+#                    --no_tbaa --no_cross_call --debug --code_model small     #
+#                    --data_model medium -o "F:\Skydrive\Final                #
+#                    Design\STM8L-Discovery1\Debug\Obj\" --dlib_config        #
+#                    "D:\IAR Systems\Embedded Workbench                       #
+#                    6.0\stm8\LIB\dlstm8smn.h" -D STM8L15X_MD -lCN            #
+#                    "F:\Skydrive\Final Design\STM8L-Discovery1\Debug\List\"  #
+#                    --diag_suppress Pe177,Pe550 -I "F:\Skydrive\Final        #
+#                    Design\STM8L-Discovery1\Project\Discover\inc\" -I        #
+#                    "F:\Skydrive\Final Design\STM8L-Discovery1\Libraries\STM #
+#                    8L15x_StdPeriph_Driver\inc\" --vregs 16                  #
+#    List file    =  F:\Skydrive\Final Design\STM8L-Discovery1\Debug\List\stm #
+#                    8l15x_syscfg.lst                                         #
+#    Object file  =  F:\Skydrive\Final Design\STM8L-Discovery1\Debug\Obj\stm8 #
+#                    l15x_syscfg.o                                            #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+F:\Skydrive\Final Design\STM8L-Discovery1\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_syscfg.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    stm8l15x_syscfg.c
+      4            * @author  MCD Application Team
+      5            * @version V1.4.0
+      6            * @date    09/24/2010
+      7            * @brief   This file provides all the SYSCFG firmware functions.
+      8            ******************************************************************************
+      9            *
+     10            * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+     11            * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+     12            * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+     13            * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+     14            * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+     15            * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+     16            *
+     17            * <h2><center>&copy; COPYRIGHT 2010 STMicroelectronics</center></h2>
+     18            * @image html logo.bmp@ref
+     19            ******************************************************************************
+     20            */
+     21          
+     22          /* Includes ------------------------------------------------------------------*/
+     23          #include "stm8l15x_syscfg.h"
+     24          
+     25          /** @addtogroup STM8L15x_StdPeriph_Driver
+     26            * @{
+     27            */
+     28          
+     29          /* Private typedef -----------------------------------------------------------*/
+     30          /* Private define ------------------------------------------------------------*/
+     31          /* Private macro -------------------------------------------------------------*/
+     32          /* Private variables ---------------------------------------------------------*/
+     33          /* Private function prototypes -----------------------------------------------*/
+     34          /* Private functions ---------------------------------------------------------*/
+     35          
+     36          /**
+     37            * @addtogroup SYSCFG_Public_Functions
+     38            * @{
+     39            */
+     40          
+     41          /**
+     42            * @brief  Deinitializes the RI registers to their default reset values.
+     43            * @param  None
+     44            * @retval None
+     45            */
+
+   \                                 In section .near_func.text, align 1
+     46          void SYSCFG_RIDeInit(void)
+     47          {
+     48            RI->ICR1   = RI_ICR1_RESET_VALUE;     /*!< Set RI->ICR1 to reset value */
+   \                     SYSCFG_RIDeInit:
+   \   000000 35005431              MOV       L:0x5431, #0x0
+     49            RI->ICR2   = RI_ICR2_RESET_VALUE;     /*!< Set RI->ICR2 to reset value */
+   \   000004 35005432              MOV       L:0x5432, #0x0
+     50            RI->IOSR1  = RI_IOSR1_RESET_VALUE;    /*!< Set RI->IOSR1 to reset value */
+   \   000008 35005439              MOV       L:0x5439, #0x0
+     51            RI->IOSR2  = RI_IOSR2_RESET_VALUE;    /*!< Set RI->IOSR2 to reset value */
+   \   00000C 3500543A              MOV       L:0x543a, #0x0
+     52            RI->IOSR3  = RI_IOSR3_RESET_VALUE;    /*!< Set RI->IOSR3 to reset value */
+   \   000010 3500543B              MOV       L:0x543b, #0x0
+     53            RI->ASCR1  = RI_ASCR1_RESET_VALUE;    /*!< Set RI->ASCR1 to reset value */
+   \   000014 3500543D              MOV       L:0x543d, #0x0
+     54            RI->ASCR2  = RI_ASCR2_RESET_VALUE;    /*!< Set RI->ASCR2 to reset value */
+   \   000018 3500543E              MOV       L:0x543e, #0x0
+     55            RI->RCR    = RI_RCR_RESET_VALUE;      /*!< Set RI->RCR to reset value */
+   \   00001C 3500543F              MOV       L:0x543f, #0x0
+     56          }
+   \   000020 81                    RET
+     57          
+     58          /**
+     59            * @brief  Configures the routing interface to select which Input Output pin
+     60            *         to be routed to TIM1 Input Capture.
+     61            * @param  RI_InputCapture: selects the TIM1 input capture2 RI_InputCapture_IC2
+     62            *         or the TIM1 input capture3 RI_InputCapture_IC3
+     63            * @param  RI_InputCaptureRouting : selects the value to set in TIM1 Input Capture
+     64            *         routing register ICRx and can be from RI_InputCaptureRouting_0 to
+     65            *         RI_InputCaptureRouting_22.
+     66            * @retval None.
+     67            */
+
+   \                                 In section .near_func.text, align 1
+     68          void SYSCFG_RITIMInputCaptureConfig(RI_InputCapture_TypeDef RI_InputCapture,
+     69                                              RI_InputCaptureRouting_TypeDef RI_InputCaptureRouting)
+     70          {
+     71            /* Check the parameters */
+     72            assert_param(IS_RI_INPUTCAPTURE(RI_InputCapture));
+     73            assert_param(IS_RI_INPUTCAPTUREROUTING(RI_InputCaptureRouting));
+     74          
+     75            /* Check whether Input Capture 2 is selected */
+     76            if (RI_InputCapture == RI_InputCapture_IC2)
+   \                     SYSCFG_RITIMInputCaptureConfig:
+   \   000000 A102                  CP        A, #0x2
+   \   000002 2606                  JRNE      L:??SYSCFG_RITIMInputCaptureConfig_0
+     77            {
+     78              /* Set the value in ICR1 register to route TIM input Capture 2 */
+     79              RI->ICR1 = (uint8_t) RI_InputCaptureRouting;
+   \   000004 B600                  LD        A, S:?b0
+   \   000006 C75431                LD        L:0x5431, A
+   \   000009 81                    RET
+     80            }
+     81          
+     82            else /* The Input Capture 3 is selected */
+     83            {
+     84              /* Set the value in ICR2 register to route TIM input capture 3 */
+     85              RI->ICR2 = (uint8_t) RI_InputCaptureRouting;
+   \                     ??SYSCFG_RITIMInputCaptureConfig_0:
+   \   00000A B600                  LD        A, S:?b0
+   \   00000C C75432                LD        L:0x5432, A
+     86            }
+     87          }
+   \   00000F 81                    RET
+     88          
+     89          /**
+     90            * @brief  Enables or disables the Routing Interface Analog switch.
+     91            * @param  RI_AnalogSwitch : can be one of @ref RI_AnalogSwitch_TypeDef
+     92            * @param  NewState : new state of the analog switch.
+     93            *         This parameter can be ENABLE or DISABLE.
+     94            * @retval None
+     95            */
+
+   \                                 In section .near_func.text, align 1
+     96          void SYSCFG_RIAnalogSwitchConfig(RI_AnalogSwitch_TypeDef RI_AnalogSwitch,
+     97                                           FunctionalState NewState)
+     98          {
+   \                     SYSCFG_RIAnalogSwitchConfig:
+   \   000000 B700                  LD        S:?b2, A
+     99            uint8_t AnalogSwitchRegister, AnalogSwitchIndex = 0;
+   \   000002 3F00                  CLR       S:?b1
+    100          
+    101            /* Check the parameters */
+    102            assert_param(IS_RI_ANALOGSWITCH(RI_AnalogSwitch));
+    103            assert_param(IS_FUNCTIONAL_STATE(NewState));
+    104          
+    105            /* Get the analog switch register ASCR1 or ASCR2 */
+    106            AnalogSwitchRegister = (uint8_t) (RI_AnalogSwitch & (uint8_t) 0xF0);
+   \   000004 B600                  LD        A, S:?b2
+   \   000006 A4F0                  AND       A, #0xf0
+   \   000008 B700                  LD        S:?b3, A
+    107          
+    108            /* Get the analog switch bit index in ASCRx register */
+    109            AnalogSwitchIndex = (uint8_t) (RI_AnalogSwitch & (uint8_t) 0x0F);
+   \   00000A B600                  LD        A, S:?b2
+   \   00000C A40F                  AND       A, #0xf
+   \   00000E B700                  LD        S:?b1, A
+    110          
+    111            if (NewState != DISABLE)
+   \   000010 3D00                  TNZ       S:?b0
+   \   000012 2724                  JREQ      L:??SYSCFG_RIAnalogSwitchConfig_0
+    112            {
+    113              if (AnalogSwitchRegister == (uint8_t) 0x10)
+   \   000014 B600                  LD        A, S:?b3
+   \   000016 A110                  CP        A, #0x10
+   \   000018 260F                  JRNE      L:??SYSCFG_RIAnalogSwitchConfig_1
+    114              {
+    115                /* Enable the analog switch */
+    116                RI->ASCR1 |= (uint8_t) ((uint8_t)1 << (uint8_t) AnalogSwitchIndex);
+   \   00001A 5F                    CLRW      X
+   \   00001B 5C                    INCW      X
+   \   00001C B600                  LD        A, S:?b1
+   \   00001E CD0000                CALL      L:?sll16_x_x_a
+   \   000021 9F                    LD        A, XL
+   \   000022 CA543D                OR        A, L:0x543d
+   \   000025 C7543D                LD        L:0x543d, A
+   \   000028 81                    RET
+    117              }
+    118              else
+    119              {
+    120                /* Enable the analog switch */
+    121                RI->ASCR2 |= (uint8_t) ((uint8_t)1 << (uint8_t) AnalogSwitchIndex);
+   \                     ??SYSCFG_RIAnalogSwitchConfig_1:
+   \   000029 5F                    CLRW      X
+   \   00002A 5C                    INCW      X
+   \   00002B B600                  LD        A, S:?b1
+   \   00002D CD0000                CALL      L:?sll16_x_x_a
+   \   000030 9F                    LD        A, XL
+   \   000031 CA543E                OR        A, L:0x543e
+   \   000034 C7543E                LD        L:0x543e, A
+   \   000037 81                    RET
+    122              }
+    123            }
+    124            else
+    125            {
+    126              if (AnalogSwitchRegister == (uint8_t) 0x10)
+   \                     ??SYSCFG_RIAnalogSwitchConfig_0:
+   \   000038 B600                  LD        A, S:?b3
+   \   00003A A110                  CP        A, #0x10
+   \   00003C 2610                  JRNE      L:??SYSCFG_RIAnalogSwitchConfig_2
+    127              {
+    128                /* Disable the analog switch */
+    129                RI->ASCR1 &= (uint8_t) (~(uint8_t)((uint8_t)1 <<  AnalogSwitchIndex));
+   \   00003E 5F                    CLRW      X
+   \   00003F 5C                    INCW      X
+   \   000040 B600                  LD        A, S:?b1
+   \   000042 CD0000                CALL      L:?sll16_x_x_a
+   \   000045 9F                    LD        A, XL
+   \   000046 43                    CPL       A
+   \   000047 C4543D                AND       A, L:0x543d
+   \   00004A C7543D                LD        L:0x543d, A
+   \   00004D 81                    RET
+    130              }
+    131              else
+    132              {
+    133                /* Disable the analog switch */
+    134                RI->ASCR2 &= (uint8_t) (~ (uint8_t)((uint8_t)1 << AnalogSwitchIndex));
+   \                     ??SYSCFG_RIAnalogSwitchConfig_2:
+   \   00004E 5F                    CLRW      X
+   \   00004F 5C                    INCW      X
+   \   000050 B600                  LD        A, S:?b1
+   \   000052 CD0000                CALL      L:?sll16_x_x_a
+   \   000055 9F                    LD        A, XL
+   \   000056 43                    CPL       A
+   \   000057 C4543E                AND       A, L:0x543e
+   \   00005A C7543E                LD        L:0x543e, A
+    135              }
+    136            }
+    137          }
+   \   00005D 81                    RET
+    138          
+    139          /**
+    140            * @brief  Closes or Opens the routing interface Input Output switchs.
+    141            * @param  RI_IOSwitch : can be one of RI_IOSwitch_1..RI_IOSwitch_24
+    142            * @param  NewState : new state of the Input Output Switch.
+    143            *         This parameter can be ENABLE or DISABLE.
+    144            * @retval None.
+    145            */
+
+   \                                 In section .near_func.text, align 1
+    146          void SYSCFG_RIIOSwitchConfig(RI_IOSwitch_TypeDef RI_IOSwitch,
+    147                                       FunctionalState NewState)
+    148          {
+   \                     SYSCFG_RIIOSwitchConfig:
+   \   000000 B700                  LD        S:?b2, A
+    149            uint8_t IOSwitchRegsiter, IOSwitchIndex = 0;
+   \   000002 3F00                  CLR       S:?b1
+    150          
+    151            /* Check the parameters */
+    152            assert_param(IS_RI_IOSWITCH(RI_IOSwitch));
+    153            assert_param(IS_FUNCTIONAL_STATE(NewState));
+    154          
+    155            /* Get the Input Output switch bit index in IOSRx register */
+    156            IOSwitchIndex = (uint8_t) (RI_IOSwitch & (uint8_t) 0x0F);
+   \   000004 B600                  LD        A, S:?b2
+   \   000006 A40F                  AND       A, #0xf
+   \   000008 B700                  LD        S:?b1, A
+    157          
+    158            /* Get the Input Output switch register IOSR1, IOSR2 or IOSR3 */
+    159            IOSwitchRegsiter = (uint8_t) (RI_IOSwitch & (uint8_t) 0xF0);
+   \   00000A B600                  LD        A, S:?b2
+   \   00000C A4F0                  AND       A, #0xf0
+    160          
+    161            /* Check whether the Input Output switch control bit is in the IOSR1 register */
+    162            if (IOSwitchRegsiter == (uint8_t) 0x10)
+   \   00000E A110                  CP        A, #0x10
+   \   000010 2623                  JRNE      L:??SYSCFG_RIIOSwitchConfig_0
+    163            {
+    164              if (NewState != DISABLE)
+   \   000012 3D00                  TNZ       S:?b0
+   \   000014 270F                  JREQ      L:??SYSCFG_RIIOSwitchConfig_1
+    165              {
+    166                /* Close the Input Output switch */
+    167                RI->IOSR1 |= (uint8_t) ((uint8_t)1 << IOSwitchIndex);
+   \   000016 5F                    CLRW      X
+   \   000017 5C                    INCW      X
+   \   000018 B600                  LD        A, S:?b1
+   \   00001A CD0000                CALL      L:?sll16_x_x_a
+   \   00001D 9F                    LD        A, XL
+   \   00001E CA5439                OR        A, L:0x5439
+   \   000021 C75439                LD        L:0x5439, A
+   \   000024 81                    RET
+    168              }
+    169              else
+    170              {
+    171                /* Open the Input Output switch */
+    172                RI->IOSR1 &= (uint8_t) (~ (uint8_t)((uint8_t)1 << IOSwitchIndex));
+   \                     ??SYSCFG_RIIOSwitchConfig_1:
+   \   000025 5F                    CLRW      X
+   \   000026 5C                    INCW      X
+   \   000027 B600                  LD        A, S:?b1
+   \   000029 CD0000                CALL      L:?sll16_x_x_a
+   \   00002C 9F                    LD        A, XL
+   \   00002D 43                    CPL       A
+   \   00002E C45439                AND       A, L:0x5439
+   \   000031 C75439                LD        L:0x5439, A
+   \   000034 81                    RET
+    173              }
+    174            }
+    175          
+    176            /* Check whether the Input Output switch control bit is in the IOSR2 register */
+    177            else if (IOSwitchRegsiter == (uint8_t) 0x20)
+   \                     ??SYSCFG_RIIOSwitchConfig_0:
+   \   000035 A120                  CP        A, #0x20
+   \   000037 2623                  JRNE      L:??SYSCFG_RIIOSwitchConfig_2
+    178            {
+    179              if (NewState != DISABLE)
+   \   000039 3D00                  TNZ       S:?b0
+   \   00003B 270F                  JREQ      L:??SYSCFG_RIIOSwitchConfig_3
+    180              {
+    181                /* Close the Input Output switch */
+    182                RI->IOSR2 |= (uint8_t) ((uint8_t)1 << IOSwitchIndex);
+   \   00003D 5F                    CLRW      X
+   \   00003E 5C                    INCW      X
+   \   00003F B600                  LD        A, S:?b1
+   \   000041 CD0000                CALL      L:?sll16_x_x_a
+   \   000044 9F                    LD        A, XL
+   \   000045 CA543A                OR        A, L:0x543a
+   \   000048 C7543A                LD        L:0x543a, A
+   \   00004B 81                    RET
+    183              }
+    184              else
+    185              {
+    186                /* Open the Input Output switch */
+    187                RI->IOSR2 &= (uint8_t) (~(uint8_t)((uint8_t)1 <<  IOSwitchIndex));
+   \                     ??SYSCFG_RIIOSwitchConfig_3:
+   \   00004C 5F                    CLRW      X
+   \   00004D 5C                    INCW      X
+   \   00004E B600                  LD        A, S:?b1
+   \   000050 CD0000                CALL      L:?sll16_x_x_a
+   \   000053 9F                    LD        A, XL
+   \   000054 43                    CPL       A
+   \   000055 C4543A                AND       A, L:0x543a
+   \   000058 C7543A                LD        L:0x543a, A
+   \   00005B 81                    RET
+    188              }
+    189            }
+    190          
+    191            /* The Input Output switch control bit is in the IOSR3 register */
+    192            else
+    193            {
+    194              if (NewState != DISABLE)
+   \                     ??SYSCFG_RIIOSwitchConfig_2:
+   \   00005C 3D00                  TNZ       S:?b0
+   \   00005E 270F                  JREQ      L:??SYSCFG_RIIOSwitchConfig_4
+    195              {
+    196                /* Close the Input Output switch */
+    197                RI->IOSR3 |= (uint8_t) ((uint8_t)1 << IOSwitchIndex);
+   \   000060 5F                    CLRW      X
+   \   000061 5C                    INCW      X
+   \   000062 B600                  LD        A, S:?b1
+   \   000064 CD0000                CALL      L:?sll16_x_x_a
+   \   000067 9F                    LD        A, XL
+   \   000068 CA543B                OR        A, L:0x543b
+   \   00006B C7543B                LD        L:0x543b, A
+   \   00006E 81                    RET
+    198              }
+    199              else
+    200              {
+    201                /* Open the Input Output switch */
+    202                RI->IOSR3 &= (uint8_t) (~ (uint8_t) ((uint8_t) 1 << IOSwitchIndex));
+   \                     ??SYSCFG_RIIOSwitchConfig_4:
+   \   00006F 5F                    CLRW      X
+   \   000070 5C                    INCW      X
+   \   000071 B600                  LD        A, S:?b1
+   \   000073 CD0000                CALL      L:?sll16_x_x_a
+   \   000076 9F                    LD        A, XL
+   \   000077 43                    CPL       A
+   \   000078 C4543B                AND       A, L:0x543b
+   \   00007B C7543B                LD        L:0x543b, A
+    203              }
+    204            }
+    205          }
+   \   00007E 81                    RET
+    206          
+    207          /**
+    208            * @brief  Configures the Pull-up and Pull-down Resistors
+    209            * @param  RI_Resistor : selects the resistor to connect,
+    210            *         This parameter can be a value of @ref RI_Resistor_TypeDef
+    211            * @retval None
+    212            */
+
+   \                                 In section .near_func.text, align 1
+    213          void SYSCFG_RIResistorConfig(RI_Resistor_TypeDef RI_Resistor, FunctionalState NewState)
+    214          {
+    215            /* Check the parameters */
+    216            assert_param(IS_RI_RESISTOR(RI_Resistor));
+    217            assert_param(IS_FUNCTIONAL_STATE(NewState));
+    218          
+    219            if (NewState != DISABLE)
+   \                     SYSCFG_RIResistorConfig:
+   \   000000 3D00                  TNZ       S:?b0
+   \   000002 2707                  JREQ      L:??SYSCFG_RIResistorConfig_0
+    220            {
+    221              /* Enable the resistor */
+    222              RI->RCR |= (uint8_t) RI_Resistor;
+   \   000004 CA543F                OR        A, L:0x543f
+   \   000007 C7543F                LD        L:0x543f, A
+   \   00000A 81                    RET
+    223            }
+    224            else
+    225            {
+    226              /* Disable the Resistor */
+    227              RI->RCR &= (uint8_t) (~RI_Resistor);
+   \                     ??SYSCFG_RIResistorConfig_0:
+   \   00000B 43                    CPL       A
+   \   00000C C4543F                AND       A, L:0x543f
+   \   00000F C7543F                LD        L:0x543f, A
+    228            }
+    229          }
+   \   000012 81                    RET
+    230          
+    231          /**
+    232            * @brief  Deinitializes the Remapping registers to their default reset values.
+    233            * @param  None
+    234            * @retval None
+    235            */
+
+   \                                 In section .near_func.text, align 1
+    236          void SYSCFG_REMAPDeInit(void)
+    237          {
+    238            /*!< Set RMPCR1 to reset value */
+    239            SYSCFG->RMPCR1 = SYSCFG_RMPCR1_RESET_VALUE;
+   \                     SYSCFG_REMAPDeInit:
+   \   000000 350C509E              MOV       L:0x509e, #0xc
+    240          
+    241            /*!< Set RMPCR2 to reset value */
+    242            SYSCFG->RMPCR2 = SYSCFG_RMPCR2_RESET_VALUE;
+   \   000004 3500509F              MOV       L:0x509f, #0x0
+    243          
+    244            /*!< Set RMPCR3 to reset value */
+    245            SYSCFG->RMPCR3 = SYSCFG_RMPCR3_RESET_VALUE;
+   \   000008 3500509D              MOV       L:0x509d, #0x0
+    246          }
+   \   00000C 81                    RET
+    247          
+    248          /**
+    249            * @brief  Changes the mapping of the specified pins.
+    250            * @param  REMAP_Pin: selects the pin to remap.
+    251            *         This parameter can be a value of @ref REMAP_Pin_TypeDef
+    252            * @param  NewState: This parameter can be ENABLE or DISABLE.
+    253            * @retval None
+    254            */
+
+   \                                 In section .near_func.text, align 1
+    255          void SYSCFG_REMAPPinConfig(REMAP_Pin_TypeDef REMAP_Pin, FunctionalState NewState)
+    256          {
+   \                     SYSCFG_REMAPPinConfig:
+   \   000000 9093                  LDW       Y, X
+   \   000002 B700                  LD        S:?b1, A
+    257            uint8_t regindex = 0;
+   \   000004 3F00                  CLR       S:?b0
+    258            /* Check the parameters */
+    259            assert_param(IS_REMAP_PIN(REMAP_Pin));
+    260            assert_param(IS_FUNCTIONAL_STATE(NewState));
+    261          
+    262            /* Read register index */
+    263            regindex = (uint8_t) ((uint16_t) REMAP_Pin >> 8);
+   \   000006 93                    LDW       X, Y
+   \   000007 4F                    CLR       A
+   \   000008 01                    RRWA      X, A
+   \   000009 9F                    LD        A, XL
+   \   00000A B700                  LD        S:?b0, A
+    264          
+    265            /* Check if REMAP_Pin is in RMPCR1 register */
+    266            if (regindex == 0x01)
+   \   00000C B600                  LD        A, S:?b0
+   \   00000E A101                  CP        A, #0x1
+   \   000010 261C                  JRNE      L:??SYSCFG_REMAPPinConfig_0
+    267            {
+    268              SYSCFG->RMPCR1 &= (uint8_t)((uint8_t)((uint8_t)REMAP_Pin << 4) | (uint8_t)0x0F);
+   \   000012 909F                  LD        A, YL
+   \   000014 4E                    SWAP      A
+   \   000015 A4F0                  AND       A, #0xf0
+   \   000017 AA0F                  OR        A, #0xf
+   \   000019 C4509E                AND       A, L:0x509e
+   \   00001C C7509E                LD        L:0x509e, A
+    269              if (NewState != DISABLE)
+   \   00001F 3D00                  TNZ       S:?b1
+   \   000021 273E                  JREQ      L:??SYSCFG_REMAPPinConfig_1
+    270              {
+    271                SYSCFG->RMPCR1 |= (uint8_t)((uint16_t)REMAP_Pin & (uint16_t)0x00F0);
+   \   000023 909F                  LD        A, YL
+   \   000025 A4F0                  AND       A, #0xf0
+   \   000027 CA509E                OR        A, L:0x509e
+   \   00002A C7509E                LD        L:0x509e, A
+   \   00002D 81                    RET
+    272              }
+    273            }
+    274            /* Check if REMAP_Pin is in RMPCR2 register */
+    275            else if (regindex == 0x02)
+   \                     ??SYSCFG_REMAPPinConfig_0:
+   \   00002E B600                  LD        A, S:?b0
+   \   000030 A102                  CP        A, #0x2
+   \   000032 2617                  JRNE      L:??SYSCFG_REMAPPinConfig_2
+    276            {
+    277              if (NewState != DISABLE)
+   \   000034 3D00                  TNZ       S:?b1
+   \   000036 2709                  JREQ      L:??SYSCFG_REMAPPinConfig_3
+    278              {
+    279                SYSCFG->RMPCR2 |= (uint8_t) REMAP_Pin;
+   \   000038 909F                  LD        A, YL
+   \   00003A CA509F                OR        A, L:0x509f
+   \   00003D C7509F                LD        L:0x509f, A
+   \   000040 81                    RET
+    280              }
+    281              else
+    282              {
+    283                SYSCFG->RMPCR2 &= (uint8_t)((uint16_t)(~(uint16_t)REMAP_Pin));
+   \                     ??SYSCFG_REMAPPinConfig_3:
+   \   000041 909F                  LD        A, YL
+   \   000043 43                    CPL       A
+   \   000044 C4509F                AND       A, L:0x509f
+   \   000047 C7509F                LD        L:0x509f, A
+   \   00004A 81                    RET
+    284              }
+    285            }
+    286            /* REMAP_Pin is in RMPCR3 register */
+    287            else
+    288            {
+    289              if (NewState != DISABLE)
+   \                     ??SYSCFG_REMAPPinConfig_2:
+   \   00004B 3D00                  TNZ       S:?b1
+   \   00004D 2709                  JREQ      L:??SYSCFG_REMAPPinConfig_4
+    290              {
+    291                SYSCFG->RMPCR3 |= (uint8_t) REMAP_Pin;
+   \   00004F 909F                  LD        A, YL
+   \   000051 CA509D                OR        A, L:0x509d
+   \   000054 C7509D                LD        L:0x509d, A
+   \   000057 81                    RET
+    292              }
+    293              else
+    294              {
+    295                SYSCFG->RMPCR3 &= (uint8_t)((uint16_t)(~(uint16_t)REMAP_Pin));
+   \                     ??SYSCFG_REMAPPinConfig_4:
+   \   000058 909F                  LD        A, YL
+   \   00005A 43                    CPL       A
+   \   00005B C4509D                AND       A, L:0x509d
+   \   00005E C7509D                LD        L:0x509d, A
+    296              }
+    297            }
+    298          }
+   \                     ??SYSCFG_REMAPPinConfig_1:
+   \   000061 81                    RET
+    299          
+    300          /**
+    301            * @brief  Remaps the DMA Channel to the specific peripheral (ADC or TIM4)
+    302            * @param  REMAP_DMAChannel: specifies the DMA Channel to remap.
+    303            *         This parameter can be one of @ref REMAP_DMAChannel_TypeDef
+    304            * @retval None
+    305            */
+
+   \                                 In section .near_func.text, align 1
+    306          void SYSCFG_REMAPDMAChannelConfig(REMAP_DMAChannel_TypeDef REMAP_DMAChannel)
+    307          {
+   \                     SYSCFG_REMAPDMAChannelConfig:
+   \   000000 B700                  LD        S:?b0, A
+    308            /* Check the parameters */
+    309            assert_param(IS_REMAP_DMACHANNEL(REMAP_DMAChannel));
+    310          
+    311            /* Check if the TIM4 DMA channel is selected: bits 4 --> 7 are set */
+    312            if ((REMAP_DMAChannel & 0xF0) != RESET)
+   \   000002 B600                  LD        A, S:?b0
+   \   000004 A4F0                  AND       A, #0xf0
+   \   000006 A100                  CP        A, #0x0
+   \   000008 270A                  JREQ      L:??SYSCFG_REMAPDMAChannelConfig_0
+    313            {
+    314              /* Reset the TIM4 DMA channels */
+    315              SYSCFG->RMPCR1 &= (uint8_t) (~SYSCFG_RMPCR1_TIM4DMA_REMAP);
+   \   00000A C6509E                LD        A, L:0x509e
+   \   00000D A4F3                  AND       A, #0xf3
+   \   00000F C7509E                LD        L:0x509e, A
+   \   000012 2008                  JRA       L:??SYSCFG_REMAPDMAChannelConfig_1
+    316            }
+    317            /* ADC DMA channel is selected: bits 4 --> 7 are reset */
+    318            else
+    319            {
+    320              /* Reset the ADC DMA channels */
+    321              SYSCFG->RMPCR1 &= (uint8_t) (~SYSCFG_RMPCR1_ADC1DMA_REMAP);
+   \                     ??SYSCFG_REMAPDMAChannelConfig_0:
+   \   000014 C6509E                LD        A, L:0x509e
+   \   000017 A4FC                  AND       A, #0xfc
+   \   000019 C7509E                LD        L:0x509e, A
+    322            }
+    323            /* Set the DMA Channels remapping */
+    324            SYSCFG->RMPCR1 |= (uint8_t) ((uint8_t)0x0F & REMAP_DMAChannel);
+   \                     ??SYSCFG_REMAPDMAChannelConfig_1:
+   \   00001C B600                  LD        A, S:?b0
+   \   00001E A40F                  AND       A, #0xf
+   \   000020 CA509E                OR        A, L:0x509e
+   \   000023 C7509E                LD        L:0x509e, A
+    325          }
+   \   000026 81                    RET
+    326          
+    327          /**
+    328            * @}
+    329            */
+    330          
+    331          /**
+    332            * @}
+    333            */
+    334          
+    335          /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
+
+   Section sizes:
+
+     Function/Label                 Bytes
+     --------------                 -----
+     SYSCFG_RIDeInit                  33
+     SYSCFG_RITIMInputCaptureConfig   16
+     SYSCFG_RIAnalogSwitchConfig      94
+     SYSCFG_RIIOSwitchConfig         127
+     SYSCFG_RIResistorConfig          19
+     SYSCFG_REMAPDeInit               13
+     SYSCFG_REMAPPinConfig            98
+     SYSCFG_REMAPDMAChannelConfig     39
+
+ 
+ 439 bytes in section .near_func.text
+ 
+ 439 bytes of CODE memory
+
+Errors: none
+Warnings: none

@@ -1,0 +1,705 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.30.1.50036 for STM8             26/Nov/2013  23:31:24 #
+# Copyright 2010-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  F:\Skydrive\Final Design\STM8L-Discovery1\Libraries\STM8 #
+#                    L15x_StdPeriph_Driver\src\stm8l15x_lcd.c                 #
+#    Command line =  "F:\Skydrive\Final Design\STM8L-Discovery1\Libraries\STM #
+#                    8L15x_StdPeriph_Driver\src\stm8l15x_lcd.c" -e -Ol        #
+#                    --no_cse --no_unroll --no_inline --no_code_motion        #
+#                    --no_tbaa --no_cross_call --debug --code_model small     #
+#                    --data_model medium -o "F:\Skydrive\Final                #
+#                    Design\STM8L-Discovery1\Debug\Obj\" --dlib_config        #
+#                    "D:\IAR Systems\Embedded Workbench                       #
+#                    6.0\stm8\LIB\dlstm8smn.h" -D STM8L15X_MD -lCN            #
+#                    "F:\Skydrive\Final Design\STM8L-Discovery1\Debug\List\"  #
+#                    --diag_suppress Pe177,Pe550 -I "F:\Skydrive\Final        #
+#                    Design\STM8L-Discovery1\Project\Discover\inc\" -I        #
+#                    "F:\Skydrive\Final Design\STM8L-Discovery1\Libraries\STM #
+#                    8L15x_StdPeriph_Driver\inc\" --vregs 16                  #
+#    List file    =  F:\Skydrive\Final Design\STM8L-Discovery1\Debug\List\stm #
+#                    8l15x_lcd.lst                                            #
+#    Object file  =  F:\Skydrive\Final Design\STM8L-Discovery1\Debug\Obj\stm8 #
+#                    l15x_lcd.o                                               #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+F:\Skydrive\Final Design\STM8L-Discovery1\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_lcd.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    stm8l15x_lcd.c
+      4            * @author  MCD Application Team
+      5            * @version V1.4.0
+      6            * @date    09/24/2010
+      7            * @brief   This file provides all the LCD firmware functions.
+      8            ******************************************************************************
+      9            * @copy
+     10            *
+     11            * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+     12            * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+     13            * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+     14            * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+     15            * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+     16            * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+     17            *
+     18            * <h2><center>&copy; COPYRIGHT 2010 STMicroelectronics</center></h2>
+     19            */
+     20          
+     21          /* Includes ------------------------------------------------------------------*/
+     22          #include "stm8l15x_lcd.h"
+     23          
+     24          /** @addtogroup STM8L15x_StdPeriph_Driver
+     25            * @{
+     26            */
+     27          
+     28          /* Private typedef -----------------------------------------------------------*/
+     29          /* Private define ------------------------------------------------------------*/
+     30          /* Private macro -------------------------------------------------------------*/
+     31          /* Private variables ---------------------------------------------------------*/
+     32          /* Private function prototypes -----------------------------------------------*/
+     33          /* Private functions ---------------------------------------------------------*/
+     34          
+     35          
+     36          /** @addtogroup LCD_Public_Functions
+     37            * @{
+     38            */
+     39          
+     40          /**
+     41            * @brief  Deinitializes the LCD Controller registers to their default reset values.
+     42            * @param  None
+     43            * @retval None
+     44            */
+
+   \                                 In section .near_func.text, align 1
+     45          void LCD_DeInit(void)
+     46          {
+     47            uint8_t counter = 0;
+   \                     LCD_DeInit:
+   \   000000 3F00                  CLR       S:?b0
+     48          
+     49            LCD->CR1 = LCD_CR1_RESET_VALUE;
+   \   000002 35005400              MOV       L:0x5400, #0x0
+     50            LCD->CR2 = LCD_CR2_RESET_VALUE;
+   \   000006 35005401              MOV       L:0x5401, #0x0
+     51            LCD->CR3 = LCD_CR3_RESET_VALUE;
+   \   00000A 35005402              MOV       L:0x5402, #0x0
+     52            LCD->FRQ = LCD_FRQ_RESET_VALUE;
+   \   00000E 35005403              MOV       L:0x5403, #0x0
+     53          
+     54            for (counter = 0;counter < 0x05; counter++)
+   \   000012 4F                    CLR       A
+   \   000013 B700                  LD        S:?b0, A
+   \   000015 2010                  JRA       L:??LCD_DeInit_0
+     55            {
+     56              LCD->PM[counter] = LCD_PM_RESET_VALUE;
+   \                     ??LCD_DeInit_1:
+   \   000017 5F                    CLRW      X
+   \   000018 41                    EXG       A, XL
+   \   000019 B600                  LD        A, S:?b0
+   \   00001B 41                    EXG       A, XL
+   \   00001C 1C5404                ADDW      X, #0x5404
+   \   00001F 4F                    CLR       A
+   \   000020 F7                    LD        (X), A
+     57            }
+   \   000021 B600                  LD        A, S:?b0
+   \   000023 AB01                  ADD       A, #0x1
+   \   000025 B700                  LD        S:?b0, A
+   \                     ??LCD_DeInit_0:
+   \   000027 B600                  LD        A, S:?b0
+   \   000029 A105                  CP        A, #0x5
+   \   00002B 25EA                  JRC       L:??LCD_DeInit_1
+     58          
+     59            for (counter = 0;counter < 0x16; counter++)
+   \   00002D 3F00                  CLR       S:?b0
+   \   00002F 2010                  JRA       L:??LCD_DeInit_2
+     60            {
+     61              LCD->RAM[counter] =  LCD_RAM_RESET_VALUE;
+   \                     ??LCD_DeInit_3:
+   \   000031 5F                    CLRW      X
+   \   000032 41                    EXG       A, XL
+   \   000033 B600                  LD        A, S:?b0
+   \   000035 41                    EXG       A, XL
+   \   000036 1C540C                ADDW      X, #0x540c
+   \   000039 4F                    CLR       A
+   \   00003A F7                    LD        (X), A
+     62            }
+   \   00003B B600                  LD        A, S:?b0
+   \   00003D AB01                  ADD       A, #0x1
+   \   00003F B700                  LD        S:?b0, A
+   \                     ??LCD_DeInit_2:
+   \   000041 B600                  LD        A, S:?b0
+   \   000043 A116                  CP        A, #0x16
+   \   000045 25EA                  JRC       L:??LCD_DeInit_3
+     63          
+     64            LCD->CR4 = LCD_CR4_RESET_VALUE;
+   \   000047 3500542F              MOV       L:0x542f, #0x0
+     65          
+     66          }
+   \   00004B 81                    RET
+     67          
+     68          /**
+     69            * @brief  Initializes the LCD according to the specified parameters.
+     70            * @param  LCD_CLKPrescalerDiv : This parameter can be any of the  @ref LCD_Divider_TypeDef enumeration.
+     71            * @param  LCD_Divider : This parameter can be any of the @ref LCD_Divider_TypeDef enumeration.
+     72            * @param  LCD_Duty : This parameter can be any of the @ref LCD_Duty_TypeDef enumeration.
+     73            * @param  LCD_Bias : This parameter can be any of the @ref LCD_Bias_TypeDef enumeration.
+     74            * @param  LCD_VoltageSource : This parameter can be any of the @ref LCD_VoltageSource_TypeDef enumeration.
+     75            * @retval None
+     76            */
+
+   \                                 In section .near_func.text, align 1
+     77          void LCD_Init(LCD_Prescaler_TypeDef LCD_Prescaler, LCD_Divider_TypeDef LCD_Divider,
+     78                        LCD_Duty_TypeDef LCD_Duty, LCD_Bias_TypeDef LCD_Bias,
+     79                        LCD_VoltageSource_TypeDef LCD_VoltageSource)
+     80          {
+   \                     LCD_Init:
+   \   000000 B700                  LD        S:?b4, A
+     81            /* Check function parameters */
+     82            assert_param(IS_LCD_CLOCK_PRESCALER(LCD_Prescaler));
+     83            assert_param(IS_LCD_CLOCK_DIVIDER(LCD_Divider));
+     84            assert_param(IS_LCD_DUTY(LCD_Duty));
+     85            assert_param(IS_LCD_BIAS(LCD_Bias));
+     86            assert_param(IS_LCD_VOLTAGE_SOURCE(LCD_VoltageSource));
+     87          
+     88            LCD->FRQ &= (uint8_t)(~LCD_FRQ_PS);     /* Clear the prescaler bits */
+   \   000002 C65403                LD        A, L:0x5403
+   \   000005 A40F                  AND       A, #0xf
+   \   000007 C75403                LD        L:0x5403, A
+     89            LCD->FRQ |= LCD_Prescaler;
+   \   00000A B600                  LD        A, S:?b4
+   \   00000C CA5403                OR        A, L:0x5403
+   \   00000F C75403                LD        L:0x5403, A
+     90          
+     91            LCD->FRQ &= (uint8_t)(~LCD_FRQ_DIV);     /* Clear the divider bits */
+   \   000012 C65403                LD        A, L:0x5403
+   \   000015 A4F0                  AND       A, #0xf0
+   \   000017 C75403                LD        L:0x5403, A
+     92            LCD->FRQ |= LCD_Divider;
+   \   00001A B600                  LD        A, S:?b0
+   \   00001C CA5403                OR        A, L:0x5403
+   \   00001F C75403                LD        L:0x5403, A
+     93          
+     94            /* Configure the Duty cycle */
+     95            LCD->CR1 &= (uint8_t)(~LCD_CR1_DUTY);    /* Clear the duty bits */
+   \   000022 C65400                LD        A, L:0x5400
+   \   000025 A4F9                  AND       A, #0xf9
+   \   000027 C75400                LD        L:0x5400, A
+     96            LCD->CR4 &= (uint8_t)(~LCD_CR4_DUTY8);   /* Clear the DUTY8 bit */
+   \   00002A 7213542F              BRES      L:0x542f, #0x1
+     97          
+     98            if (LCD_Duty == LCD_Duty_1_8)
+   \   00002E B600                  LD        A, S:?b1
+   \   000030 A120                  CP        A, #0x20
+   \   000032 260D                  JRNE      L:??LCD_Init_0
+     99            {
+    100              LCD->CR4 |= (uint8_t)((uint8_t)((uint8_t)LCD_Duty & (uint8_t)0xF0) >> 4);
+   \   000034 B600                  LD        A, S:?b1
+   \   000036 4E                    SWAP      A
+   \   000037 A40F                  AND       A, #0xf
+   \   000039 CA542F                OR        A, L:0x542f
+   \   00003C C7542F                LD        L:0x542f, A
+   \   00003F 200A                  JRA       L:??LCD_Init_1
+    101            }
+    102            else
+    103            {
+    104              LCD->CR1 |= (uint8_t)((uint8_t)LCD_Duty & (uint8_t)0x0F);
+   \                     ??LCD_Init_0:
+   \   000041 B600                  LD        A, S:?b1
+   \   000043 A40F                  AND       A, #0xf
+   \   000045 CA5400                OR        A, L:0x5400
+   \   000048 C75400                LD        L:0x5400, A
+    105            }
+    106          
+    107            /* Configure the Bias */
+    108            LCD->CR1 &= (uint8_t)(~LCD_CR1_B2);      /* Clear the B2 bit */
+   \                     ??LCD_Init_1:
+   \   00004B 72115400              BRES      L:0x5400, #0x0
+    109            LCD->CR4 &= (uint8_t)(~LCD_CR4_B4);      /* Clear the B4 bit */
+   \   00004F 7211542F              BRES      L:0x542f, #0x0
+    110          
+    111            if (LCD_Bias == LCD_Bias_1_4)
+   \   000053 B600                  LD        A, S:?b2
+   \   000055 A110                  CP        A, #0x10
+   \   000057 2617                  JRNE      L:??LCD_Init_2
+    112            {
+    113              LCD->CR1 |= (uint8_t)((uint8_t)LCD_Bias & (uint8_t)0x0F);
+   \   000059 B600                  LD        A, S:?b2
+   \   00005B A40F                  AND       A, #0xf
+   \   00005D CA5400                OR        A, L:0x5400
+   \   000060 C75400                LD        L:0x5400, A
+    114              LCD->CR4 |= (uint8_t)((uint8_t)((uint8_t)LCD_Bias & (uint8_t)0xF0) >> 4);
+   \   000063 B600                  LD        A, S:?b2
+   \   000065 4E                    SWAP      A
+   \   000066 A40F                  AND       A, #0xf
+   \   000068 CA542F                OR        A, L:0x542f
+   \   00006B C7542F                LD        L:0x542f, A
+   \   00006E 200A                  JRA       L:??LCD_Init_3
+    115            }
+    116            else
+    117            {
+    118              LCD->CR1 |= (uint8_t)((uint8_t)LCD_Bias & (uint8_t)0x0F);
+   \                     ??LCD_Init_2:
+   \   000070 B600                  LD        A, S:?b2
+   \   000072 A40F                  AND       A, #0xf
+   \   000074 CA5400                OR        A, L:0x5400
+   \   000077 C75400                LD        L:0x5400, A
+    119            }
+    120          
+    121            LCD->CR2 &= (uint8_t)(~LCD_CR2_VSEL);    /* Clear the voltage source bit */
+   \                     ??LCD_Init_3:
+   \   00007A 72115401              BRES      L:0x5401, #0x0
+    122            LCD->CR2 |= LCD_VoltageSource;
+   \   00007E B600                  LD        A, S:?b3
+   \   000080 CA5401                OR        A, L:0x5401
+   \   000083 C75401                LD        L:0x5401, A
+    123          
+    124          }
+   \   000086 81                    RET
+    125          
+    126          /**
+    127            * @brief  Enables or disables the LCD Controller.
+    128            * @param  NewState: New state of the LCD peripheral.
+    129            *         This parameter can be: ENABLE or DISABLE
+    130            * @retval None
+    131            */
+
+   \                                 In section .near_func.text, align 1
+    132          void LCD_Cmd(FunctionalState NewState)
+    133          {
+    134            /* Check function parameters */
+    135            assert_param(IS_FUNCTIONAL_STATE(NewState));
+    136          
+    137            if (NewState != DISABLE)
+   \                     LCD_Cmd:
+   \   000000 4D                    TNZ       A
+   \   000001 2705                  JREQ      L:??LCD_Cmd_0
+    138            {
+    139              LCD->CR3 |= LCD_CR3_LCDEN; /* Enable the LCD peripheral*/
+   \   000003 721C5402              BSET      L:0x5402, #0x6
+   \   000007 81                    RET
+    140            }
+    141            else
+    142            {
+    143              LCD->CR3 &= (uint8_t)(~LCD_CR3_LCDEN); /* Disable the LCD peripheral*/
+   \                     ??LCD_Cmd_0:
+   \   000008 721D5402              BRES      L:0x5402, #0x6
+    144            }
+    145          
+    146          }
+   \   00000C 81                    RET
+    147          
+    148          /**
+    149            * @brief  Enables or disables the interrupt.
+    150            * @param  NewState: The new state of the LCD interrupt.
+    151            *         This parameter can be: ENABLE or DISABLE
+    152            * @retval None
+    153            */
+
+   \                                 In section .near_func.text, align 1
+    154          void LCD_ITConfig(FunctionalState NewState)
+    155          {
+    156            /* Check function parameters */
+    157            assert_param(IS_FUNCTIONAL_STATE(NewState));
+    158          
+    159            if (NewState != DISABLE)
+   \                     LCD_ITConfig:
+   \   000000 4D                    TNZ       A
+   \   000001 2705                  JREQ      L:??LCD_ITConfig_0
+    160            {
+    161              LCD->CR3 |= LCD_CR3_SOFIE; /* Enable interrupt*/
+   \   000003 721A5402              BSET      L:0x5402, #0x5
+   \   000007 81                    RET
+    162            }
+    163            else
+    164            {
+    165              LCD->CR3 &= (uint8_t)(~LCD_CR3_SOFIE); /* Disable interrupt*/
+   \                     ??LCD_ITConfig_0:
+   \   000008 721B5402              BRES      L:0x5402, #0x5
+    166            }
+    167          
+    168          }
+   \   00000C 81                    RET
+    169          /**
+    170            * @brief  Enables or disables the low resistance divider.
+    171            * @param  NewState: The state of the low resistance divider.
+    172            *         This parameter can be: ENABLE or DISABLE
+    173            * @retval None
+    174            */
+
+   \                                 In section .near_func.text, align 1
+    175          void LCD_HighDriveCmd(FunctionalState NewState)
+    176          {
+    177            /* Check function parameters */
+    178            assert_param(IS_FUNCTIONAL_STATE(NewState));
+    179          
+    180            if (NewState != DISABLE)
+   \                     LCD_HighDriveCmd:
+   \   000000 4D                    TNZ       A
+   \   000001 2705                  JREQ      L:??LCD_HighDriveCmd_0
+    181            {
+    182              LCD->CR2 |= LCD_CR2_HD; /* Permanently enable low resistance divider */
+   \   000003 72185401              BSET      L:0x5401, #0x4
+   \   000007 81                    RET
+    183            }
+    184            else
+    185            {
+    186              LCD->CR2 &= (uint8_t)(~LCD_CR2_HD); /* Permanently disable low resistance divider */
+   \                     ??LCD_HighDriveCmd_0:
+   \   000008 72195401              BRES      L:0x5401, #0x4
+    187            }
+    188          
+    189          }
+   \   00000C 81                    RET
+    190          /**
+    191            * @brief  Configures the pulses on duration.
+    192            * @note   The pulses on duration have a sense only when enabling the High drive
+    193            * @param  LCD_PulseOnDuration : This parameter can be any of the
+    194            *         @ref LCD_PulseOnDuration_TypeDef enumeration.
+    195            * @retval None
+    196            */
+
+   \                                 In section .near_func.text, align 1
+    197          void LCD_PulseOnDurationConfig(LCD_PulseOnDuration_TypeDef LCD_PulseOnDuration)
+    198          {
+   \                     LCD_PulseOnDurationConfig:
+   \   000000 B700                  LD        S:?b0, A
+    199            /* Check function parameters */
+    200            assert_param(IS_LCD_PULSE_DURATION(LCD_PulseOnDuration));
+    201          
+    202            LCD->CR2 &= (uint8_t)(~LCD_CR2_PON); /* Clear the pulses on duration bits */
+   \   000002 C65401                LD        A, L:0x5401
+   \   000005 A41F                  AND       A, #0x1f
+   \   000007 C75401                LD        L:0x5401, A
+    203            LCD->CR2 |= LCD_PulseOnDuration;
+   \   00000A B600                  LD        A, S:?b0
+   \   00000C CA5401                OR        A, L:0x5401
+   \   00000F C75401                LD        L:0x5401, A
+    204          
+    205          }
+   \   000012 81                    RET
+    206          /**
+    207            * @brief  Configures the LCD dead time.
+    208            * @param  LCD_DeadTime : This parameter can be any of the
+    209            *         @ref LCD_DeadTime_TypeDef enumeration.
+    210            * @retval None
+    211            */
+
+   \                                 In section .near_func.text, align 1
+    212          void LCD_DeadTimeConfig(LCD_DeadTime_TypeDef LCD_DeadTime)
+    213          {
+   \                     LCD_DeadTimeConfig:
+   \   000000 B700                  LD        S:?b0, A
+    214            /* Check function parameters */
+    215            assert_param(IS_LCD_DEAD_TIME(LCD_DeadTime));
+    216          
+    217            LCD->CR3 &= (uint8_t)(~LCD_CR3_DEAD);  /* Clear the dead time bits  */
+   \   000002 C65402                LD        A, L:0x5402
+   \   000005 A4F8                  AND       A, #0xf8
+   \   000007 C75402                LD        L:0x5402, A
+    218          
+    219            LCD->CR3 |= LCD_DeadTime;
+   \   00000A B600                  LD        A, S:?b0
+   \   00000C CA5402                OR        A, L:0x5402
+   \   00000F C75402                LD        L:0x5402, A
+    220          
+    221          }
+   \   000012 81                    RET
+    222          
+    223          /**
+    224            * @brief  Configures the LCD Blink mode.
+    225            * @param  LCD_BlinkMode: Specifies the LCD blink mode.
+    226            *         This parameter can be any of the @ref LCD_BlinkMode_TypeDef
+    227            *         enumeration.
+    228            * @param  LCD_BlinkFrequency: Specifies the LCD blink frequency.
+    229            *         This parameter can be any of the @ref LCD_BlinkFrequency_TypeDef
+    230            *         enumeration.
+    231            * @retval None
+    232            */
+
+   \                                 In section .near_func.text, align 1
+    233          void LCD_BlinkConfig(LCD_BlinkMode_TypeDef LCD_BlinkMode,
+    234                               LCD_BlinkFrequency_TypeDef LCD_BlinkFrequency)
+    235          {
+   \                     LCD_BlinkConfig:
+   \   000000 B700                  LD        S:?b1, A
+    236            /* Check function parameters */
+    237            assert_param(IS_LCD_BLINK_MODE(LCD_BlinkMode));
+    238            assert_param(IS_LCD_BLINK_FREQUENCY(LCD_BlinkFrequency));
+    239          
+    240            LCD->CR1 &= (uint8_t)(~LCD_CR1_BLINK); /* Clear the blink mode bits */
+   \   000002 C65400                LD        A, L:0x5400
+   \   000005 A43F                  AND       A, #0x3f
+   \   000007 C75400                LD        L:0x5400, A
+    241            LCD->CR1 |= LCD_BlinkMode; /* Config the LCD Blink Mode */
+   \   00000A B600                  LD        A, S:?b1
+   \   00000C CA5400                OR        A, L:0x5400
+   \   00000F C75400                LD        L:0x5400, A
+    242          
+    243            LCD->CR1 &= (uint8_t)(~LCD_CR1_BLINKF); /* Clear the blink frequency bits */
+   \   000012 C65400                LD        A, L:0x5400
+   \   000015 A4C7                  AND       A, #0xc7
+   \   000017 C75400                LD        L:0x5400, A
+    244            LCD->CR1 |= LCD_BlinkFrequency; /* Config the LCD Blink Frequency */
+   \   00001A B600                  LD        A, S:?b0
+   \   00001C CA5400                OR        A, L:0x5400
+   \   00001F C75400                LD        L:0x5400, A
+    245          
+    246          }
+   \   000022 81                    RET
+    247          
+    248          /**
+    249            * @brief  Configures the LCD Contrast.
+    250            * @param  LCD_Contrast: Specifies the LCD contrast.
+    251            *         This parameter can be any of the @ref LCD_Contrast_TypeDef enumeration.
+    252            * @retval None
+    253            */
+
+   \                                 In section .near_func.text, align 1
+    254          void LCD_ContrastConfig(LCD_Contrast_TypeDef LCD_Contrast)
+    255          {
+   \                     LCD_ContrastConfig:
+   \   000000 B700                  LD        S:?b0, A
+    256            /* Check function parameters */
+    257            assert_param(IS_LCD_CONTRAST(LCD_Contrast));
+    258          
+    259            LCD->CR2 &= (uint8_t)(~LCD_CR2_CC); /* Clear the contrast bits  */
+   \   000002 C65401                LD        A, L:0x5401
+   \   000005 A4F1                  AND       A, #0xf1
+   \   000007 C75401                LD        L:0x5401, A
+    260            LCD->CR2 |= LCD_Contrast; /* Select the maximum voltage value Vlcd */
+   \   00000A B600                  LD        A, S:?b0
+   \   00000C CA5401                OR        A, L:0x5401
+   \   00000F C75401                LD        L:0x5401, A
+    261          
+    262          }
+   \   000012 81                    RET
+    263          
+    264          /**
+    265            * @brief  Configures the LCD Port Mask.
+    266            * @param  LCD_PortMaskRegister: The LCD register index in the port mask matrix.
+    267            *         This parameter can be any of the @ref LCD_PortMaskRegister_TypeDef
+    268            *         enumeration.
+    269            * @param  LCD_Mask : Value to be written
+    270            * @retval None
+    271            */
+
+   \                                 In section .near_func.text, align 1
+    272          void LCD_PortMaskConfig(LCD_PortMaskRegister_TypeDef LCD_PortMaskRegister, uint8_t LCD_Mask)
+    273          {
+    274            /* Check function parameters */
+    275            assert_param(IS_LCD_PORT_MASK(LCD_PortMaskRegister));
+    276          
+    277            /* Copy data bytes to Port mask register */
+    278            LCD->PM[LCD_PortMaskRegister] =  LCD_Mask;
+   \                     LCD_PortMaskConfig:
+   \   000000 5F                    CLRW      X
+   \   000001 97                    LD        XL, A
+   \   000002 1C5404                ADDW      X, #0x5404
+   \   000005 B600                  LD        A, S:?b0
+   \   000007 F7                    LD        (X), A
+    279          
+    280          }
+   \   000008 81                    RET
+    281          
+    282          /**
+    283            * @brief  Writes a byte in the specific LCD RAM .
+    284            * @param  LCD_RAMRegister: The LCD register index in the RAM matrix.
+    285            *         This parameter can be any of the @ref LCD_RAMRegister_TypeDef
+    286            *         enumeration.
+    287            * @param  LCD_Data : Value to be written
+    288            * @retval None
+    289            */
+
+   \                                 In section .near_func.text, align 1
+    290          void LCD_WriteRAM(LCD_RAMRegister_TypeDef LCD_RAMRegister, uint8_t LCD_Data)
+    291          {
+    292            /* Check function parameters */
+    293            assert_param(IS_LCD_RAM_REGISTER(LCD_RAMRegister));
+    294          
+    295            /* Copy data bytes to RAM register */
+    296            LCD->RAM[LCD_RAMRegister] =  LCD_Data;
+   \                     LCD_WriteRAM:
+   \   000000 5F                    CLRW      X
+   \   000001 97                    LD        XL, A
+   \   000002 1C540C                ADDW      X, #0x540c
+   \   000005 B600                  LD        A, S:?b0
+   \   000007 F7                    LD        (X), A
+    297          
+    298          }
+   \   000008 81                    RET
+    299          
+    300          /**
+    301            * @brief  Select the LCD page where the data will be writen.
+    302            * @param  LCD_Page: The accessed LCD page.
+    303            *         This parameter can be any of the @ref LCD_PageSelection_TypeDef
+    304            *         enumeration.
+    305            * @retval None
+    306            */
+
+   \                                 In section .near_func.text, align 1
+    307          void LCD_PageSelect(LCD_PageSelection_TypeDef LCD_PageSelection)
+    308          {
+    309            /* Check function parameters */
+    310            assert_param(IS_LCD_PAGE_SELECT(LCD_PageSelection));
+    311          
+    312            LCD->CR4 &= (uint8_t)(~LCD_CR4_PAGECOM); /* Clear the PAGE COM bit */
+   \                     LCD_PageSelect:
+   \   000000 7215542F              BRES      L:0x542f, #0x2
+    313            LCD->CR4 |= LCD_PageSelection; /* Select the LCD page */
+   \   000004 CA542F                OR        A, L:0x542f
+   \   000007 C7542F                LD        L:0x542f, A
+    314          
+    315          }
+   \   00000A 81                    RET
+    316          
+    317          /**
+    318            * @brief  Checks whether the LCD start of new frame flag is set or not.
+    319            * @retval FlagStatus : Indicates the state of SPI_FLAG (SET or RESET).
+    320            */
+
+   \                                 In section .near_func.text, align 1
+    321          FlagStatus LCD_GetFlagStatus(void)
+    322          {
+    323            FlagStatus status = RESET;
+   \                     LCD_GetFlagStatus:
+   \   000000 4F                    CLR       A
+    324          
+    325            /* Check the status of the start of new frame LCD flag */
+    326            if ((LCD->CR3 & (uint8_t)LCD_CR3_SOF) != (uint8_t)RESET)
+   \   000001 7209540203            BTJF      L:0x5402, #0x4, L:??LCD_GetFlagStatus_0
+    327            {
+    328              status = SET; /* Flag is set */
+   \   000006 A601                  LD        A, #0x1
+   \   000008 81                    RET
+    329            }
+    330            else
+    331            {
+    332              status = RESET; /* Flag is reset*/
+   \                     ??LCD_GetFlagStatus_0:
+   \   000009 4F                    CLR       A
+    333            }
+    334            /* Return the FLAG status */
+    335            return status;
+   \   00000A 81                    RET
+    336          
+    337          }
+    338          
+    339          /**
+    340            * @brief  Clears the start of frame LCD flag.
+    341            * @param  None
+    342            * @retval None
+    343            */
+
+   \                                 In section .near_func.text, align 1
+    344          void LCD_ClearFlag(void)
+    345          {
+    346            /* Clear the flag bit */
+    347            LCD->CR3 |= (uint8_t)(LCD_CR3_SOFC);
+   \                     LCD_ClearFlag:
+   \   000000 72165402              BSET      L:0x5402, #0x3
+    348          
+    349          }
+   \   000004 81                    RET
+    350          
+    351          /**
+    352            * @brief  Checks whether the start of frame interrupt has occurred or not.
+    353            * @param  None
+    354            * @retval ITStatus : Indicates the state of the start of frame interrupt (SET or RESET).
+    355            */
+
+   \                                 In section .near_func.text, align 1
+    356          ITStatus LCD_GetITStatus(void)
+    357          {
+    358            ITStatus pendingbitstatus = RESET;
+   \                     LCD_GetITStatus:
+   \   000000 3F00                  CLR       S:?b0
+    359            uint8_t enablestatus = 0;
+   \   000002 3F00                  CLR       S:?b1
+    360          
+    361            enablestatus = (uint8_t)((uint8_t)LCD->CR3 & LCD_CR3_SOFIE);
+   \   000004 C65402                LD        A, L:0x5402
+   \   000007 A420                  AND       A, #0x20
+   \   000009 B700                  LD        S:?b1, A
+    362            /* Check the status of the start of frame interrupt */
+    363            if (((LCD->CR3 & LCD_CR3_SOF) != RESET) && enablestatus)
+   \   00000B 720954020A            BTJF      L:0x5402, #0x4, L:??LCD_GetITStatus_0
+   \   000010 3D00                  TNZ       S:?b1
+   \   000012 2706                  JREQ      L:??LCD_GetITStatus_0
+    364            {
+    365              /* ITPENDINGBIT is set */
+    366              pendingbitstatus = SET;
+   \   000014 35010000              MOV       S:?b0, #0x1
+   \   000018 2002                  JRA       L:??LCD_GetITStatus_1
+    367            }
+    368            else
+    369            {
+    370              /* ITPENDINGBIT is reset */
+    371              pendingbitstatus = RESET;
+   \                     ??LCD_GetITStatus_0:
+   \   00001A 3F00                  CLR       S:?b0
+    372            }
+    373            /* Return the ITPENDINGBIT status */
+    374            return  pendingbitstatus;
+   \                     ??LCD_GetITStatus_1:
+   \   00001C B600                  LD        A, S:?b0
+   \   00001E 81                    RET
+    375          
+    376          }
+    377          
+    378          /**
+    379            * @brief  Clears the start of frame interrupt pending bits.
+    380            * @param  None
+    381            * @retval None
+    382            */
+
+   \                                 In section .near_func.text, align 1
+    383          void LCD_ClearITPendingBit(void)
+    384          {
+    385            /* Clear the flag bit */
+    386            LCD->CR3 |= (uint8_t)(LCD_CR3_SOFC);
+   \                     LCD_ClearITPendingBit:
+   \   000000 72165402              BSET      L:0x5402, #0x3
+    387          
+    388          }
+   \   000004 81                    RET
+    389          
+    390          /**
+    391            * @}
+    392            */
+    393          
+    394          /**
+    395            * @}
+    396            */
+    397          
+    398          /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
+
+   Section sizes:
+
+     Function/Label            Bytes
+     --------------            -----
+     LCD_DeInit                  76
+     LCD_Init                   135
+     LCD_Cmd                     13
+     LCD_ITConfig                13
+     LCD_HighDriveCmd            13
+     LCD_PulseOnDurationConfig   19
+     LCD_DeadTimeConfig          19
+     LCD_BlinkConfig             35
+     LCD_ContrastConfig          19
+     LCD_PortMaskConfig           9
+     LCD_WriteRAM                 9
+     LCD_PageSelect              11
+     LCD_GetFlagStatus           11
+     LCD_ClearFlag                5
+     LCD_GetITStatus             31
+     LCD_ClearITPendingBit        5
+
+ 
+ 423 bytes in section .near_func.text
+ 
+ 423 bytes of CODE memory
+
+Errors: none
+Warnings: none

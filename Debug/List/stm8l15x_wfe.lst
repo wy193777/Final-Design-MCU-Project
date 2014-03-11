@@ -1,0 +1,479 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.30.1.50036 for STM8             26/Nov/2013  23:33:31 #
+# Copyright 2010-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  F:\Skydrive\Final Design\STM8L-Discovery1\Libraries\STM8 #
+#                    L15x_StdPeriph_Driver\src\stm8l15x_wfe.c                 #
+#    Command line =  "F:\Skydrive\Final Design\STM8L-Discovery1\Libraries\STM #
+#                    8L15x_StdPeriph_Driver\src\stm8l15x_wfe.c" -e -Ol        #
+#                    --no_cse --no_unroll --no_inline --no_code_motion        #
+#                    --no_tbaa --no_cross_call --debug --code_model small     #
+#                    --data_model medium -o "F:\Skydrive\Final                #
+#                    Design\STM8L-Discovery1\Debug\Obj\" --dlib_config        #
+#                    "D:\IAR Systems\Embedded Workbench                       #
+#                    6.0\stm8\LIB\dlstm8smn.h" -D STM8L15X_MD -lCN            #
+#                    "F:\Skydrive\Final Design\STM8L-Discovery1\Debug\List\"  #
+#                    --diag_suppress Pe177,Pe550 -I "F:\Skydrive\Final        #
+#                    Design\STM8L-Discovery1\Project\Discover\inc\" -I        #
+#                    "F:\Skydrive\Final Design\STM8L-Discovery1\Libraries\STM #
+#                    8L15x_StdPeriph_Driver\inc\" --vregs 16                  #
+#    List file    =  F:\Skydrive\Final Design\STM8L-Discovery1\Debug\List\stm #
+#                    8l15x_wfe.lst                                            #
+#    Object file  =  F:\Skydrive\Final Design\STM8L-Discovery1\Debug\Obj\stm8 #
+#                    l15x_wfe.o                                               #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+F:\Skydrive\Final Design\STM8L-Discovery1\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_wfe.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    stm8l15x_wfe.c
+      4            * @author  MCD Application Team
+      5            * @version V1.4.0
+      6            * @date    09/24/2010
+      7            * @brief   This file provides all the WFE firmware functions.
+      8            ******************************************************************************
+      9            * @copy
+     10            *
+     11            * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+     12            * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+     13            * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+     14            * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+     15            * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+     16            * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+     17            *
+     18            * <h2><center>&copy; COPYRIGHT 2010 STMicroelectronics</center></h2>
+     19            */
+     20          
+     21          /* Includes ------------------------------------------------------------------*/
+     22          #include "stm8l15x_wfe.h"
+     23          
+     24          /** @addtogroup STM8L15x_StdPeriph_Driver
+     25            * @{
+     26            */
+     27          
+     28          /* Private typedef -----------------------------------------------------------*/
+     29          /* Private define ------------------------------------------------------------*/
+     30          /* Private macro -------------------------------------------------------------*/
+     31          /* Private variables ---------------------------------------------------------*/
+     32          /* Private function prototypes -----------------------------------------------*/
+     33          /* Private functions ---------------------------------------------------------*/
+     34          /* Public functions ----------------------------------------------------------*/
+     35          
+     36          /** @addtogroup WFE_Public_Functions
+     37            * @{
+     38            */
+     39          
+     40          /**
+     41            * @brief  Deinitializes the WFE registers to their default reset value.
+     42            * @param  None
+     43            * @retval None
+     44            */
+
+   \                                 In section .near_func.text, align 1
+     45          void WFE_DeInit(void)
+     46          {
+     47            WFE->CR1 = WFE_CRX_RESET_VALUE;
+   \                     WFE_DeInit:
+   \   000000 350050A6              MOV       L:0x50a6, #0x0
+     48            WFE->CR2 = WFE_CRX_RESET_VALUE;
+   \   000004 350050A7              MOV       L:0x50a7, #0x0
+     49            WFE->CR3 = WFE_CRX_RESET_VALUE;
+   \   000008 350050A8              MOV       L:0x50a8, #0x0
+     50            WFE->CR4 = WFE_CRX_RESET_VALUE;
+   \   00000C 350050A9              MOV       L:0x50a9, #0x0
+     51          }
+   \   000010 81                    RET
+     52          
+     53          /**
+     54            * @brief  Set the source that can generate the wake-up event.
+     55            * @param  WFE_Source: The wake-up event source .
+     56            *         This parameter can be a value of @ref WFE_Source_TypeDef enumeration
+     57            * @param  NewState : The wake-up new state.
+     58            *         This parameter can be a value of  @ref FunctionalState enumeration.
+     59            * @retval None
+     60            */
+
+   \                                 In section .near_func.text, align 1
+     61          void WFE_WakeUpSourceEventCmd(WFE_Source_TypeDef WFE_Source, FunctionalState NewState)
+     62          {
+   \                     WFE_WakeUpSourceEventCmd:
+   \   000000 9093                  LDW       Y, X
+   \   000002 B700                  LD        S:?b1, A
+     63            uint8_t register_index = 0;
+   \   000004 3F00                  CLR       S:?b0
+     64            /* Check function parameters */
+     65            assert_param(IS_WFE_SOURCE(WFE_Source));
+     66            assert_param(IS_FUNCTIONAL_STATE(NewState));
+     67          
+     68            /* The mask is reversed in order to  */
+     69            register_index = (uint8_t)((uint16_t)WFE_Source >> 0x08);
+   \   000006 93                    LDW       X, Y
+   \   000007 4F                    CLR       A
+   \   000008 01                    RRWA      X, A
+   \   000009 9F                    LD        A, XL
+   \   00000A B700                  LD        S:?b0, A
+     70          
+     71            if (NewState != DISABLE)
+   \   00000C 3D00                  TNZ       S:?b1
+   \   00000E 2733                  JREQ      L:??WFE_WakeUpSourceEventCmd_0
+     72            {
+     73              switch (register_index)
+   \   000010 B600                  LD        A, S:?b0
+   \   000012 4A                    DEC       A
+   \   000013 270A                  JREQ      L:??WFE_WakeUpSourceEventCmd_1
+   \   000015 4A                    DEC       A
+   \   000016 2710                  JREQ      L:??WFE_WakeUpSourceEventCmd_2
+   \   000018 4A                    DEC       A
+   \   000019 2716                  JREQ      L:??WFE_WakeUpSourceEventCmd_3
+   \   00001B 4A                    DEC       A
+   \   00001C 271C                  JREQ      L:??WFE_WakeUpSourceEventCmd_4
+   \   00001E 81                    RET
+     74              {
+     75                case 1:
+     76                  WFE->CR1 |= (uint8_t)WFE_Source;
+   \                     ??WFE_WakeUpSourceEventCmd_1:
+   \   00001F 909F                  LD        A, YL
+   \   000021 CA50A6                OR        A, L:0x50a6
+   \   000024 C750A6                LD        L:0x50a6, A
+     77                  break;
+   \   000027 81                    RET
+     78          
+     79                case 2:
+     80                  WFE->CR2 |= (uint8_t)WFE_Source;
+   \                     ??WFE_WakeUpSourceEventCmd_2:
+   \   000028 909F                  LD        A, YL
+   \   00002A CA50A7                OR        A, L:0x50a7
+   \   00002D C750A7                LD        L:0x50a7, A
+     81                  break;
+   \   000030 81                    RET
+     82          
+     83                case 3:
+     84                  WFE->CR3 |= (uint8_t)WFE_Source;
+   \                     ??WFE_WakeUpSourceEventCmd_3:
+   \   000031 909F                  LD        A, YL
+   \   000033 CA50A8                OR        A, L:0x50a8
+   \   000036 C750A8                LD        L:0x50a8, A
+     85                  break;
+   \   000039 81                    RET
+     86          
+     87                case 4:
+     88                  WFE->CR4 |= (uint8_t)WFE_Source;
+   \                     ??WFE_WakeUpSourceEventCmd_4:
+   \   00003A 909F                  LD        A, YL
+   \   00003C CA50A9                OR        A, L:0x50a9
+   \   00003F C750A9                LD        L:0x50a9, A
+     89                  break;
+   \   000042 81                    RET
+     90          
+     91                default:
+     92                  break;
+     93              }
+     94            }
+     95            else
+     96            {
+     97              switch (register_index)
+   \                     ??WFE_WakeUpSourceEventCmd_0:
+   \   000043 B600                  LD        A, S:?b0
+   \   000045 4A                    DEC       A
+   \   000046 270A                  JREQ      L:??WFE_WakeUpSourceEventCmd_5
+   \   000048 4A                    DEC       A
+   \   000049 2711                  JREQ      L:??WFE_WakeUpSourceEventCmd_6
+   \   00004B 4A                    DEC       A
+   \   00004C 2718                  JREQ      L:??WFE_WakeUpSourceEventCmd_7
+   \   00004E 4A                    DEC       A
+   \   00004F 271F                  JREQ      L:??WFE_WakeUpSourceEventCmd_8
+   \   000051 81                    RET
+     98              {
+     99                case 1:
+    100                  WFE->CR1 &= (uint8_t)(~(uint8_t)WFE_Source);
+   \                     ??WFE_WakeUpSourceEventCmd_5:
+   \   000052 909F                  LD        A, YL
+   \   000054 43                    CPL       A
+   \   000055 C450A6                AND       A, L:0x50a6
+   \   000058 C750A6                LD        L:0x50a6, A
+    101                  break;
+   \   00005B 81                    RET
+    102          
+    103                case 2:
+    104                  WFE->CR2 &= (uint8_t)(~ (uint8_t)WFE_Source);
+   \                     ??WFE_WakeUpSourceEventCmd_6:
+   \   00005C 909F                  LD        A, YL
+   \   00005E 43                    CPL       A
+   \   00005F C450A7                AND       A, L:0x50a7
+   \   000062 C750A7                LD        L:0x50a7, A
+    105                  break;
+   \   000065 81                    RET
+    106          
+    107                case 3:
+    108                  WFE->CR3 &= (uint8_t)(~(uint8_t)WFE_Source);
+   \                     ??WFE_WakeUpSourceEventCmd_7:
+   \   000066 909F                  LD        A, YL
+   \   000068 43                    CPL       A
+   \   000069 C450A8                AND       A, L:0x50a8
+   \   00006C C750A8                LD        L:0x50a8, A
+    109                  break;
+   \   00006F 81                    RET
+    110          
+    111                case 4:
+    112                  WFE->CR4 &= (uint8_t)(~(uint8_t)WFE_Source);
+   \                     ??WFE_WakeUpSourceEventCmd_8:
+   \   000070 909F                  LD        A, YL
+   \   000072 43                    CPL       A
+   \   000073 C450A9                AND       A, L:0x50a9
+   \   000076 C750A9                LD        L:0x50a9, A
+    113                  break;
+    114          
+    115                default:
+    116                  break;
+    117              }
+    118            }
+    119          }
+   \   000079 81                    RET
+    120          
+    121          /**
+    122            * @brief  Gets the status of the specified source event.
+    123            * @param  WFE_Source: The wake-up event source.
+    124            *         This parameter can be a value of @ref WFE_Source_TypeDef enumeration
+    125            * @retval FunctionalState : Source Event state, ENABLE or DISABLE
+    126            */
+
+   \                                 In section .near_func.text, align 1
+    127          FunctionalState WFE_GetWakeUpSourceEventStatus(WFE_Source_TypeDef WFE_Source)
+    128          {
+   \                     WFE_GetWakeUpSourceEventStatus:
+   \   000000 BF00                  LDW       S:?w1, X
+    129            FunctionalState status = DISABLE;
+   \   000002 4F                    CLR       A
+    130            /* Check function parameters */
+    131            assert_param(IS_WFE_SOURCE(WFE_Source));
+    132          
+    133            switch (WFE_Source)
+   \   000003 BE00                  LDW       X, S:?w1
+   \   000005 90AE0000              LDW       Y, #??switch_table_0
+   \   000009 CD0000                CALL      L:?switch16vlt_0x_x_0y
+   \   00000C FC                    JP        (X)
+    134            {
+    135              case WFE_Source_TIM2_EV0:
+    136              case WFE_Source_TIM2_EV1:
+    137              case WFE_Source_TIM1_EV0:
+    138              case WFE_Source_TIM1_EV1:
+    139              case WFE_Source_EXTI_EV0:
+    140              case WFE_Source_EXTI_EV1:
+    141              case WFE_Source_EXTI_EV2:
+    142              case WFE_Source_EXTI_EV3:
+    143          
+    144                if ((WFE->CR1 & (uint8_t)WFE_Source) != (uint8_t)0x00)
+   \                     ??WFE_GetWakeUpSourceEventStatus_0:
+   \   00000D B600                  LD        A, S:?b3
+   \   00000F C450A6                AND       A, L:0x50a6
+   \   000012 A100                  CP        A, #0x0
+   \   000014 2703                  JREQ      L:??WFE_GetWakeUpSourceEventStatus_1
+    145                {
+    146                  /* The wake-up event source is enabled*/
+    147                  status = ENABLE;
+   \   000016 A601                  LD        A, #0x1
+   \   000018 81                    RET
+    148                }
+    149                else
+    150                {
+    151                  /* The wake-up event source is disabled*/
+    152                  status = DISABLE;
+   \                     ??WFE_GetWakeUpSourceEventStatus_1:
+   \   000019 4F                    CLR       A
+    153                }
+    154                break;
+   \   00001A 81                    RET
+    155          
+    156              case WFE_Source_EXTI_EV4:
+    157              case WFE_Source_EXTI_EV5:
+    158              case WFE_Source_EXTI_EV6:
+    159              case WFE_Source_EXTI_EV7:
+    160              case WFE_Source_EXTI_EVB_G:
+    161              case WFE_Source_EXTI_EVD_H:
+    162              case WFE_Source_EXTI_EVE_F:
+    163              case WFE_Source_ADC1_COMP_EV:
+    164          
+    165                if ((WFE->CR2 & (uint8_t)WFE_Source) != (uint8_t)0x00)
+   \                     ??WFE_GetWakeUpSourceEventStatus_2:
+   \   00001B B600                  LD        A, S:?b3
+   \   00001D C450A7                AND       A, L:0x50a7
+   \   000020 A100                  CP        A, #0x0
+   \   000022 2703                  JREQ      L:??WFE_GetWakeUpSourceEventStatus_3
+    166                {
+    167                  /* The wake-up event source is enabled*/
+    168                  status = ENABLE;
+   \   000024 A601                  LD        A, #0x1
+   \   000026 81                    RET
+    169                }
+    170                else
+    171                {
+    172                  /* The wake-up event source is disabled*/
+    173                  status = DISABLE;
+   \                     ??WFE_GetWakeUpSourceEventStatus_3:
+   \   000027 4F                    CLR       A
+    174                }
+    175                break;
+   \   000028 81                    RET
+    176              case WFE_Source_TIM3_EV0:
+    177              case WFE_Source_TIM3_EV1:
+    178              case WFE_Source_TIM4_EV:
+    179              case WFE_Source_SPI1_EV:
+    180              case WFE_Source_I2C1_EV:
+    181              case WFE_Source_USART1_EV:
+    182              case WFE_Source_DMA1CH01_EV:
+    183              case WFE_Source_DMA1CH23_EV:
+    184          
+    185                if ((WFE->CR3 & (uint8_t)WFE_Source) != (uint8_t)0x00)
+   \                     ??WFE_GetWakeUpSourceEventStatus_4:
+   \   000029 B600                  LD        A, S:?b3
+   \   00002B C450A8                AND       A, L:0x50a8
+   \   00002E A100                  CP        A, #0x0
+   \   000030 2703                  JREQ      L:??WFE_GetWakeUpSourceEventStatus_5
+    186                {
+    187                  /* The wake-up event source is enabled*/
+    188                  status = ENABLE;
+   \   000032 A601                  LD        A, #0x1
+   \   000034 81                    RET
+    189                }
+    190                else
+    191                {
+    192                  /* The wake-up event source is disabled*/
+    193                  status = DISABLE;
+   \                     ??WFE_GetWakeUpSourceEventStatus_5:
+   \   000035 4F                    CLR       A
+    194                }
+    195                break;
+   \   000036 81                    RET
+    196          
+    197              case WFE_Source_TIM5_EV0:
+    198              case WFE_Source_TIM5_EV1:
+    199              case WFE_Source_AES_EV:
+    200              case WFE_Source_SPI2_EV:
+    201              case WFE_Source_USART2_EV:
+    202              case WFE_Source_USART3_EV:
+    203              case WFE_Source_RTC_CSS_EV:
+    204          
+    205                if ((WFE->CR4 & (uint8_t)WFE_Source) != (uint8_t)0x00)
+   \                     ??WFE_GetWakeUpSourceEventStatus_6:
+   \   000037 B600                  LD        A, S:?b3
+   \   000039 C450A9                AND       A, L:0x50a9
+   \   00003C A100                  CP        A, #0x0
+   \   00003E 2703                  JREQ      L:??WFE_GetWakeUpSourceEventStatus_7
+    206                {
+    207                  /* The wake-up event source is enabled*/
+    208                  status = ENABLE;
+   \   000040 A601                  LD        A, #0x1
+   \   000042 81                    RET
+    209                }
+    210                else
+    211                {
+    212                  /* The wake-up event source is disabled*/
+    213                  status = DISABLE;
+   \                     ??WFE_GetWakeUpSourceEventStatus_7:
+   \   000043 4F                    CLR       A
+    214                }
+    215                break;
+    216              default:
+    217                break;
+    218            }
+    219            return status;
+   \                     ??WFE_GetWakeUpSourceEventStatus_8:
+   \   000044 81                    RET
+    220          }
+
+   \                                 In section .near_func.text, align 1
+   \                     ??switch_table_0:
+   \   000000 0101                  DC16      0x101
+   \   000002 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_0)
+   \   000004 0102                  DC16      0x102
+   \   000006 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_0)
+   \   000008 0104                  DC16      0x104
+   \   00000A 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_0)
+   \   00000C 0108                  DC16      0x108
+   \   00000E 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_0)
+   \   000010 0110                  DC16      0x110
+   \   000012 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_0)
+   \   000014 0120                  DC16      0x120
+   \   000016 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_0)
+   \   000018 0140                  DC16      0x140
+   \   00001A 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_0)
+   \   00001C 0180                  DC16      0x180
+   \   00001E 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_0)
+   \   000020 0201                  DC16      0x201
+   \   000022 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_2)
+   \   000024 0202                  DC16      0x202
+   \   000026 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_2)
+   \   000028 0204                  DC16      0x204
+   \   00002A 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_2)
+   \   00002C 0208                  DC16      0x208
+   \   00002E 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_2)
+   \   000030 0210                  DC16      0x210
+   \   000032 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_2)
+   \   000034 0220                  DC16      0x220
+   \   000036 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_2)
+   \   000038 0240                  DC16      0x240
+   \   00003A 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_2)
+   \   00003C 0280                  DC16      0x280
+   \   00003E 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_2)
+   \   000040 0301                  DC16      0x301
+   \   000042 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
+   \   000044 0302                  DC16      0x302
+   \   000046 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
+   \   000048 0304                  DC16      0x304
+   \   00004A 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
+   \   00004C 0308                  DC16      0x308
+   \   00004E 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
+   \   000050 0310                  DC16      0x310
+   \   000052 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
+   \   000054 0320                  DC16      0x320
+   \   000056 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
+   \   000058 0340                  DC16      0x340
+   \   00005A 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
+   \   00005C 0380                  DC16      0x380
+   \   00005E 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
+   \   000060 0401                  DC16      0x401
+   \   000062 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_6)
+   \   000064 0402                  DC16      0x402
+   \   000066 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_6)
+   \   000068 0404                  DC16      0x404
+   \   00006A 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_6)
+   \   00006C 0408                  DC16      0x408
+   \   00006E 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_6)
+   \   000070 0410                  DC16      0x410
+   \   000072 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_6)
+   \   000074 0420                  DC16      0x420
+   \   000076 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_6)
+   \   000078 0440                  DC16      0x440
+   \   00007A 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_6)
+   \   00007C 0000                  DC16      0x0
+   \   00007E 0000                  DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_8)
+    221          
+    222          /**
+    223            * @}
+    224            */
+    225          
+    226          /**
+    227            * @}
+    228            */
+    229          
+    230          /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
+
+   Section sizes:
+
+     Function/Label                 Bytes
+     --------------                 -----
+     WFE_DeInit                       17
+     WFE_WakeUpSourceEventCmd        122
+     WFE_GetWakeUpSourceEventStatus   69
+     ??switch_table_0                128
+
+ 
+ 336 bytes in section .near_func.text
+ 
+ 336 bytes of CODE memory
+
+Errors: none
+Warnings: none
