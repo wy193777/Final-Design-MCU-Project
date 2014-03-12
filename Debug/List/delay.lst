@@ -1,31 +1,32 @@
 ###############################################################################
 #                                                                             #
-# IAR C/C++ Compiler V1.30.1.50036 for STM8             26/Nov/2013  16:08:20 #
+# IAR C/C++ Compiler V1.30.1.50036 for STM8             12/Mar/2014  16:17:08 #
 # Copyright 2010-2011 IAR Systems AB.                                         #
 #                                                                             #
-#    Source file  =  F:\Skydrive\Final Design\STM8L-Discovery\Project\Discove #
-#                    r\src\delay.c                                            #
-#    Command line =  "F:\Skydrive\Final Design\STM8L-Discovery\Project\Discov #
-#                    er\src\delay.c" -e -Ol --no_cse --no_unroll --no_inline  #
-#                    --no_code_motion --no_tbaa --no_cross_call --debug       #
-#                    --code_model small --data_model medium -o                #
-#                    "F:\Skydrive\Final Design\STM8L-Discovery\Debug\Obj\"    #
-#                    --dlib_config "D:\IAR Systems\Embedded Workbench         #
-#                    6.0\stm8\LIB\dlstm8smn.h" -D STM8L15X_MD -lCN            #
-#                    "F:\Skydrive\Final Design\STM8L-Discovery\Debug\List\"   #
-#                    --diag_suppress Pe177,Pe550 -I "F:\Skydrive\Final        #
-#                    Design\STM8L-Discovery\Project\Discover\inc\" -I         #
-#                    "F:\Skydrive\Final Design\STM8L-Discovery\Libraries\STM8 #
-#                    L15x_StdPeriph_Driver\inc\" --vregs 16                   #
-#    List file    =  F:\Skydrive\Final Design\STM8L-Discovery\Debug\List\dela #
-#                    y.lst                                                    #
-#    Object file  =  F:\Skydrive\Final Design\STM8L-Discovery\Debug\Obj\delay #
-#                    .o                                                       #
+#    Source file  =  F:\Skydrive\Final Design\Servo Motor                     #
+#                    STM8L\Project\Discover\src\delay.c                       #
+#    Command line =  "F:\Skydrive\Final Design\Servo Motor                    #
+#                    STM8L\Project\Discover\src\delay.c" -e -Ol --no_cse      #
+#                    --no_unroll --no_inline --no_code_motion --no_tbaa       #
+#                    --no_cross_call --debug --code_model small --data_model  #
+#                    medium -o "F:\Skydrive\Final Design\Servo Motor          #
+#                    STM8L\Debug\Obj\" --dlib_config "D:\IAR                  #
+#                    Systems\Embedded Workbench 6.0\stm8\LIB\dlstm8smn.h" -D  #
+#                    STM8L15X_MD -lCN "F:\Skydrive\Final Design\Servo Motor   #
+#                    STM8L\Debug\List\" --diag_suppress Pe177,Pe550 -I        #
+#                    "F:\Skydrive\Final Design\Servo Motor                    #
+#                    STM8L\Project\Discover\inc\" -I "F:\Skydrive\Final       #
+#                    Design\Servo Motor STM8L\Libraries\STM8L15x_StdPeriph_Dr #
+#                    iver\inc\" --vregs 16                                    #
+#    List file    =  F:\Skydrive\Final Design\Servo Motor                     #
+#                    STM8L\Debug\List\delay.lst                               #
+#    Object file  =  F:\Skydrive\Final Design\Servo Motor                     #
+#                    STM8L\Debug\Obj\delay.o                                  #
 #                                                                             #
 #                                                                             #
 ###############################################################################
 
-F:\Skydrive\Final Design\STM8L-Discovery\Project\Discover\src\delay.c
+F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\delay.c
       1          /**
       2            ******************************************************************************
       3            * @file    delay.c
