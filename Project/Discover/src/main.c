@@ -42,11 +42,20 @@ void main(void)
   //delay_10us(100);
   //USART_SendByte("\n");
   Delay(100);
-
+  uint8_t Buf = 0;
+  
+  
   while (1)
   {
-    USART_SendString("Test\n", sizeof("Test\n"));
-    while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
+//    USART_SendString("Test\n", sizeof("Test\n"));
+//    while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
+    
+//    Buf=USART_ReceiveData8(USART1);
+//    while(USART_GetFlagStatus(USART1, USART_FLAG_OR) == SET);
+//    if(Buf != 0)
+//    {
+//      USART_SendData8(USART1, Buf);
+//    }
   }
 }
 
@@ -89,8 +98,14 @@ static void TIM2_Config(void)
 
 static void USART_Config(void)
 {
-  GPIO_Init(GPIOC,GPIO_Pin_2,GPIO_Mode_In_PU_No_IT);
-  GPIO_Init(GPIOC,GPIO_Pin_3,GPIO_Mode_Out_PP_Low_Fast);
+  //PC3 Send
+  //PC2 receive
+  SYSCFG_REMAPPinConfig(REMAP_Pin_USART1TxRxPortA, ENABLE);   //Map USART to PortA
+  
+  GPIO_Init(GPIOA,GPIO_Pin_2,GPIO_Mode_In_PU_No_IT);    //USART_RX
+  //GPIO_Init(GPIOA,GPIO_Pin_3,GPIO_Mode_Out_PP_Low_Fast);     //USART_TX
+  GPIO_ExternalPullUpConfig(GPIOA, GPIO_Pin_3, ENABLE);        //Let this port been controlled by external signal
+  
   CLK_PeripheralClockConfig(CLK_Peripheral_USART1, ENABLE);
   //GPIO_ExternalPullUpConfig(GPIOA, GPIO_Pin_2|GPIO_Pin_3, ENABLE);
   USART_DeInit(USART1);  
@@ -99,9 +114,10 @@ static void USART_Config(void)
              USART_WordLength_8b,
              USART_StopBits_1,
              USART_Parity_No,
-             USART_Mode_Tx | USART_Mode_Rx);
+             (USART_Mode_TypeDef)(USART_Mode_Rx|USART_Mode_Tx));
   USART_ClockInit(USART1,USART_Clock_Disable,USART_CPOL_Low,USART_CPHA_2Edge,USART_LastBit_Disable);
   USART_ClearITPendingBit(USART1,USART_IT_RXNE);
+  //USART_ITConfig(USART1, (USART_FLAG_TypeDef)(USART_IT_TXE | USART_IT_RXNE), ENABLE);
   USART_ITConfig(USART1, USART_IT_OR, ENABLE);
   USART_Cmd(USART1, ENABLE);
 }
@@ -135,6 +151,21 @@ void Delay(int time)
 {
   for(int i = 0; i < time; i++)
     for(int j = 0; j < 100; j++);
+}
+
+#pragma vector=27
+__interrupt void UART1_TX_IRQHandler(void)
+{
+  
+}
+
+#pragma vector=28
+__interrupt void UART1_RX_IRQHandler(void)
+{
+  uint8_t Buf;
+  Buf=USART_ReceiveData8(USART1);
+  while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
+  USART_SendData8(USART1,Buf);
 }
 
 

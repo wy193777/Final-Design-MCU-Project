@@ -43,7 +43,7 @@
       
       
       
-    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Project\Discover\src\main.c</Filename><XPos>0</XPos><YPos>29</YPos><SelStart>1430</SelStart><SelEnd>1430</SelEnd></Tab><ActiveTab>0</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Project\Discover\src\main.c</Filename><XPos>0</XPos><YPos>102</YPos><SelStart>3810</SelStart><SelEnd>3810</SelEnd></Tab><ActiveTab>0</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_usart.c</Filename><XPos>0</XPos><YPos>395</YPos><SelStart>14540</SelStart><SelEnd>14540</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Project\Discover\inc\stm8l15x_conf.h</Filename><XPos>0</XPos><YPos>33</YPos><SelStart>1833</SelStart><SelEnd>1833</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
     <Positions>
       
       
