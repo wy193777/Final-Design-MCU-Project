@@ -1,0 +1,604 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.30.1.50036 for STM8             26/Nov/2013  16:06:34 #
+# Copyright 2010-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  F:\Skydrive\Final Design\STM8L-Discovery\Project\Discove #
+#                    r\src\stm8l_discovery_lcd.c                              #
+#    Command line =  "F:\Skydrive\Final Design\STM8L-Discovery\Project\Discov #
+#                    er\src\stm8l_discovery_lcd.c" -e -Ol --no_cse            #
+#                    --no_unroll --no_inline --no_code_motion --no_tbaa       #
+#                    --no_cross_call --debug --code_model small --data_model  #
+#                    medium -o "F:\Skydrive\Final                             #
+#                    Design\STM8L-Discovery\Debug\Obj\" --dlib_config         #
+#                    "D:\IAR Systems\Embedded Workbench                       #
+#                    6.0\stm8\LIB\dlstm8smn.h" -D STM8L15X_MD -lCN            #
+#                    "F:\Skydrive\Final Design\STM8L-Discovery\Debug\List\"   #
+#                    --diag_suppress Pe177,Pe550 -I "F:\Skydrive\Final        #
+#                    Design\STM8L-Discovery\Project\Discover\inc\" -I         #
+#                    "F:\Skydrive\Final Design\STM8L-Discovery\Libraries\STM8 #
+#                    L15x_StdPeriph_Driver\inc\" --vregs 16                   #
+#    List file    =  F:\Skydrive\Final Design\STM8L-Discovery\Debug\List\stm8 #
+#                    l_discovery_lcd.lst                                      #
+#    Object file  =  F:\Skydrive\Final Design\STM8L-Discovery\Debug\Obj\stm8l #
+#                    _discovery_lcd.o                                         #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+F:\Skydrive\Final Design\STM8L-Discovery\Project\Discover\src\stm8l_discovery_lcd.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    stm8l_discovery_lcd.c
+      4            * @author  Microcontroller Division
+      5            * @version V1.2.0
+      6            * @date    09/2010
+      7            * @brief   This file includes driver for the glass LCD Module mounted on 
+      8            *          STM8L1526 discovery board MB915A.
+      9            ******************************************************************************
+     10            * @copy
+     11            *
+     12            * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+     13            * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+     14            * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+     15            * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+     16            * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+     17            * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+     18            *
+     19            * <h2><center>&copy; COPYRIGHT 2010 STMicroelectronics</center></h2>
+     20            */ 
+     21          
+     22          /* Includes ------------------------------------------------------------------*/
+     23          #include "stm8l_discovery_lcd.h"
+     24          #include "discover_board.h"
+     25          
+     26          /* this variable can be used for accelerate the scrolling exit when push user button */
+     27          bool KeyPressed = FALSE; 
+     28          		
+     29          /* LCD BAR status: We don't write directly in LCD RAM for save the bar setting */
+     30          uint8_t t_bar[2]={0x0,0X0};
+     31          		
+     32          /*  =========================================================================
+     33                                           LCD MAPPING
+     34              =========================================================================
+     35          	    A
+     36               _  ----------
+     37          COL |_| |\   |J  /|
+     38                 F| H  |  K |B
+     39               _  |  \ | /  |
+     40          COL |_| --G-- --M--
+     41                  |   /| \  |
+     42                 E|  Q |  N |C
+     43               _  | /  |P  \|   
+     44          DP  |_| -----------  
+     45          	    D         
+     46          
+     47           An LCD character coding is based on the following matrix:
+     48                { E , D , F , COL }
+     49                { M , C , G , H   }
+     50                { B , A , B , A   }
+     51                { G , F , K , J   }
+     52          
+     53           The character 'A' for example is:
+     54            -------------------------------
+     55          LSB   { 1 , 0 , 0 , 0   }
+     56                { 1 , 1 , 0 , 0   }
+     57                { 1 , 1 , 0 , 0   }
+     58          MSB   { 1 , 1 , 0 , 0   }
+     59                -------------------
+     60            'A' =  F    E   0   0 hexa
+     61          
+     62          */
+     63          
+     64          /* Constant table for cap characters 'A' --> 'Z' */
+     65          const uint16_t CapLetterMap[26]=
+     66              {
+     67                  /* A      B      C      D      E      F      G      H      I  */
+     68                  0xFE00,0x6711,0x1d00,0x4711,0x9d00,0x9c00,0x3f00,0xfa00,0x0011,
+     69                  /* J      K      L      M      N      O      P      Q      R  */
+     70                  0x5300,0x9844,0x1900,0x5a42,0x5a06,0x5f00,0xFC00,0x5F04,0xFC04,
+     71                  /* S      T      U      V      W      X      Y      Z  */
+     72                  0xAF00,0x0411,0x5b00,0x18c0,0x5a84,0x00c6,0x0052,0x05c0
+     73              };
+     74          
+     75          /* Constant table for number '0' --> '9' */
+     76          const uint16_t NumberMap[10]=
+     77              {
+     78                  /* 0      1      2      3      4      5      6      7      8      9  */
+     79                  0x5F00,0x4200,0xF500,0x6700,0xEa00,0xAF00,0xBF00,0x04600,0xFF00,0xEF00
+     80              };
+     81          
+     82          static void LCD_Conv_Char_Seg(uint8_t* c,bool point,bool column,uint8_t* digit);
+     83          
+     84          /**
+     85            * @brief  Configures the LCD GLASS relative GPIO port IOs and LCD peripheral.
+     86            * @param  None
+     87            * @retval None
+     88            */
+     89          void LCD_GLASS_Init(void)
+     90          {
+     91          	
+     92           /* Enable LCD/RTC clock */
+     93            CLK_PeripheralClockConfig(CLK_Peripheral_RTC, ENABLE);
+     94            CLK_PeripheralClockConfig(CLK_Peripheral_LCD, ENABLE);
+     95            
+     96            #ifdef USE_LSE
+     97              CLK_RTCClockConfig(CLK_RTCCLKSource_LSE, CLK_RTCCLKDiv_1);
+     98            #else
+     99              CLK_RTCClockConfig(CLK_RTCCLKSource_LSI, CLK_RTCCLKDiv_1);
+    100            #endif
+    101            
+    102            /* Initialize the LCD */
+    103            LCD_Init(LCD_Prescaler_1, LCD_Divider_31, LCD_Duty_1_4, 
+    104                                             LCD_Bias_1_3, LCD_VoltageSource_Internal);
+    105            
+    106            /* Mask register
+    107            For declare the segements used.
+    108            in the Discovery we use 0 to 23 segments. */
+    109            LCD_PortMaskConfig(LCD_PortMaskRegister_0, 0xFF);
+    110            LCD_PortMaskConfig(LCD_PortMaskRegister_1, 0xFF);
+    111            LCD_PortMaskConfig(LCD_PortMaskRegister_2, 0xff);
+    112            
+    113            /* To set contrast to mean value */
+    114            LCD_ContrastConfig(LCD_Contrast_3V0);
+    115            
+    116            LCD_DeadTimeConfig(LCD_DeadTime_0);
+    117            LCD_PulseOnDurationConfig(LCD_PulseOnDuration_1);
+    118            
+    119            /* Enable LCD peripheral */ 
+    120            LCD_Cmd(ENABLE);
+    121          }
+    122          
+    123          /**
+    124            * @brief  LCD contrast setting min-->max-->min by pressing user button
+    125            * @param  None
+    126            * @retval None
+    127            */
+    128          void LCD_contrast()
+    129          {
+    130            LCD_Contrast_TypeDef contrast;
+    131            
+    132            /* To get the actual contrast value in register */
+    133            contrast = (LCD_Contrast_TypeDef) (LCD->CR2 & LCD_Contrast_3V3);
+    134            
+    135            while ((GPIOC->IDR & USER_GPIO_PIN) == 0x0)
+    136            {
+    137              contrast+=2;	
+    138              if (contrast>LCD_Contrast_3V3)
+    139               contrast=LCD_Contrast_2V6;
+    140            
+    141              LCD_ContrastConfig(contrast);
+    142              delay_ms(100);
+    143            }
+    144          }
+    145          
+    146          /**
+    147            * @brief  Setting bar on LCD, writes bar value in LCD frame buffer 
+    148            * @param  None
+    149            * @retval None
+    150            */
+    151          void LCD_bar()
+    152          {
+    153          /* bar0 bar2 */
+    154            LCD->RAM[LCD_RAMRegister_11] &= 0x5f;
+    155            LCD->RAM[LCD_RAMRegister_11] |= t_bar[0]&0xa0;
+    156            
+    157          /*bar1 bar3 */
+    158            LCD->RAM[LCD_RAMRegister_8] &= 0xf5;
+    159            LCD->RAM[LCD_RAMRegister_8] |= t_bar[1]&0x0a;
+    160          }
+    161          
+    162          /**
+    163            * @brief  Converts an ascii char to the a LCD digit.
+    164            * @param  c: a char to display.
+    165            * @param  point: a point to add in front of char
+    166            *         This parameter can be: POINT_OFF or POINT_ON
+    167            * @param  column : flag indicating if a column has to be add in front
+    168            *         of displayed character.
+    169            *         This parameter can be: COLUMN_OFF or COLUMN_ON.
+    170          	* @param 	digit array with segment 
+    171            * @retval None
+    172            */
+    173          static void LCD_Conv_Char_Seg(uint8_t* c,bool point,bool column, uint8_t* digit)
+    174          {
+    175            uint16_t ch = 0 ;
+    176            uint8_t i,j;
+    177            
+    178            switch (*c)
+    179              {
+    180              case ' ' : 
+    181                ch = 0x00;
+    182                break;
+    183              
+    184              case '*':
+    185                ch = star;
+    186                break;
+    187                            
+    188              case 'µ' :
+    189                ch = C_UMAP;
+    190                break;
+    191              
+    192              case 'm' :
+    193                ch = C_mMap;
+    194                break;
+    195                            
+    196              case 'n' :
+    197                ch = C_nMap;
+    198                break;					
+    199                            
+    200              case '-' :
+    201                ch = C_minus;
+    202                break;
+    203                            
+    204              case '0':
+    205              case '1':
+    206              case '2':
+    207              case '3':
+    208              case '4':
+    209              case '5':
+    210              case '6':
+    211              case '7':
+    212              case '8':
+    213              case '9':			
+    214                ch = NumberMap[*c-0x30];		
+    215                break;
+    216                    
+    217              default:
+    218                /* The character c is one letter in upper case*/
+    219                if ( (*c < 0x5b) && (*c > 0x40) )
+    220                {
+    221                  ch = CapLetterMap[*c-'A'];
+    222                }
+    223                /* The character c is one letter in lower case*/
+    224                if ( (*c <0x7b) && ( *c> 0x60) )
+    225                {
+    226                  ch = CapLetterMap[*c-'a'];
+    227                }
+    228                break;
+    229            }
+    230                 
+    231            /* Set the digital point can be displayed if the point is on */
+    232            if (point)
+    233            {
+    234              ch |= 0x0008;
+    235            }
+    236          
+    237            /* Set the "COL" segment in the character that can be displayed if the column is on */
+    238            if (column)
+    239            {
+    240              ch |= 0x0020;
+    241            }		
+    242          
+    243            for (i = 12,j=0 ;j<4; i-=4,j++)
+    244            {
+    245              digit[j] = (ch >> i) & 0x0f; //To isolate the less signifiant dibit
+    246            }
+    247          }
+    248          
+    249          /**
+    250            * @brief  This function writes a char in the LCD frame buffer.
+    251            * @param  ch: the character to dispaly.
+    252            * @param  point: a point to add in front of char
+    253            *         This parameter can be: POINT_OFF or POINT_ON
+    254            * @param  column: flag indicating if a column has to be add in front
+    255            *         of displayed character.
+    256            *         This parameter can be: COLUMN_OFF or COLUMN_ON.           
+    257            * @param  position: position in the LCD of the caracter to write [0:7]
+    258            * @retval None
+    259            * @par    Required preconditions: The LCD should be cleared before to start the
+    260            *         write operation.  
+    261            */
+    262          void LCD_GLASS_WriteChar(uint8_t* ch, bool point, bool column, uint8_t position)
+    263          {
+    264            uint8_t digit[4];     /* Digit frame buffer */
+    265          
+    266          /* To convert displayed character in segment in array digit */
+    267            LCD_Conv_Char_Seg(ch,point,column,digit);
+    268          
+    269            switch (position)
+    270            {
+    271              /* Position 1 on LCD (Digit1)*/
+    272              case 1:
+    273                LCD->RAM[LCD_RAMRegister_0] &= 0x0fc;
+    274                LCD->RAM[LCD_RAMRegister_0] |= (uint8_t)(digit[0]& 0x03); // 1M 1E	
+    275                
+    276                LCD->RAM[LCD_RAMRegister_2] &= 0x3f;
+    277                LCD->RAM[LCD_RAMRegister_2] |= (uint8_t)((digit[0]<<4) & 0xc0); // 1G 1B
+    278              
+    279                LCD->RAM[LCD_RAMRegister_3] &= 0x0cf;
+    280                LCD->RAM[LCD_RAMRegister_3] |= (uint8_t)(digit[1]<<4 & 0x30); // 1C 1D
+    281                                                                                                                                                
+    282                LCD->RAM[LCD_RAMRegister_6] &= 0xf3;
+    283                LCD->RAM[LCD_RAMRegister_6] |= (uint8_t)(digit[1]&0x0c); // 1F 1A
+    284                
+    285                LCD->RAM[LCD_RAMRegister_7] &= 0x0fc;
+    286                LCD->RAM[LCD_RAMRegister_7] |= (uint8_t)(digit[2]&0x03); // 1Col 1P		
+    287                
+    288                LCD->RAM[LCD_RAMRegister_9] &= 0x3f;
+    289                LCD->RAM[LCD_RAMRegister_9] |= (uint8_t)((digit[2]<<4) & 0xc0); // 1Q 1K										
+    290                
+    291                LCD->RAM[LCD_RAMRegister_10] &= 0xcf;
+    292                LCD->RAM[LCD_RAMRegister_10] |= (uint8_t)((digit[3]<<2)& 0x30); // 1DP 1N	
+    293                                                                                                                                                
+    294                LCD->RAM[LCD_RAMRegister_13] &= 0xf3;
+    295                LCD->RAM[LCD_RAMRegister_13] |= (uint8_t)((digit[3]<<2) & 0x0c); // 1H 1J
+    296                break;
+    297              
+    298              /* Position 2 on LCD (Digit2)*/
+    299              case 2:
+    300                LCD->RAM[LCD_RAMRegister_0] &= 0x0f3;
+    301                LCD->RAM[LCD_RAMRegister_0] |= (uint8_t)((digit[0]<<2)&0x0c); // 2M 2E	
+    302                
+    303                LCD->RAM[LCD_RAMRegister_2] &= 0xcf;
+    304                LCD->RAM[LCD_RAMRegister_2] |= (uint8_t)((digit[0]<<2)&0x30); // 2G 2B
+    305                
+    306                LCD->RAM[LCD_RAMRegister_3] &= 0x3f;
+    307                LCD->RAM[LCD_RAMRegister_3] |= (uint8_t)((digit[1]<<6) & 0xc0); // 2C 2D
+    308                
+    309                LCD->RAM[LCD_RAMRegister_6] &= 0xfc;
+    310                LCD->RAM[LCD_RAMRegister_6] |= (uint8_t)((digit[1]>>2)&0x03); // 2F 2A
+    311                
+    312                LCD->RAM[LCD_RAMRegister_7] &= 0xf3;
+    313                LCD->RAM[LCD_RAMRegister_7] |= (uint8_t)((digit[2]<<2)& 0x0c); // 2Col 2P		
+    314                
+    315                LCD->RAM[LCD_RAMRegister_9] &= 0xcf;
+    316                LCD->RAM[LCD_RAMRegister_9] |= (uint8_t)((digit[2]<<2)&0x30); // 2Q 2K										
+    317                
+    318                LCD->RAM[LCD_RAMRegister_10] &= 0x3f;
+    319                LCD->RAM[LCD_RAMRegister_10] |= (uint8_t)((digit[3]<<4)& 0xC0); // 2DP 2N	
+    320                
+    321                LCD->RAM[LCD_RAMRegister_13] &= 0xfc;
+    322                LCD->RAM[LCD_RAMRegister_13] |= (uint8_t)((digit[3])& 0x03); // 2H 2J
+    323                break;
+    324              
+    325              /* Position 3 on LCD (Digit3)*/
+    326              case 3:
+    327                LCD->RAM[LCD_RAMRegister_0] &= 0xcf;
+    328                LCD->RAM[LCD_RAMRegister_0] |= (uint8_t)(digit[0]<<4) & 0x30; // 3M 3E	
+    329                
+    330                LCD->RAM[LCD_RAMRegister_2] &= 0xf3;
+    331                LCD->RAM[LCD_RAMRegister_2] |= (uint8_t)(digit[0]) & 0x0c; // 3G 3B
+    332                
+    333                LCD->RAM[LCD_RAMRegister_4] &= 0xfc;
+    334                LCD->RAM[LCD_RAMRegister_4] |= (uint8_t)(digit[1]) & 0x03; // 3C 3D
+    335                
+    336                LCD->RAM[LCD_RAMRegister_5] &= 0x3f;
+    337                LCD->RAM[LCD_RAMRegister_5] |= (uint8_t)(digit[1]<<4) & 0xc0; // 3F 3A
+    338                                                                                                                                                
+    339                LCD->RAM[LCD_RAMRegister_7] &= 0xcf;
+    340                LCD->RAM[LCD_RAMRegister_7] |= (uint8_t)(digit[2]<<4)&0x30; // 3Col 3P		
+    341                                                                                                                                                
+    342                LCD->RAM[LCD_RAMRegister_9] &= 0xf3;
+    343                LCD->RAM[LCD_RAMRegister_9] |= (uint8_t)(digit[2]) & 0x0C;  // 3Q 3K										
+    344                
+    345                LCD->RAM[LCD_RAMRegister_11] &= 0xfc;
+    346                LCD->RAM[LCD_RAMRegister_11] |= (uint8_t)(digit[3]>>2) & 0x03 ; // 3DP 3N	
+    347                                                                                                                
+    348                LCD->RAM[LCD_RAMRegister_12] &= 0x3f;
+    349                LCD->RAM[LCD_RAMRegister_12] |= (uint8_t)(digit[3]<<6) & 0xc0; // 3H 3J
+    350                break;
+    351              
+    352              /* Position 4 on LCD (Digit4)*/
+    353              case 4:
+    354                LCD->RAM[LCD_RAMRegister_0] &= 0x3f;
+    355                LCD->RAM[LCD_RAMRegister_0] |= (uint8_t)(digit[0]<<6) & 0xc0; // 4M 4E	
+    356                
+    357                LCD->RAM[LCD_RAMRegister_2] &= 0xfc;
+    358                LCD->RAM[LCD_RAMRegister_2] |= (uint8_t)(digit[0]>>2) & 0x03; // 4G 4B
+    359                
+    360                LCD->RAM[LCD_RAMRegister_4] &= 0xf3;
+    361                LCD->RAM[LCD_RAMRegister_4] |= (uint8_t)(digit[1]<<2) & 0x0C; // 4C 4D
+    362                
+    363                LCD->RAM[LCD_RAMRegister_5] &= 0xcf;
+    364                LCD->RAM[LCD_RAMRegister_5] |= (uint8_t)(digit[1]<<2) & 0x30; // 4F 4A
+    365                                                                                                                                                
+    366                LCD->RAM[LCD_RAMRegister_7] &= 0x3f;
+    367                LCD->RAM[LCD_RAMRegister_7] |= (uint8_t)(digit[2]<<6) & 0xC0; // 4Col 4P		
+    368              
+    369                LCD->RAM[LCD_RAMRegister_9] &= 0xfc;				
+    370                LCD->RAM[LCD_RAMRegister_9] |= (uint8_t)(digit[2]>>2) & 0x03 ; // 4Q 4K										
+    371              
+    372                LCD->RAM[LCD_RAMRegister_11] &= 0xf3;				
+    373                LCD->RAM[LCD_RAMRegister_11] |= (uint8_t)(digit[3]) & 0x0C; // 4DP 4N	
+    374              
+    375                LCD->RAM[LCD_RAMRegister_12] &= 0xcf;				
+    376                LCD->RAM[LCD_RAMRegister_12] |= (uint8_t)(digit[3]<<4) & 0x30; // 4H 4J
+    377                break;
+    378              
+    379              /* Position 5 on LCD (Digit5)*/
+    380              case 5:
+    381                LCD->RAM[LCD_RAMRegister_1] &= 0xfc;
+    382                LCD->RAM[LCD_RAMRegister_1] |=  (uint8_t)(digit[0]) & 0x03; // 5M 5E	
+    383                
+    384                LCD->RAM[LCD_RAMRegister_1] &= 0x3f;
+    385                LCD->RAM[LCD_RAMRegister_1] |=  (uint8_t)(digit[0]<<4) & 0xc0; // 5G 5B
+    386              
+    387                LCD->RAM[LCD_RAMRegister_4] &= 0xcf;				
+    388                LCD->RAM[LCD_RAMRegister_4] |= (uint8_t)(digit[1]<<4) & 0x30; // 5C 5D
+    389              
+    390                LCD->RAM[LCD_RAMRegister_5] &= 0xf3;				
+    391                LCD->RAM[LCD_RAMRegister_5] |=  (uint8_t)(digit[1]) & 0x0c; // 5F 5A
+    392              
+    393                // 5 DP 5 COL not used
+    394                
+    395                LCD->RAM[LCD_RAMRegister_8] &= 0xfe;
+    396                LCD->RAM[LCD_RAMRegister_8] |=  (uint8_t)(digit[2]) & 0x01; //  5P	
+    397                
+    398                LCD->RAM[LCD_RAMRegister_8] &= 0x3f;					
+    399                LCD->RAM[LCD_RAMRegister_8] |=  (uint8_t)(digit[2]<<4) & 0xc0; // 5Q 5K										
+    400              
+    401                LCD->RAM[LCD_RAMRegister_11] &= 0xef;				
+    402                LCD->RAM[LCD_RAMRegister_11] |=  (uint8_t)(digit[3]<<2) & 0x10; // 5N	
+    403              
+    404                LCD->RAM[LCD_RAMRegister_12] &= 0xf3;				
+    405                LCD->RAM[LCD_RAMRegister_12] |=  (uint8_t)(digit[3]<<2) & 0x0C; // 5H 5J
+    406                break;
+    407              
+    408              /* Position 6 on LCD (Digit6)*/
+    409              case 6:
+    410                LCD->RAM[LCD_RAMRegister_1] &= 0xf3;
+    411                LCD->RAM[LCD_RAMRegister_1] |=  (uint8_t)(digit[0]<<2) & 0x0C; // 6M 6E	
+    412              
+    413                LCD->RAM[LCD_RAMRegister_1] &= 0xcf;				
+    414                LCD->RAM[LCD_RAMRegister_1] |=  (uint8_t)(digit[0]<<2) & 0x30; // 6G 6B
+    415              
+    416                LCD->RAM[LCD_RAMRegister_4] &= 0x3f;				
+    417                LCD->RAM[LCD_RAMRegister_4] |= (uint8_t)(digit[1]<<6) & 0xc0; // 6C 6D
+    418              
+    419                LCD->RAM[LCD_RAMRegister_5] &= 0xfc;				
+    420                LCD->RAM[LCD_RAMRegister_5] |=  (uint8_t)(digit[1]>>2) & 0x03; // 6F 6A
+    421                
+    422                LCD->RAM[LCD_RAMRegister_8] &= 0xfb;
+    423                LCD->RAM[LCD_RAMRegister_8] |=  (uint8_t)(digit[2]<<2) & 0x04; //  6P	
+    424                
+    425                // 6 DP 6COL not used
+    426                LCD->RAM[LCD_RAMRegister_8] &= 0xcf;					
+    427                LCD->RAM[LCD_RAMRegister_8] |=  (uint8_t)(digit[2]<<2) & 0x30; // 6Q 6K	
+    428              
+    429                LCD->RAM[LCD_RAMRegister_11] &= 0xbf;				
+    430                LCD->RAM[LCD_RAMRegister_11] |=  (uint8_t)(digit[3]<<4) & 0x40; // 6N	
+    431              
+    432                LCD->RAM[LCD_RAMRegister_12] &= 0xfc;				
+    433                LCD->RAM[LCD_RAMRegister_12] |= (uint8_t)(digit[3]) & 0x03; // 6H	6J
+    434                break;
+    435              
+    436                default:
+    437                        break;
+    438            }
+    439          
+    440          /* Refresh LCD  bar */
+    441          	LCD_bar();
+    442          }
+    443          
+    444          /**
+    445            * @brief  This function writes a char in the LCD RAM.
+    446            * @param  ptr: Pointer to string to display on the LCD Glass.
+    447            * @retval None
+    448            */
+    449          void LCD_GLASS_DisplayString(uint8_t* ptr)
+    450          {
+    451            uint8_t i = 0x01;
+    452          
+    453          	LCD_GLASS_Clear();
+    454            /* Send the string character by character on lCD */
+    455            while ((*ptr != 0) & (i < 8))
+    456            {
+    457              /* Display one character on LCD */
+    458              LCD_GLASS_WriteChar(ptr, FALSE, FALSE, i);
+    459          
+    460              /* Point on the next character */
+    461              ptr++;
+    462          
+    463              /* Increment the character counter */
+    464              i++;
+    465            }
+    466          }
+    467          
+    468          /**
+    469            * @brief  This function writes a char in the LCD RAM.
+    470            * @param  ptr: Pointer to string to display on the LCD Glass.
+    471            * @retval None
+    472            * @par    Required preconditions: Char is ASCCI value "Ored" with decimal point or Column flag
+    473            */
+    474          void LCD_GLASS_DisplayStrDeci(uint16_t* ptr)
+    475          {
+    476            uint8_t i = 0x01;
+    477          	uint8_t char_tmp;
+    478          	
+    479          	LCD_GLASS_Clear();
+    480            /* Send the string character by character on lCD */
+    481            while ((*ptr != 0) & (i < 8))
+    482            {			
+    483              char_tmp = (*ptr) & 0x00ff;
+    484              
+    485              switch ((*ptr) & 0xf000)
+    486              {
+    487                case DOT:
+    488                    /* Display one character on LCD with decimal point */
+    489                    LCD_GLASS_WriteChar(&char_tmp, POINT_ON, COLUMN_OFF, i);
+    490                    break;
+    491                case DOUBLE_DOT:
+    492                    /* Display one character on LCD with decimal point */
+    493                    LCD_GLASS_WriteChar(&char_tmp, POINT_OFF, COLUMN_ON, i);
+    494                    break;
+    495                default:
+    496                    LCD_GLASS_WriteChar(&char_tmp, POINT_OFF, COLUMN_OFF, i);		
+    497                    break;
+    498              }/* Point on the next character */
+    499              ptr++;
+    500              
+    501              /* Increment the character counter */
+    502              i++;
+    503            }
+    504          }
+    505          
+    506          /**
+    507            * @brief  This function Clear the whole LCD RAM.
+    508            * @param  None
+    509            * @retval None
+    510            */
+    511          void LCD_GLASS_Clear(void)
+    512          {
+    513            uint8_t counter = 0;
+    514            
+    515            for (counter = 0; counter <= LCD_RAMRegister_13; counter++)
+    516            {
+    517              LCD->RAM[counter] = LCD_RAM_RESET_VALUE;
+    518            }
+    519          }
+    520          
+    521          /**
+    522            * @brief  Display a string in scrolling mode
+    523            * @param  ptr: Pointer to string to display on the LCD Glass.
+    524            * @param  nScroll: Specifies how many time the message will be scrolled
+    525            * @param  ScrollSpeed : Speciifes the speed of the scroll, low value gives
+    526            *         higher speed 
+    527            * @retval None
+    528            * @par    Required preconditions: The LCD should be cleared before to start the
+    529            *         write operation.
+    530            */
+    531          void LCD_GLASS_ScrollSentence(uint8_t* ptr, uint16_t nScroll, uint16_t ScrollSpeed)
+    532          {
+    533            uint8_t Repetition;
+    534            uint8_t Char_Nb;
+    535            uint8_t* ptr1;
+    536            uint8_t str[7]="";
+    537            uint8_t Str_size;
+    538            
+    539            if (ptr == 0) return;
+    540          
+    541          /* To calculate end of string */
+    542            for (ptr1=ptr,Str_size = 0 ; *ptr1 != 0; Str_size++,ptr1++) ;
+    543            
+    544            ptr1 = ptr;
+    545            
+    546            LCD_GLASS_DisplayString(ptr);
+    547            delay_ms(ScrollSpeed);
+    548                    
+    549          /* To shift the string for scrolling display*/
+    550            for (Repetition=0; Repetition<nScroll; Repetition++)
+    551            {
+    552              for (Char_Nb=0; Char_Nb<Str_size; Char_Nb++)
+    553              {
+    554                *(str) =* (ptr1+((Char_Nb+1)%Str_size));
+    555                *(str+1) =* (ptr1+((Char_Nb+2)%Str_size));
+    556                *(str+2) =* (ptr1+((Char_Nb+3)%Str_size));
+    557                *(str+3) =* (ptr1+((Char_Nb+4)%Str_size));
+    558                *(str+4) =* (ptr1+((Char_Nb+5)%Str_size));
+    559                *(str+5) =* (ptr1+((Char_Nb+6)%Str_size));
+    560                LCD_GLASS_Clear();
+    561                LCD_GLASS_DisplayString(str);
+    562            
+    563            /* user button pressed stop the scrolling sentence */
+    564                if (KeyPressed)
+    565                        return;   		
+    566                delay_ms(ScrollSpeed);
+    567              }	
+    568            }
+    569          
+    570          }
+    571          
+    572          /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
+
+Errors: 32
+Warnings: 7

@@ -1,0 +1,457 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.30.1.50036 for STM8             12/Mar/2014  22:04:39 #
+# Copyright 2010-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  F:\Skydrive\Final Design\Servo Motor                     #
+#                    STM8L\Project\Discover\src\main.c                        #
+#    Command line =  "F:\Skydrive\Final Design\Servo Motor                    #
+#                    STM8L\Project\Discover\src\main.c" -e -Ol --no_cse       #
+#                    --no_unroll --no_inline --no_code_motion --no_tbaa       #
+#                    --no_cross_call --debug --code_model small --data_model  #
+#                    medium -o "F:\Skydrive\Final Design\Servo Motor          #
+#                    STM8L\Debug\Obj\" --dlib_config "D:\IAR                  #
+#                    Systems\Embedded Workbench 6.0\stm8\LIB\dlstm8smn.h" -D  #
+#                    STM8L15X_MD -lCN "F:\Skydrive\Final Design\Servo Motor   #
+#                    STM8L\Debug\List\" --diag_suppress Pe177,Pe550 -I        #
+#                    "F:\Skydrive\Final Design\Servo Motor                    #
+#                    STM8L\Project\Discover\inc\" -I "F:\Skydrive\Final       #
+#                    Design\Servo Motor STM8L\Libraries\STM8L15x_StdPeriph_Dr #
+#                    iver\inc\" --vregs 16                                    #
+#    List file    =  F:\Skydrive\Final Design\Servo Motor                     #
+#                    STM8L\Debug\List\main.lst                                #
+#    Object file  =  F:\Skydrive\Final Design\Servo Motor                     #
+#                    STM8L\Debug\Obj\main.o                                   #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
+      1          
+      2          /* Includes ------------------------------------------------------------------*/
+      3          #include "stm8l15x.h"
+      4          
+      5          /* Private typedef -----------------------------------------------------------*/
+      6          /* Private define ------------------------------------------------------------*/
+      7          #define TIM2_PERIOD             65535
+      8          #define TIM2_PRESCALER              39999
+      9          #define TIM2_REPTETION_COUNTER      0
+     10          
+     11          /* Private macro -------------------------------------------------------------*/
+     12          /* Private variables ---------------------------------------------------------*/
+
+   \                                 In section .near.data, align 1
+     13          __IO uint16_t CCR1_Val = 30000;
+   \                     CCR1_Val:
+   \   000000 7530                  DC16 30000
+
+   \                                 In section .near.data, align 1
+     14          __IO uint16_t CCR2_Val = 16384;
+   \                     CCR2_Val:
+   \   000000 4000                  DC16 16384
+
+   \                                 In section .near.data, align 1
+     15          __IO uint16_t CCR3_Val = 8192;
+   \                     CCR3_Val:
+   \   000000 2000                  DC16 8192
+     16          
+     17          /* Private function prototypes -----------------------------------------------*/
+     18          static void CLK_Config(void);
+     19          static void GPIO_Config(void);
+     20          static void TIM2_Config(void);
+     21          static void USART_Config(void);
+     22          
+     23          void USART_SendByte(uint8_t data);
+     24          void USART_SendString(uint8_t* Data, uint16_t len);
+     25          uint8_t USART_ReceiveByte(void);
+     26          void Delay(int);
+     27          /* Private functions ---------------------------------------------------------*/
+     28          
+     29          /**
+     30            * @brief  Main program.
+     31            * @param  None
+     32            * @retval None
+     33            */
+
+   \                                 In section .near_func.text, align 1
+     34          void main(void)
+     35          {
+     36            __enable_interrupt(); 
+   \                     main:
+   \   000000 9A                    RIM
+     37            CLK_Config(); 
+   \   000001 CD0000                CALL      L:CLK_Config
+     38            GPIO_Config();   
+   \   000004 CD0000                CALL      L:GPIO_Config
+     39            TIM2_Config();  
+   \   000007 CD0000                CALL      L:TIM2_Config
+     40            USART_Config();
+   \   00000A CD0000                CALL      L:USART_Config
+     41            USART_SendString("Test\n", sizeof("Test\n"));
+   \   00000D 90AE0006              LDW       Y, #0x6
+   \   000011 AE0000                LDW       X, #`?<Constant "Test\\n">`
+   \   000014 CD0000                CALL      L:USART_SendString
+     42            //delay_10us(100);
+     43            //USART_SendByte("\n");
+     44            Delay(100);
+   \   000017 AE0064                LDW       X, #0x64
+   \   00001A CD0000                CALL      L:Delay
+     45            uint8_t Buf = 0;
+   \   00001D 4F                    CLR       A
+     46            
+     47            
+     48            while (1)
+   \                     ??main_0:
+   \   00001E 20FE                  JRA       L:??main_0
+     49            {
+     50          //    USART_SendString("Test\n", sizeof("Test\n"));
+     51          //    while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
+     52              
+     53          //    Buf=USART_ReceiveData8(USART1);
+     54          //    while(USART_GetFlagStatus(USART1, USART_FLAG_OR) == SET);
+     55          //    if(Buf != 0)
+     56          //    {
+     57          //      USART_SendData8(USART1, Buf);
+     58          //    }
+     59            }
+     60          }
+     61          
+     62          /**
+     63            * @brief  Configure peripherals 
+     64            */
+
+   \                                 In section .near_func.text, align 1
+     65          static void CLK_Config(void)
+     66          {
+     67            /* Enable TIM1 clock */
+     68            CLK_PeripheralClockConfig(CLK_Peripheral_TIM2, ENABLE);
+   \                     CLK_Config:
+   \   000000 35010000              MOV       S:?b0, #0x1
+   \   000004 4F                    CLR       A
+   \   000005 CC0000                JP        L:CLK_PeripheralClockConfig
+     69          }
+     70          
+
+   \                                 In section .near_func.text, align 1
+     71          static void GPIO_Config(void)
+     72          {
+     73            /* GPIOD configuration: TIM1 channel 1 (PD2), channel 2 (PD4) and channel 3 (PD5) */
+     74            GPIO_Init(GPIOB, GPIO_Pin_0, GPIO_Mode_Out_PP_Low_Fast);
+   \                     GPIO_Config:
+   \   000000 35E00000              MOV       S:?b0, #0xe0
+   \   000004 A601                  LD        A, #0x1
+   \   000006 AE5005                LDW       X, #0x5005
+   \   000009 CD0000                CALL      L:GPIO_Init
+     75            GPIO_Init(GPIOE, GPIO_Pin_7, GPIO_Mode_Out_PP_High_Fast);
+   \   00000C 35F00000              MOV       S:?b0, #0xf0
+   \   000010 A680                  LD        A, #0x80
+   \   000012 AE5014                LDW       X, #0x5014
+   \   000015 CC0000                JP        L:GPIO_Init
+     76            //GPIO_SetBits(GPIOE, GPIO_Pin_7);
+     77          }
+     78          
+
+   \                                 In section .near_func.text, align 1
+     79          static void TIM2_Config(void)
+     80          {
+     81            /*
+     82            - TIM1CLK = 2 MHz
+     83            - TIM1 counter clock = TIM1CLK / TIM1_PRESCALER+1 = 2 MHz/39999+1 = 50 Hz
+     84            */
+     85            /*
+     86            - The TIM1 CCR1 register value is equal to 3000: 
+     87            - So the TIM1 Channel 1 generates a periodic signal with a frequency equal to 50 Hz.
+     88            - PB0
+     89            */
+     90            /* PWM1 Mode configuration: Channel1 */
+     91            TIM2_TimeBaseInit(TIM2_Prescaler_1, TIM2_CounterMode_Up, 39999);
+   \                     TIM2_Config:
+   \   000000 AE9C3F                LDW       X, #0x9c3f
+   \   000003 3F00                  CLR       S:?b0
+   \   000005 4F                    CLR       A
+   \   000006 CD0000                CALL      L:TIM2_TimeBaseInit
+     92            TIM2_OC1Init(TIM2_OCMode_PWM1, TIM2_OutputState_Enable, 0, TIM2_OCPolarity_High, TIM2_OCIdleState_Set);
+   \   000009 35010000              MOV       S:?b2, #0x1
+   \   00000D 3F00                  CLR       S:?b1
+   \   00000F 5F                    CLRW      X
+   \   000010 35010000              MOV       S:?b0, #0x1
+   \   000014 A660                  LD        A, #0x60
+   \   000016 CD0000                CALL      L:TIM2_OC1Init
+     93            TIM2_OC1PreloadConfig(ENABLE);
+   \   000019 A601                  LD        A, #0x1
+   \   00001B CD0000                CALL      L:TIM2_OC1PreloadConfig
+     94            TIM2_CtrlPWMOutputs(ENABLE);
+   \   00001E A601                  LD        A, #0x1
+   \   000020 CD0000                CALL      L:TIM2_CtrlPWMOutputs
+     95            TIM2_SetCompare1(3000);
+   \   000023 AE0BB8                LDW       X, #0xbb8
+   \   000026 CD0000                CALL      L:TIM2_SetCompare1
+     96            TIM2_Cmd(ENABLE);
+   \   000029 A601                  LD        A, #0x1
+   \   00002B CC0000                JP        L:TIM2_Cmd
+     97          }
+     98          
+
+   \                                 In section .near_func.text, align 1
+     99          static void USART_Config(void)
+    100          {
+    101            //PC3 Send
+    102            //PC2 receive
+    103            SYSCFG_REMAPPinConfig(REMAP_Pin_USART1TxRxPortA, ENABLE);   //Map USART to PortA
+   \                     USART_Config:
+   \   000000 A601                  LD        A, #0x1
+   \   000002 AE011C                LDW       X, #0x11c
+   \   000005 CD0000                CALL      L:SYSCFG_REMAPPinConfig
+    104            
+    105            GPIO_Init(GPIOA,GPIO_Pin_2,GPIO_Mode_In_PU_No_IT);    //USART_RX
+   \   000008 35400000              MOV       S:?b0, #0x40
+   \   00000C A604                  LD        A, #0x4
+   \   00000E AE5000                LDW       X, #0x5000
+   \   000011 CD0000                CALL      L:GPIO_Init
+    106            //GPIO_Init(GPIOA,GPIO_Pin_3,GPIO_Mode_Out_PP_Low_Fast);     //USART_TX
+    107            GPIO_ExternalPullUpConfig(GPIOA, GPIO_Pin_3, ENABLE);        //Let this port been controlled by external signal
+   \   000014 35010000              MOV       S:?b0, #0x1
+   \   000018 A608                  LD        A, #0x8
+   \   00001A AE5000                LDW       X, #0x5000
+   \   00001D CD0000                CALL      L:GPIO_ExternalPullUpConfig
+    108            
+    109            CLK_PeripheralClockConfig(CLK_Peripheral_USART1, ENABLE);
+   \   000020 35010000              MOV       S:?b0, #0x1
+   \   000024 A605                  LD        A, #0x5
+   \   000026 CD0000                CALL      L:CLK_PeripheralClockConfig
+    110            //GPIO_ExternalPullUpConfig(GPIOA, GPIO_Pin_2|GPIO_Pin_3, ENABLE);
+    111            USART_DeInit(USART1);  
+   \   000029 AE5230                LDW       X, #0x5230
+   \   00002C CD0000                CALL      L:USART_DeInit
+    112            USART_Init(USART1,
+    113                       9600, 
+    114                       USART_WordLength_8b,
+    115                       USART_StopBits_1,
+    116                       USART_Parity_No,
+    117                       (USART_Mode_TypeDef)(USART_Mode_Rx|USART_Mode_Tx));
+   \   00002F 350C0000              MOV       S:?b6, #0xc
+   \   000033 3F00                  CLR       S:?b5
+   \   000035 3F00                  CLR       S:?b4
+   \   000037 4F                    CLR       A
+   \   000038 AE2580                LDW       X, #0x2580
+   \   00003B BF00                  LDW       S:?w1, X
+   \   00003D 5F                    CLRW      X
+   \   00003E BF00                  LDW       S:?w0, X
+   \   000040 AE5230                LDW       X, #0x5230
+   \   000043 CD0000                CALL      L:USART_Init
+    118            USART_ClockInit(USART1,USART_Clock_Disable,USART_CPOL_Low,USART_CPHA_2Edge,USART_LastBit_Disable);
+   \   000046 3F00                  CLR       S:?b2
+   \   000048 35020000              MOV       S:?b1, #0x2
+   \   00004C 3F00                  CLR       S:?b0
+   \   00004E 4F                    CLR       A
+   \   00004F AE5230                LDW       X, #0x5230
+   \   000052 CD0000                CALL      L:USART_ClockInit
+    119            USART_ClearITPendingBit(USART1,USART_IT_RXNE);
+   \   000055 90AE0255              LDW       Y, #0x255
+   \   000059 AE5230                LDW       X, #0x5230
+   \   00005C CD0000                CALL      L:USART_ClearITPendingBit
+    120            //USART_ITConfig(USART1, (USART_FLAG_TypeDef)(USART_IT_TXE | USART_IT_RXNE), ENABLE);
+    121            USART_ITConfig(USART1, USART_IT_OR, ENABLE);
+   \   00005F A601                  LD        A, #0x1
+   \   000061 90AE0235              LDW       Y, #0x235
+   \   000065 AE5230                LDW       X, #0x5230
+   \   000068 CD0000                CALL      L:USART_ITConfig
+    122            USART_Cmd(USART1, ENABLE);
+   \   00006B A601                  LD        A, #0x1
+   \   00006D AE5230                LDW       X, #0x5230
+   \   000070 CC0000                JP        L:USART_Cmd
+    123          }
+    124          
+    125          
+
+   \                                 In section .near_func.text, align 1
+    126          void USART_SendByte(uint8_t data)
+    127          {
+    128            USART_SendData8(USART1, (unsigned char)data);
+   \                     USART_SendByte:
+   \   000000 AE5230                LDW       X, #0x5230
+   \   000003 CD0000                CALL      L:USART_SendData8
+    129            /* Loop until the end of transmission */
+    130            while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
+   \                     ??USART_SendByte_0:
+   \   000006 90AE0080              LDW       Y, #0x80
+   \   00000A AE5230                LDW       X, #0x5230
+   \   00000D CD0000                CALL      L:USART_GetFlagStatus
+   \   000010 A100                  CP        A, #0x0
+   \   000012 27F2                  JREQ      L:??USART_SendByte_0
+    131          }
+   \   000014 81                    RET
+    132          
+
+   \                                 In section .near_func.text, align 1
+    133          void USART_SendString(uint8_t* Data, uint16_t len)
+    134          {
+   \                     USART_SendString:
+   \   000000 CD0000                CALL      L:?push_l2
+   \   000003 CD0000                CALL      L:?push_w6
+   \   000006 BF00                  LDW       S:?w6, X
+   \   000008 90BF00                LDW       S:?w5, Y
+    135            //unit16_t i = 0;
+    136            for(int i = 0; i < len; i++)
+   \   00000B 3F00                  CLR       S:?b9
+   \   00000D 3F00                  CLR       S:?b8
+   \   00000F 200F                  JRA       L:??USART_SendString_0
+    137            {
+    138              USART_SendByte(Data[i]);  
+   \                     ??USART_SendString_1:
+   \   000011 BE00                  LDW       X, S:?w4
+   \   000013 72BB0000              ADDW      X, S:?w6
+   \   000017 F6                    LD        A, (X)
+   \   000018 CD0000                CALL      L:USART_SendByte
+    139            }
+   \   00001B BE00                  LDW       X, S:?w4
+   \   00001D 5C                    INCW      X
+   \   00001E BF00                  LDW       S:?w4, X
+   \                     ??USART_SendString_0:
+   \   000020 BE00                  LDW       X, S:?w4
+   \   000022 B300                  CPW       X, S:?w5
+   \   000024 25EB                  JRC       L:??USART_SendString_1
+    140          }
+   \   000026 CC0000                JP        L:?epilogue_l2_w6
+    141          
+
+   \                                 In section .near_func.text, align 1
+    142          uint8_t USART_ReceiveByte(void)
+    143          {
+    144            uint8_t USART_RX_BUF;
+    145            while(USART_GetFlageStatus(USART1, USART_FLAG_RXNE) == RESET);
+   \                     USART_ReceiveByte:
+   \                     ??USART_ReceiveByte_0:
+   \   000000 90AE0020              LDW       Y, #0x20
+   \   000004 AE5230                LDW       X, #0x5230
+   \   000007 CD0000                CALL      L:USART_GetFlageStatus
+   \   00000A 5D                    TNZW      X
+   \   00000B 27F3                  JREQ      L:??USART_ReceiveByte_0
+    146            USART_RX_BUF = USART_ReceiveData8(USART1);
+   \   00000D AE5230                LDW       X, #0x5230
+   \   000010 CC0000                JP        L:USART_ReceiveData8
+    147            return USART_RX_BUF;
+    148          }
+    149          
+
+   \                                 In section .near_func.text, align 1
+    150          void Delay(int time)
+    151          {
+   \                     Delay:
+   \   000000 BF00                  LDW       S:?w0, X
+    152            for(int i = 0; i < time; i++)
+   \   000002 905F                  CLRW      Y
+   \   000004 2008                  JRA       L:??Delay_0
+    153              for(int j = 0; j < 100; j++);
+   \                     ??Delay_1:
+   \   000006 5C                    INCW      X
+   \                     ??Delay_2:
+   \   000007 A30064                CPW       X, #0x64
+   \   00000A 2FFA                  JRSLT     L:??Delay_1
+   \   00000C 905C                  INCW      Y
+   \                     ??Delay_0:
+   \   00000E 90B300                CPW       Y, S:?w0
+   \   000011 2E03                  JRSGE     L:??Delay_3
+   \   000013 5F                    CLRW      X
+   \   000014 20F1                  JRA       L:??Delay_2
+    154          }
+   \                     ??Delay_3:
+   \   000016 81                    RET
+    155          
+    156          #pragma vector=27
+
+   \                                 In section .near_func.text, align 1
+    157          __interrupt void UART1_TX_IRQHandler(void)
+    158          {
+    159            
+    160          }
+   \                     UART1_TX_IRQHandler:
+   \                     _interrupt_27:
+   \   000000 80                    IRET
+    161          
+    162          #pragma vector=28
+
+   \                                 In section .near_func.text, align 1
+    163          __interrupt void UART1_RX_IRQHandler(void)
+    164          {
+   \                     UART1_RX_IRQHandler:
+   \                     _interrupt_28:
+   \   000000 8A                    PUSH      CC
+   \   000001 84                    POP       A
+   \   000002 A4BF                  AND       A, #0xbf
+   \   000004 88                    PUSH      A
+   \   000005 86                    POP       CC
+   \   000006 CD0000                CALL      L:?push_l0
+   \   000009 CD0000                CALL      L:?push_l1
+   \   00000C 3B0000                PUSH      S:?b8
+    165            uint8_t Buf;
+    166            Buf=USART_ReceiveData8(USART1);
+   \   00000F AE5230                LDW       X, #0x5230
+   \   000012 CD0000                CALL      L:USART_ReceiveData8
+   \   000015 B700                  LD        S:?b8, A
+    167            while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
+   \                     ??UART1_RX_IRQHandler_0:
+   \   000017 90AE0080              LDW       Y, #0x80
+   \   00001B AE5230                LDW       X, #0x5230
+   \   00001E CD0000                CALL      L:USART_GetFlagStatus
+   \   000021 A100                  CP        A, #0x0
+   \   000023 27F2                  JREQ      L:??UART1_RX_IRQHandler_0
+    168            USART_SendData8(USART1,Buf);
+   \   000025 B600                  LD        A, S:?b8
+   \   000027 AE5230                LDW       X, #0x5230
+   \   00002A CD0000                CALL      L:USART_SendData8
+    169          }
+   \   00002D 320000                POP       S:?b8
+   \   000030 CD0000                CALL      L:?pop_l1
+   \   000033 CD0000                CALL      L:?pop_l0
+   \   000036 80                    IRET
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant "Test\\n">`:
+   \   000000 546573740A00          DC8 "Test\012"
+    170          
+    171          
+    172          #ifdef  USE_FULL_ASSERT
+    173          
+    174          void assert_failed(uint8_t* file, uint32_t line)
+    175          {
+    176            /* User can add his own implementation to report the file name and line number,
+    177               ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+    178          
+    179            /* Infinite loop */
+    180            while (1)
+    181            {}
+    182          }
+    183          #endif
+
+   Section sizes:
+
+     Function/Label       Bytes
+     --------------       -----
+     CCR1_Val                2
+     CCR2_Val                2
+     CCR3_Val                2
+     main                   32
+     CLK_Config              8
+     GPIO_Config            24
+     TIM2_Config            46
+     USART_Config          115
+     USART_SendByte         21
+     USART_SendString       41
+     USART_ReceiveByte      19
+     Delay                  23
+     UART1_TX_IRQHandler     1
+     UART1_RX_IRQHandler    55
+     ?<Constant "Test\n">    6
+
+ 
+   6 bytes in section .near.data
+   6 bytes in section .near.rodata
+ 385 bytes in section .near_func.text
+ 
+ 385 bytes of CODE  memory
+   6 bytes of CONST memory
+   6 bytes of DATA  memory
+
+Errors: none
+Warnings: 1

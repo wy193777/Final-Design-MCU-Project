@@ -1,0 +1,1292 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.30.1.50036 for STM8             12/Mar/2014  19:56:44 #
+# Copyright 2010-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  F:\Skydrive\Final Design\Servo Motor                     #
+#                    STM8L\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_c #
+#                    lk.c                                                     #
+#    Command line =  "F:\Skydrive\Final Design\Servo Motor                    #
+#                    STM8L\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_c #
+#                    lk.c" -e -Ol --no_cse --no_unroll --no_inline            #
+#                    --no_code_motion --no_tbaa --no_cross_call --debug       #
+#                    --code_model small --data_model medium -o                #
+#                    "F:\Skydrive\Final Design\Servo Motor STM8L\Debug\Obj\"  #
+#                    --dlib_config "D:\IAR Systems\Embedded Workbench         #
+#                    6.0\stm8\LIB\dlstm8smn.h" -D STM8L15X_MD -lCN            #
+#                    "F:\Skydrive\Final Design\Servo Motor                    #
+#                    STM8L\Debug\List\" --diag_suppress Pe177,Pe550 -I        #
+#                    "F:\Skydrive\Final Design\Servo Motor                    #
+#                    STM8L\Project\Discover\inc\" -I "F:\Skydrive\Final       #
+#                    Design\Servo Motor STM8L\Libraries\STM8L15x_StdPeriph_Dr #
+#                    iver\inc\" --vregs 16                                    #
+#    List file    =  F:\Skydrive\Final Design\Servo Motor                     #
+#                    STM8L\Debug\List\stm8l15x_clk.lst                        #
+#    Object file  =  F:\Skydrive\Final Design\Servo Motor                     #
+#                    STM8L\Debug\Obj\stm8l15x_clk.o                           #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+F:\Skydrive\Final Design\Servo Motor STM8L\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_clk.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    stm8l15x_clk.c
+      4            * @author  MCD Application Team
+      5            * @version V1.4.0
+      6            * @date    09/24/2010
+      7            * @brief   This file provides all the CLK firmware functions.
+      8            ******************************************************************************
+      9            * @copy
+     10            *
+     11            * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+     12            * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+     13            * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+     14            * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+     15            * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+     16            * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+     17            *
+     18            * <h2><center>&copy; COPYRIGHT 2010 STMicroelectronics</center></h2>
+     19            */
+     20          
+     21          /* Includes ------------------------------------------------------------------*/
+     22          
+     23          #include "stm8l15x_clk.h"
+     24          
+     25          /** @addtogroup STM8L15x_StdPeriph_Driver
+     26            * @{
+     27            */
+     28          
+     29          /* Private typedef -----------------------------------------------------------*/
+     30          /* Private macro -------------------------------------------------------------*/
+     31          /* Private Variables ---------------------------------------------------------*/
+     32          /* Private function prototypes -----------------------------------------------*/
+     33          /* Private functions ---------------------------------------------------------*/
+     34          
+     35          /**
+     36            * @addtogroup CLK_Private_Constants
+     37            * @{
+     38            */
+     39          
+
+   \                                 In section .near.rodata, align 1
+     40          __CONST uint8_t SYSDivFactor[5] =
+   \                     SYSDivFactor:
+   \   000000 0102040810            DC8 1, 2, 4, 8, 16
+     41            {
+     42              1, 2, 4, 8, 16
+     43            }
+     44            ; /*!< Holds the different Master clock Divider factors */
+     45          
+     46          /**
+     47            * @}
+     48            */
+     49          
+     50          /**
+     51            * @addtogroup CLK_Public_Functions
+     52            * @{
+     53            */
+     54          
+     55          /**
+     56            * @brief  Deinitializes the CLK peripheral registers to their default reset values.
+     57            * @param  None
+     58            * @retval None
+     59            */
+
+   \                                 In section .near_func.text, align 1
+     60          void CLK_DeInit(void)
+     61          {
+     62            CLK->ICKCR = CLK_ICKCR_RESET_VALUE;
+   \                     CLK_DeInit:
+   \   000000 351150C2              MOV       L:0x50c2, #0x11
+     63            CLK->ECKCR = CLK_ECKCR_RESET_VALUE;
+   \   000004 350050C6              MOV       L:0x50c6, #0x0
+     64            CLK->CRTCR = CLK_CRTCR_RESET_VALUE;
+   \   000008 350050C1              MOV       L:0x50c1, #0x0
+     65            CLK->CBEEPR = CLK_CBEEPR_RESET_VALUE;
+   \   00000C 350050CB              MOV       L:0x50cb, #0x0
+     66            CLK->SWR  = CLK_SWR_RESET_VALUE;
+   \   000010 350150C8              MOV       L:0x50c8, #0x1
+     67            CLK->SWCR = CLK_SWCR_RESET_VALUE;
+   \   000014 350050C9              MOV       L:0x50c9, #0x0
+     68            CLK->CKDIVR = CLK_CKDIVR_RESET_VALUE;
+   \   000018 350350C0              MOV       L:0x50c0, #0x3
+     69            CLK->PCKENR1 = CLK_PCKENR1_RESET_VALUE;
+   \   00001C 350050C3              MOV       L:0x50c3, #0x0
+     70            CLK->PCKENR2 = CLK_PCKENR2_RESET_VALUE;
+   \   000020 358050C4              MOV       L:0x50c4, #0x80
+     71            CLK->PCKENR3 = CLK_PCKENR3_RESET_VALUE;
+   \   000024 350050D0              MOV       L:0x50d0, #0x0
+     72            CLK->CSSR = CLK_CSSR_RESET_VALUE;
+   \   000028 350050CA              MOV       L:0x50ca, #0x0
+     73            CLK->CCOR = CLK_CCOR_RESET_VALUE;
+   \   00002C 350050C5              MOV       L:0x50c5, #0x0
+     74            CLK->HSITRIMR = CLK_HSITRIMR_RESET_VALUE;
+   \   000030 350050CD              MOV       L:0x50cd, #0x0
+     75            CLK->HSICALR = CLK_HSICALR_RESET_VALUE;
+   \   000034 350050CC              MOV       L:0x50cc, #0x0
+     76            CLK->HSIUNLCKR = CLK_HSIUNLCKR_RESET_VALUE;
+   \   000038 350050CE              MOV       L:0x50ce, #0x0
+     77            CLK->REGCSR = CLK_REGCSR_RESET_VALUE;
+   \   00003C 35B950CF              MOV       L:0x50cf, #0xb9
+     78          }
+   \   000040 81                    RET
+     79          
+     80          /**
+     81            * @brief  Enables or disables the Internal High Speed oscillator (HSI).
+     82            * @param  NewState : new state of HSI, value accepted ENABLE, DISABLE.
+     83            * @retval None
+     84            */
+
+   \                                 In section .near_func.text, align 1
+     85          void CLK_HSICmd(FunctionalState NewState)
+     86          {
+     87          
+     88            /* Check the parameters */
+     89            assert_param(IS_FUNCTIONAL_STATE(NewState));
+     90          
+     91            if (NewState != DISABLE)
+   \                     CLK_HSICmd:
+   \   000000 4D                    TNZ       A
+   \   000001 2705                  JREQ      L:??CLK_HSICmd_0
+     92            {
+     93              /* Set HSION bit */
+     94              CLK->ICKCR |= CLK_ICKCR_HSION;
+   \   000003 721050C2              BSET      L:0x50c2, #0x0
+   \   000007 81                    RET
+     95            }
+     96            else
+     97            {
+     98              /* Reset HSION bit */
+     99              CLK->ICKCR &= (uint8_t)(~CLK_ICKCR_HSION);
+   \                     ??CLK_HSICmd_0:
+   \   000008 721150C2              BRES      L:0x50c2, #0x0
+    100            }
+    101          }
+   \   00000C 81                    RET
+    102          
+    103          /**
+    104            * @brief  Adjusts the Internal High Speed oscillator (HSI) calibration value.
+    105            * @param  CLK_HSICalibrationValue : calibration trimming value.
+    106            * @retval None
+    107            */
+
+   \                                 In section .near_func.text, align 1
+    108          void CLK_AdjustHSICalibrationValue(uint8_t CLK_HSICalibrationValue)
+    109          {
+    110            /* two consecutive write access to HSIUNLCKR register to unlock HSITRIMR */
+    111            CLK->HSIUNLCKR = 0xAC;
+   \                     CLK_AdjustHSICalibrationValue:
+   \   000000 35AC50CE              MOV       L:0x50ce, #0xac
+    112            CLK->HSIUNLCKR = 0x35;
+   \   000004 353550CE              MOV       L:0x50ce, #0x35
+    113          
+    114            /* Store the new value */
+    115            CLK->HSITRIMR = (uint8_t)CLK_HSICalibrationValue;
+   \   000008 C750CD                LD        L:0x50cd, A
+    116          }
+   \   00000B 81                    RET
+    117          
+    118          /**
+    119            * @brief  Enables or disables the Internal Low Speed oscillator (LSI).
+    120            * @param  NewState : new state of LSI, value accepted ENABLE, DISABLE.
+    121            * @retval None
+    122            */
+
+   \                                 In section .near_func.text, align 1
+    123          void CLK_LSICmd(FunctionalState NewState)
+    124          {
+    125          
+    126            /* Check the parameters */
+    127            assert_param(IS_FUNCTIONAL_STATE(NewState));
+    128          
+    129            if (NewState != DISABLE)
+   \                     CLK_LSICmd:
+   \   000000 4D                    TNZ       A
+   \   000001 2705                  JREQ      L:??CLK_LSICmd_0
+    130            {
+    131              /* Set LSION bit */
+    132              CLK->ICKCR |= CLK_ICKCR_LSION;
+   \   000003 721450C2              BSET      L:0x50c2, #0x2
+   \   000007 81                    RET
+    133            }
+    134            else
+    135            {
+    136              /* Reset LSION bit */
+    137              CLK->ICKCR &= (uint8_t)(~CLK_ICKCR_LSION);
+   \                     ??CLK_LSICmd_0:
+   \   000008 721550C2              BRES      L:0x50c2, #0x2
+    138            }
+    139          }
+   \   00000C 81                    RET
+    140          
+    141          /**
+    142            * @brief  Configures the HSE Clock source.
+    143            * @note   In case of Enabling HSE Bypass be sure
+    144            *         that SWI, CKM and Clock RTC are not using HSE as clock source
+    145            * @param  CLK_HSE : This parameter specifies the HSE clock configuarton.
+    146            *         This parameter can be a value of @ref CLK_HSE_TypeDef.
+    147            * @retval None
+    148            */
+
+   \                                 In section .near_func.text, align 1
+    149          void CLK_HSEConfig(CLK_HSE_TypeDef CLK_HSE)
+    150          {
+    151            /* Check the parameters */
+    152            assert_param(IS_CLK_HSE(CLK_HSE));
+    153          
+    154            /* Reset HSEON and HSEBYP bits before configuring the HSE ------------------*/
+    155            /* Reset HSEON bit */
+    156            CLK->ECKCR &= (uint8_t)~CLK_ECKCR_HSEON;
+   \                     CLK_HSEConfig:
+   \   000000 721150C6              BRES      L:0x50c6, #0x0
+    157          
+    158            /* Reset HSEBYP bit */
+    159            CLK->ECKCR &= (uint8_t)~CLK_ECKCR_HSEBYP;
+   \   000004 721950C6              BRES      L:0x50c6, #0x4
+    160          
+    161            /* Configure HSE */
+    162            CLK->ECKCR |= (uint8_t)CLK_HSE;
+   \   000008 CA50C6                OR        A, L:0x50c6
+   \   00000B C750C6                LD        L:0x50c6, A
+    163          }
+   \   00000E 81                    RET
+    164          
+    165          /**
+    166            * @brief  Configures the LSE Clock source.
+    167            * @note   In case of Enabling LSE ByPass be sure that SWI, CKM
+    168            *        and Clock RTC are not using LSE as clock source
+    169            * @param  CLK_LSE : This parameter specifies the LSE clock configuarton.
+    170            *         This parameter can be a value of @ref CLK_ConfigLSE_TypeDef.
+    171            * @retval None
+    172            */
+
+   \                                 In section .near_func.text, align 1
+    173          void CLK_LSEConfig(CLK_LSE_TypeDef CLK_LSE)
+    174          {
+    175            /* Check the parameters */
+    176            assert_param(IS_CLK_LSE(CLK_LSE));
+    177          
+    178            /* Reset LSEON and LSEBYP bits before configuring the LSE ------------------*/
+    179            /* Reset LSEON bit */
+    180            CLK->ECKCR &= (uint8_t)~CLK_ECKCR_LSEON;
+   \                     CLK_LSEConfig:
+   \   000000 721550C6              BRES      L:0x50c6, #0x2
+    181          
+    182            /* Reset LSEBYP bit */
+    183            CLK->ECKCR &= (uint8_t)~CLK_ECKCR_LSEBYP;
+   \   000004 721B50C6              BRES      L:0x50c6, #0x5
+    184          
+    185            /* Configure LSE */
+    186            CLK->ECKCR |= (uint8_t)CLK_LSE;
+   \   000008 CA50C6                OR        A, L:0x50c6
+   \   00000B C750C6                LD        L:0x50c6, A
+    187          
+    188          }
+   \   00000E 81                    RET
+    189          
+    190          /**
+    191            * @brief  Configures the System clock (SYSCLK) source.
+    192            * @param  CLK_SYSCLKSource : Specifies the new clock.
+    193            *         This parameter can be a value of @ref CLK_SYSCLKSource_TypeDef.
+    194            * @retval None
+    195            */
+
+   \                                 In section .near_func.text, align 1
+    196          void CLK_SYSCLKSourceConfig(CLK_SYSCLKSource_TypeDef CLK_SYSCLKSource)
+    197          {
+    198            /* check teh parameters */
+    199            assert_param(IS_CLK_SOURCE(CLK_SYSCLKSource));
+    200          
+    201            /* Selection of the target clock source */
+    202            CLK->SWR = (uint8_t)CLK_SYSCLKSource;
+   \                     CLK_SYSCLKSourceConfig:
+   \   000000 C750C8                LD        L:0x50c8, A
+    203          }
+   \   000003 81                    RET
+    204          
+    205          /**
+    206            * @brief Configures the System clock (SYSCLK) dividers.
+    207            * @param CLK_SYSCLKDiv : Specifies the system clock divider to apply.
+    208            *        This parameter can be a value of @ref CLK_SYSCLKDiv_TypeDef.
+    209            * @retval None
+    210            */
+
+   \                                 In section .near_func.text, align 1
+    211          void CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_TypeDef CLK_SYSCLKDiv)
+    212          {
+    213            /* check the parameters */
+    214            assert_param(IS_CLK_SYSTEM_DIVIDER(CLK_SYSCLKDiv));
+    215          
+    216            CLK->CKDIVR = (uint8_t)(CLK_SYSCLKDiv);
+   \                     CLK_SYSCLKDivConfig:
+   \   000000 C750C0                LD        L:0x50c0, A
+    217          }
+   \   000003 81                    RET
+    218          /**
+    219            * @brief  Enables or disables the clock switch execution.
+    220            * @param  NewState : new state of clock switch, value accepted ENABLE, DISABLE.
+    221            * @retval None
+    222            */
+
+   \                                 In section .near_func.text, align 1
+    223          void CLK_SYSCLKSourceSwitchCmd(FunctionalState NewState)
+    224          {
+    225            /* Check the parameters */
+    226            assert_param(IS_FUNCTIONAL_STATE(NewState));
+    227          
+    228            if (NewState != DISABLE)
+   \                     CLK_SYSCLKSourceSwitchCmd:
+   \   000000 4D                    TNZ       A
+   \   000001 2705                  JREQ      L:??CLK_SYSCLKSourceSwitchCmd_0
+    229            {
+    230              /* Set SWEN bit */
+    231              CLK->SWCR |= CLK_SWCR_SWEN;
+   \   000003 721250C9              BSET      L:0x50c9, #0x1
+   \   000007 81                    RET
+    232            }
+    233            else
+    234            {
+    235              /* Reset SWEN  bit */
+    236              CLK->SWCR &= (uint8_t)(~CLK_SWCR_SWEN);
+   \                     ??CLK_SYSCLKSourceSwitchCmd_0:
+   \   000008 721350C9              BRES      L:0x50c9, #0x1
+    237            }
+    238          }
+   \   00000C 81                    RET
+    239          
+    240          /**
+    241            * @brief  Returns the clock source used as system clock.
+    242            * @param  None
+    243            * @retval Clock used as System clock (SYSCLK) source.
+    244            *         The returned value can be one of the following:
+    245            *         - CLK_SYSCLKSource_HSI: HSI used as system clock
+    246            *         - CLK_SYSCLKSource_LSI: LSI used as system clock
+    247            *         - CLK_SYSCLKSource_HSE: HSE used as system clock
+    248            *         - CLK_SYSCLKSource_LSE: LSE used as system clock
+    249            */
+
+   \                                 In section .near_func.text, align 1
+    250          CLK_SYSCLKSource_TypeDef CLK_GetSYSCLKSource(void)
+    251          {
+    252            return ((CLK_SYSCLKSource_TypeDef)(CLK->SCSR));
+   \                     CLK_GetSYSCLKSource:
+   \   000000 C650C7                LD        A, L:0x50c7
+   \   000003 81                    RET
+    253          }
+    254          
+    255          /**
+    256            * @brief  Enables the Clock Security System.
+    257            * @note   Once CSS is enabled it cannot be disabled until the next reset.
+    258            * @param  None
+    259            * @retval None
+    260            */
+
+   \                                 In section .near_func.text, align 1
+    261          void CLK_ClockSecuritySystemEnable(void)
+    262          {
+    263            /* Set CSSEN bit */
+    264            CLK->CSSR |= CLK_CSSR_CSSEN;
+   \                     CLK_ClockSecuritySystemEnable:
+   \   000000 721050CA              BSET      L:0x50ca, #0x0
+    265          }
+   \   000004 81                    RET
+    266          
+    267          /**
+    268            * @brief  Enables the Clock Security System deglitcher system.
+    269            * @param  None
+    270            * @retval None
+    271            */
+
+   \                                 In section .near_func.text, align 1
+    272          void CLK_ClockSecuritySytemDeglitchCmd(FunctionalState NewState)
+    273          {
+    274            /* Check the parameters */
+    275            assert_param(IS_FUNCTIONAL_STATE(NewState));
+    276          
+    277            if (NewState != DISABLE)
+   \                     CLK_ClockSecuritySytemDeglitchCmd:
+   \   000000 4D                    TNZ       A
+   \   000001 2705                  JREQ      L:??CLK_ClockSecuritySytemDeglitchCmd_0
+    278            {
+    279              /* Set CSSDGON bit */
+    280              CLK->CSSR |= CLK_CSSR_CSSDGON;
+   \   000003 721850CA              BSET      L:0x50ca, #0x4
+   \   000007 81                    RET
+    281            }
+    282            else
+    283            {
+    284              /* Reset CSSDGON  bit */
+    285              CLK->CSSR &= (uint8_t)(~CLK_CSSR_CSSDGON);
+   \                     ??CLK_ClockSecuritySytemDeglitchCmd_0:
+   \   000008 721950CA              BRES      L:0x50ca, #0x4
+    286            }
+    287          }
+   \   00000C 81                    RET
+    288          /**
+    289            * @brief  Returns the frequency of the System clock (SYSCLK).
+    290            * @param  None
+    291            * @retval System clock (SYSCLK) frequency
+    292            */
+
+   \                                 In section .near_func.text, align 1
+    293          uint32_t CLK_GetClockFreq(void)
+    294          {
+   \                     CLK_GetClockFreq:
+   \   000000 CD0000                CALL      L:?push_l2
+    295            uint32_t clockfrequency = 0;
+   \   000003 5F                    CLRW      X
+   \   000004 BF00                  LDW       S:?w1, X
+   \   000006 BF00                  LDW       S:?w0, X
+    296            uint32_t sourcefrequency = 0;
+   \   000008 5F                    CLRW      X
+   \   000009 BF00                  LDW       S:?w5, X
+   \   00000B BF00                  LDW       S:?w4, X
+    297            CLK_SYSCLKSource_TypeDef clocksource = CLK_SYSCLKSource_HSI;
+   \   00000D 35010000              MOV       S:?b6, #0x1
+    298            uint8_t tmp = 0, presc = 0;
+   \   000011 3F00                  CLR       S:?b5
+   \   000013 3F00                  CLR       S:?b4
+    299          
+    300            /* Get SYSCLK source. */
+    301            clocksource = (CLK_SYSCLKSource_TypeDef)CLK->SCSR;
+   \   000015 C650C7                LD        A, L:0x50c7
+   \   000018 B700                  LD        S:?b6, A
+    302          
+    303            if ( clocksource == CLK_SYSCLKSource_HSI)
+   \   00001A B600                  LD        A, S:?b6
+   \   00001C A101                  CP        A, #0x1
+   \   00001E 260C                  JRNE      L:??CLK_GetClockFreq_0
+    304            {
+    305              sourcefrequency = HSI_VALUE;
+   \   000020 AE2400                LDW       X, #0x2400
+   \   000023 BF00                  LDW       S:?w5, X
+   \   000025 AE00F4                LDW       X, #0xf4
+   \   000028 BF00                  LDW       S:?w4, X
+   \   00002A 202A                  JRA       L:??CLK_GetClockFreq_1
+    306            }
+    307            else if ( clocksource == CLK_SYSCLKSource_LSI)
+   \                     ??CLK_GetClockFreq_0:
+   \   00002C B600                  LD        A, S:?b6
+   \   00002E A102                  CP        A, #0x2
+   \   000030 260A                  JRNE      L:??CLK_GetClockFreq_2
+    308            {
+    309              sourcefrequency = LSI_VALUE;
+   \   000032 AE9470                LDW       X, #0x9470
+   \   000035 BF00                  LDW       S:?w5, X
+   \   000037 5F                    CLRW      X
+   \   000038 BF00                  LDW       S:?w4, X
+   \   00003A 201A                  JRA       L:??CLK_GetClockFreq_1
+    310            }
+    311            else if ( clocksource == CLK_SYSCLKSource_HSE)
+   \                     ??CLK_GetClockFreq_2:
+   \   00003C B600                  LD        A, S:?b6
+   \   00003E A104                  CP        A, #0x4
+   \   000040 260C                  JRNE      L:??CLK_GetClockFreq_3
+    312            {
+    313              sourcefrequency = HSE_VALUE;
+   \   000042 AE2400                LDW       X, #0x2400
+   \   000045 BF00                  LDW       S:?w5, X
+   \   000047 AE00F4                LDW       X, #0xf4
+   \   00004A BF00                  LDW       S:?w4, X
+   \   00004C 2008                  JRA       L:??CLK_GetClockFreq_1
+    314            }
+    315            else
+    316            {
+    317              clockfrequency = LSE_VALUE;
+   \                     ??CLK_GetClockFreq_3:
+   \   00004E AE8000                LDW       X, #0x8000
+   \   000051 BF00                  LDW       S:?w1, X
+   \   000053 58                    SLLW      X
+   \   000054 BF00                  LDW       S:?w0, X
+    318            }
+    319          
+    320            /* Get System clock divider factor*/
+    321            tmp = (uint8_t)(CLK->CKDIVR & CLK_CKDIVR_CKM);
+   \                     ??CLK_GetClockFreq_1:
+   \   000056 C650C0                LD        A, L:0x50c0
+   \   000059 A407                  AND       A, #0x7
+   \   00005B B700                  LD        S:?b5, A
+    322            presc = SYSDivFactor[tmp];
+   \   00005D 5F                    CLRW      X
+   \   00005E 41                    EXG       A, XL
+   \   00005F B600                  LD        A, S:?b5
+   \   000061 41                    EXG       A, XL
+   \   000062 D60000                LD        A, (L:SYSDivFactor,X)
+   \   000065 B700                  LD        S:?b4, A
+    323          
+    324            /* Get System clock clcok frequency */
+    325            clockfrequency = sourcefrequency / presc;
+   \   000067 5F                    CLRW      X
+   \   000068 41                    EXG       A, XL
+   \   000069 B600                  LD        A, S:?b4
+   \   00006B 41                    EXG       A, XL
+   \   00006C BF00                  LDW       S:?w3, X
+   \   00006E 5F                    CLRW      X
+   \   00006F BF00                  LDW       S:?w2, X
+   \   000071 CD0000                CALL      L:?mov_l0_l2
+   \   000074 CD0000                CALL      L:?udiv32_l0_l0_l1
+    326          
+    327            return((uint32_t)clockfrequency);
+   \   000077 CC0000                JP        L:?epilogue_l2
+    328          }
+    329          
+    330          
+    331          /**
+    332            * @brief  Enables or disables the specified CLK interrupts.
+    333            * @param  CLK_IT : Specifies the interrupt sources.
+    334            *         This parameter can be a value of @ref CLK_IT_TypeDef.
+    335            * @param  NewState : New state of the Interrupt, value accepted ENABLE, DISABLE.
+    336            * @retval None
+    337            */
+
+   \                                 In section .near_func.text, align 1
+    338          void CLK_ITConfig(CLK_IT_TypeDef CLK_IT, FunctionalState NewState)
+    339          {
+    340          
+    341            /* check the parameters */
+    342            assert_param(IS_CLK_IT(CLK_IT));
+    343            assert_param(IS_FUNCTIONAL_STATE(NewState));
+    344          
+    345            if (NewState != DISABLE)
+   \                     CLK_ITConfig:
+   \   000000 3D00                  TNZ       S:?b0
+   \   000002 2717                  JREQ      L:??CLK_ITConfig_0
+    346            {
+    347              if (CLK_IT == CLK_IT_SWIF)
+   \   000004 A11C                  CP        A, #0x1c
+   \   000006 2605                  JRNE      L:??CLK_ITConfig_1
+    348              {
+    349                /* Enable the clock switch interrupt */
+    350                CLK->SWCR |= CLK_SWCR_SWIEN;
+   \   000008 721450C9              BSET      L:0x50c9, #0x2
+   \   00000C 81                    RET
+    351              }
+    352              else if (CLK_IT == CLK_IT_LSECSSF)
+   \                     ??CLK_ITConfig_1:
+   \   00000D A12C                  CP        A, #0x2c
+   \   00000F 2605                  JRNE      L:??CLK_ITConfig_2
+    353              {
+    354                /* Enable the CSS on LSE  interrupt */
+    355                CSSLSE->CSR |= CSSLSE_CSR_CSSIE;
+   \   000011 72145190              BSET      L:0x5190, #0x2
+   \   000015 81                    RET
+    356              }
+    357              else
+    358              {
+    359                /* Enable the clock security system detection interrupt */
+    360                CLK->CSSR |= CLK_CSSR_CSSDIE;
+   \                     ??CLK_ITConfig_2:
+   \   000016 721450CA              BSET      L:0x50ca, #0x2
+   \   00001A 81                    RET
+    361              }
+    362            }
+    363            else  /*(NewState == DISABLE)*/
+    364            {
+    365              if (CLK_IT == CLK_IT_SWIF)
+   \                     ??CLK_ITConfig_0:
+   \   00001B A11C                  CP        A, #0x1c
+   \   00001D 2605                  JRNE      L:??CLK_ITConfig_3
+    366              {
+    367                /* Disable the clock switch interrupt */
+    368                CLK->SWCR  &= (uint8_t)(~CLK_SWCR_SWIEN);
+   \   00001F 721550C9              BRES      L:0x50c9, #0x2
+   \   000023 81                    RET
+    369              }
+    370              else if (CLK_IT == CLK_IT_LSECSSF)
+   \                     ??CLK_ITConfig_3:
+   \   000024 A12C                  CP        A, #0x2c
+   \   000026 2605                  JRNE      L:??CLK_ITConfig_4
+    371              {
+    372                /* Disable the CSS on LSE  interrupt */
+    373                CSSLSE->CSR &= (uint8_t)(~CSSLSE_CSR_CSSIE);
+   \   000028 72155190              BRES      L:0x5190, #0x2
+   \   00002C 81                    RET
+    374              }
+    375              else
+    376              {
+    377                /* Disable the clock security system detection interrupt */
+    378                CLK->CSSR &= (uint8_t)(~CLK_CSSR_CSSDIE);
+   \                     ??CLK_ITConfig_4:
+   \   00002D 721550CA              BRES      L:0x50ca, #0x2
+    379              }
+    380            }
+    381          }
+   \   000031 81                    RET
+    382          
+    383          /**
+    384            * @brief  Selects the clock source to output on CCO pin.
+    385            * @param  CLK_CCOSource : Specifies the clock source.
+    386            *         This parameter can be a value of @ref CLK_CCOSource_TypeDef.
+    387            * @param  CLK_CCODiv : Specifies the clock source divider.
+    388            *         This parameter can be a value of @ref CLK_CCODiv_TypeDef.
+    389            * @retval None
+    390            */
+
+   \                                 In section .near_func.text, align 1
+    391          void CLK_CCOConfig(CLK_CCOSource_TypeDef CLK_CCOSource, CLK_CCODiv_TypeDef CLK_CCODiv)
+    392          {
+   \                     CLK_CCOConfig:
+   \   000000 B700                  LD        S:?b1, A
+   \   000002 B600                  LD        A, S:?b0
+    393            /* check teh parameters */
+    394            assert_param(IS_CLK_OUTPUT(CLK_CCOSource));
+    395            assert_param(IS_CLK_OUTPUT_DIVIDER(CLK_CCODiv));
+    396          
+    397            /* Selects the source provided on cco_ck output and its divider*/
+    398            CLK->CCOR = (uint8_t)((uint8_t)CLK_CCOSource | (uint8_t)CLK_CCODiv);
+   \   000004 BA00                  OR        A, S:?b1
+   \   000006 C750C5                LD        L:0x50c5, A
+    399          }
+   \   000009 81                    RET
+    400          
+    401          /**
+    402            * @brief  Configures the RTC clock source.
+    403            * @param  CLK_RTCCLKSource : Specifies the RTC clock source.
+    404            *         This parameter can be a value of @ref CLK_RTCCLKSource_TypeDef.
+    405            * @param  CLK_RTCCLKDiv : Specifies the RTC clock source divider.
+    406            *         This parameter can be a value of @ref CLK_RTCCLKDiv_TypeDef.
+    407            * @retval None
+    408            */
+
+   \                                 In section .near_func.text, align 1
+    409          void CLK_RTCClockConfig(CLK_RTCCLKSource_TypeDef CLK_RTCCLKSource, CLK_RTCCLKDiv_TypeDef CLK_RTCCLKDiv)
+    410          {
+   \                     CLK_RTCClockConfig:
+   \   000000 B700                  LD        S:?b1, A
+   \   000002 B600                  LD        A, S:?b0
+    411            /* check the parameters */
+    412            assert_param(IS_CLK_CLOCK_RTC(CLK_RTCCLKSource));
+    413            assert_param(IS_CLK_CLOCK_RTC_DIV(CLK_RTCCLKDiv));
+    414          
+    415            /* Selects the source provided on to RTC and its divider*/
+    416            CLK->CRTCR = (uint8_t)((uint8_t)CLK_RTCCLKSource | (uint8_t)CLK_RTCCLKDiv);
+   \   000004 BA00                  OR        A, S:?b1
+   \   000006 C750C1                LD        L:0x50c1, A
+    417          }
+   \   000009 81                    RET
+    418          
+    419          /**
+    420            * @brief  Configures the BEEP clock source.
+    421            * @param  CLK_BEEPCLKSource : Specifies the BEEP clock source.
+    422            *         This parameter can be a value of @ref CLK_BEEPCLKSource_TypeDef.
+    423            * @retval None
+    424            */
+
+   \                                 In section .near_func.text, align 1
+    425          void CLK_BEEPClockConfig(CLK_BEEPCLKSource_TypeDef CLK_BEEPCLKSource)
+    426          {
+    427            /* check the parameters */
+    428            assert_param(IS_CLK_CLOCK_BEEP(CLK_BEEPCLKSource));
+    429          
+    430            /* Selects the source provided to BEEP*/
+    431            CLK->CBEEPR = (uint8_t)(CLK_BEEPCLKSource);
+   \                     CLK_BEEPClockConfig:
+   \   000000 C750CB                LD        L:0x50cb, A
+    432          
+    433          }
+   \   000003 81                    RET
+    434          
+    435          /**
+    436            * @brief  Enables or disables the specified peripheral clock.
+    437            * @param  CLK_Peripheral : This parameter specifies the peripheral clock to gate.
+    438            *         This parameter can be a value of @ref CLK_Peripheral_TypeDef.
+    439            * @param  NewState : New state of specified peripheral clock.
+    440            *         This parameter can be a value of @ref FunctionalState.
+    441            * @retval None
+    442            */
+
+   \                                 In section .near_func.text, align 1
+    443          void CLK_PeripheralClockConfig(CLK_Peripheral_TypeDef CLK_Peripheral, FunctionalState NewState)
+    444          {
+   \                     CLK_PeripheralClockConfig:
+   \   000000 B700                  LD        S:?b2, A
+    445            uint8_t reg = 0;
+   \   000002 3F00                  CLR       S:?b1
+    446          
+    447            /* Check the parameters */
+    448            assert_param(IS_CLK_PERIPHERAL(CLK_Peripheral));
+    449            assert_param(IS_FUNCTIONAL_STATE(NewState));
+    450          
+    451            /* get flag register */
+    452            reg = (uint8_t)((uint8_t)CLK_Peripheral & (uint8_t)0xF0);
+   \   000004 B600                  LD        A, S:?b2
+   \   000006 A4F0                  AND       A, #0xf0
+   \   000008 B700                  LD        S:?b1, A
+    453          
+    454            if ( reg == 0x00)
+   \   00000A 3D00                  TNZ       S:?b1
+   \   00000C 2627                  JRNE      L:??CLK_PeripheralClockConfig_0
+    455            {
+    456              if (NewState != DISABLE)
+   \   00000E 3D00                  TNZ       S:?b0
+   \   000010 2711                  JREQ      L:??CLK_PeripheralClockConfig_1
+    457              {
+    458                /* Enable the peripheral Clock */
+    459                CLK->PCKENR1 |= (uint8_t)((uint8_t)1 << ((uint8_t)CLK_Peripheral & (uint8_t)0x0F));
+   \   000012 B600                  LD        A, S:?b2
+   \   000014 A40F                  AND       A, #0xf
+   \   000016 5F                    CLRW      X
+   \   000017 5C                    INCW      X
+   \   000018 CD0000                CALL      L:?sll16_x_x_a
+   \   00001B 9F                    LD        A, XL
+   \   00001C CA50C3                OR        A, L:0x50c3
+   \   00001F C750C3                LD        L:0x50c3, A
+   \   000022 81                    RET
+    460              }
+    461              else
+    462              {
+    463                /* Disable the peripheral Clock */
+    464                CLK->PCKENR1 &= (uint8_t)(~(uint8_t)(((uint8_t)1 << ((uint8_t)CLK_Peripheral & (uint8_t)0x0F))));
+   \                     ??CLK_PeripheralClockConfig_1:
+   \   000023 B600                  LD        A, S:?b2
+   \   000025 A40F                  AND       A, #0xf
+   \   000027 5F                    CLRW      X
+   \   000028 5C                    INCW      X
+   \   000029 CD0000                CALL      L:?sll16_x_x_a
+   \   00002C 9F                    LD        A, XL
+   \   00002D 43                    CPL       A
+   \   00002E C450C3                AND       A, L:0x50c3
+   \   000031 C750C3                LD        L:0x50c3, A
+   \   000034 81                    RET
+    465              }
+    466            }
+    467            else if (reg == 0x10)
+   \                     ??CLK_PeripheralClockConfig_0:
+   \   000035 B600                  LD        A, S:?b1
+   \   000037 A110                  CP        A, #0x10
+   \   000039 2627                  JRNE      L:??CLK_PeripheralClockConfig_2
+    468            {
+    469              if (NewState != DISABLE)
+   \   00003B 3D00                  TNZ       S:?b0
+   \   00003D 2711                  JREQ      L:??CLK_PeripheralClockConfig_3
+    470              {
+    471                /* Enable the peripheral Clock */
+    472                CLK->PCKENR2 |= (uint8_t)((uint8_t)1 << ((uint8_t)CLK_Peripheral & (uint8_t)0x0F));
+   \   00003F B600                  LD        A, S:?b2
+   \   000041 A40F                  AND       A, #0xf
+   \   000043 5F                    CLRW      X
+   \   000044 5C                    INCW      X
+   \   000045 CD0000                CALL      L:?sll16_x_x_a
+   \   000048 9F                    LD        A, XL
+   \   000049 CA50C4                OR        A, L:0x50c4
+   \   00004C C750C4                LD        L:0x50c4, A
+   \   00004F 81                    RET
+    473              }
+    474              else
+    475              {
+    476                /* Disable the peripheral Clock */
+    477                CLK->PCKENR2 &= (uint8_t)(~(uint8_t)(((uint8_t)1 << ((uint8_t)CLK_Peripheral & (uint8_t)0x0F))));
+   \                     ??CLK_PeripheralClockConfig_3:
+   \   000050 B600                  LD        A, S:?b2
+   \   000052 A40F                  AND       A, #0xf
+   \   000054 5F                    CLRW      X
+   \   000055 5C                    INCW      X
+   \   000056 CD0000                CALL      L:?sll16_x_x_a
+   \   000059 9F                    LD        A, XL
+   \   00005A 43                    CPL       A
+   \   00005B C450C4                AND       A, L:0x50c4
+   \   00005E C750C4                LD        L:0x50c4, A
+   \   000061 81                    RET
+    478              }
+    479            }
+    480            else
+    481            {
+    482              if (NewState != DISABLE)
+   \                     ??CLK_PeripheralClockConfig_2:
+   \   000062 3D00                  TNZ       S:?b0
+   \   000064 2711                  JREQ      L:??CLK_PeripheralClockConfig_4
+    483              {
+    484                /* Enable the peripheral Clock */
+    485                CLK->PCKENR3 |= (uint8_t)((uint8_t)1 << ((uint8_t)CLK_Peripheral & (uint8_t)0x0F));
+   \   000066 B600                  LD        A, S:?b2
+   \   000068 A40F                  AND       A, #0xf
+   \   00006A 5F                    CLRW      X
+   \   00006B 5C                    INCW      X
+   \   00006C CD0000                CALL      L:?sll16_x_x_a
+   \   00006F 9F                    LD        A, XL
+   \   000070 CA50D0                OR        A, L:0x50d0
+   \   000073 C750D0                LD        L:0x50d0, A
+   \   000076 81                    RET
+    486              }
+    487              else
+    488              {
+    489                /* Disable the peripheral Clock */
+    490                CLK->PCKENR3 &= (uint8_t)(~(uint8_t)(((uint8_t)1 << ((uint8_t)CLK_Peripheral & (uint8_t)0x0F))));
+   \                     ??CLK_PeripheralClockConfig_4:
+   \   000077 B600                  LD        A, S:?b2
+   \   000079 A40F                  AND       A, #0xf
+   \   00007B 5F                    CLRW      X
+   \   00007C 5C                    INCW      X
+   \   00007D CD0000                CALL      L:?sll16_x_x_a
+   \   000080 9F                    LD        A, XL
+   \   000081 43                    CPL       A
+   \   000082 C450D0                AND       A, L:0x50d0
+   \   000085 C750D0                LD        L:0x50d0, A
+    491              }
+    492            }
+    493          }
+   \   000088 81                    RET
+    494          
+    495          /**
+    496            * @brief  Configures clock during halt and active halt modes.
+    497            * @param  CLK_Halt : Specifies the clock state and wake-up mode from halt way.
+    498            *         This parameter can be a value of @ref CLK_Halt_TypeDef.
+    499            * @param  NewState : Specifies the System clock (SYSCLK) state in active halt mode.
+    500            *         This parameter can be ENABLE or DISABLE.
+    501            * @retval None
+    502            */
+
+   \                                 In section .near_func.text, align 1
+    503          void CLK_HaltConfig(CLK_Halt_TypeDef CLK_Halt, FunctionalState NewState)
+    504          {
+    505            /* check the parameters */
+    506            assert_param(IS_CLK_HALT(CLK_Halt));
+    507            assert_param(IS_FUNCTIONAL_STATE(NewState));
+    508          
+    509            if (NewState != DISABLE)
+   \                     CLK_HaltConfig:
+   \   000000 3D00                  TNZ       S:?b0
+   \   000002 2707                  JREQ      L:??CLK_HaltConfig_0
+    510            {
+    511              CLK->ICKCR |= (uint8_t)(CLK_Halt);
+   \   000004 CA50C2                OR        A, L:0x50c2
+   \   000007 C750C2                LD        L:0x50c2, A
+   \   00000A 81                    RET
+    512            }
+    513            else
+    514            {
+    515              CLK->ICKCR &= (uint8_t)(~CLK_Halt);
+   \                     ??CLK_HaltConfig_0:
+   \   00000B 43                    CPL       A
+   \   00000C C450C2                AND       A, L:0x50c2
+   \   00000F C750C2                LD        L:0x50c2, A
+    516            }
+    517          }
+   \   000012 81                    RET
+    518          
+    519          /**
+    520            * @brief  Configures the main voltage regulator
+    521            * @param  NewState: specifies the MVR  state.
+    522            *         This parameter can be one of the following values:
+    523            *         - DISABLE: MVR disabled;
+    524            *         - ENABLE:  MVR enabled.
+    525            * @retval None
+    526            */
+
+   \                                 In section .near_func.text, align 1
+    527          void CLK_MainRegulatorCmd(FunctionalState NewState)
+    528          {
+    529            /* check the parameters */
+    530            assert_param(IS_FUNCTIONAL_STATE(NewState));
+    531          
+    532            if (NewState != DISABLE)
+   \                     CLK_MainRegulatorCmd:
+   \   000000 4D                    TNZ       A
+   \   000001 2705                  JREQ      L:??CLK_MainRegulatorCmd_0
+    533            {
+    534              /* Reset REGUOFF bit */
+    535              CLK->REGCSR &= (uint8_t)(~CLK_REGCSR_REGOFF);
+   \   000003 721350CF              BRES      L:0x50cf, #0x1
+   \   000007 81                    RET
+    536            }
+    537            else
+    538            {
+    539              /* Set REGUOFF bit */
+    540              CLK->REGCSR |= CLK_REGCSR_REGOFF;
+   \                     ??CLK_MainRegulatorCmd_0:
+   \   000008 721250CF              BSET      L:0x50cf, #0x1
+    541            }
+    542          }
+   \   00000C 81                    RET
+    543          
+    544          /**
+    545            * @brief  Checks whether the specified CLK flag is set or not.
+    546            * @param  CLK_FLAG : Flag to check. This parameter can be a value of @ref CLK_FLAG_TypeDef
+    547            * @retval FlagStatus : status of the checked flag
+    548            */
+
+   \                                 In section .near_func.text, align 1
+    549          FlagStatus CLK_GetFlagStatus(CLK_FLAG_TypeDef CLK_FLAG)
+    550          {
+   \                     CLK_GetFlagStatus:
+   \   000000 B700                  LD        S:?b2, A
+    551            uint8_t reg = 0;
+   \   000002 3F00                  CLR       S:?b3
+    552            uint8_t pos = 0;
+   \   000004 3F00                  CLR       S:?b1
+    553            FlagStatus bitstatus = RESET;
+   \   000006 3F00                  CLR       S:?b0
+    554          
+    555            /* check the parameters */
+    556            assert_param(IS_CLK_FLAGS(CLK_FLAG));
+    557          
+    558            /* get flag register */
+    559            reg = (uint8_t)((uint8_t)CLK_FLAG & (uint8_t)0xF0);
+   \   000008 B600                  LD        A, S:?b2
+   \   00000A A4F0                  AND       A, #0xf0
+   \   00000C B700                  LD        S:?b3, A
+    560          
+    561            /* get flag position */
+    562            pos = (uint8_t)((uint8_t)CLK_FLAG & (uint8_t)0x0F);
+   \   00000E B600                  LD        A, S:?b2
+   \   000010 A40F                  AND       A, #0xf
+   \   000012 B700                  LD        S:?b1, A
+    563          
+    564            if (reg == 0x00) /* The flag to check is in CRTC Rregister */
+   \   000014 3D00                  TNZ       S:?b3
+   \   000016 2607                  JRNE      L:??CLK_GetFlagStatus_0
+    565            {
+    566              reg = CLK->CRTCR;
+   \   000018 C650C1                LD        A, L:0x50c1
+   \   00001B B700                  LD        S:?b3, A
+   \   00001D 2060                  JRA       L:??CLK_GetFlagStatus_1
+    567            }
+    568            else if (reg == 0x10) /* The flag to check is in ICKCR register */
+   \                     ??CLK_GetFlagStatus_0:
+   \   00001F B600                  LD        A, S:?b3
+   \   000021 A110                  CP        A, #0x10
+   \   000023 2607                  JRNE      L:??CLK_GetFlagStatus_2
+    569            {
+    570              reg = CLK->ICKCR;
+   \   000025 C650C2                LD        A, L:0x50c2
+   \   000028 B700                  LD        S:?b3, A
+   \   00002A 2053                  JRA       L:??CLK_GetFlagStatus_1
+    571            }
+    572            else if (reg == 0x20) /* The flag to check is in CCOR register */
+   \                     ??CLK_GetFlagStatus_2:
+   \   00002C B600                  LD        A, S:?b3
+   \   00002E A120                  CP        A, #0x20
+   \   000030 2607                  JRNE      L:??CLK_GetFlagStatus_3
+    573            {
+    574              reg = CLK->CCOR;
+   \   000032 C650C5                LD        A, L:0x50c5
+   \   000035 B700                  LD        S:?b3, A
+   \   000037 2046                  JRA       L:??CLK_GetFlagStatus_1
+    575            }
+    576            else if (reg == 0x30) /* The flag to check is in ECKCR register */
+   \                     ??CLK_GetFlagStatus_3:
+   \   000039 B600                  LD        A, S:?b3
+   \   00003B A130                  CP        A, #0x30
+   \   00003D 2607                  JRNE      L:??CLK_GetFlagStatus_4
+    577            {
+    578              reg = CLK->ECKCR;
+   \   00003F C650C6                LD        A, L:0x50c6
+   \   000042 B700                  LD        S:?b3, A
+   \   000044 2039                  JRA       L:??CLK_GetFlagStatus_1
+    579            }
+    580            else if (reg == 0x40) /* The flag to check is in SWCR register */
+   \                     ??CLK_GetFlagStatus_4:
+   \   000046 B600                  LD        A, S:?b3
+   \   000048 A140                  CP        A, #0x40
+   \   00004A 2607                  JRNE      L:??CLK_GetFlagStatus_5
+    581            {
+    582              reg = CLK->SWCR;
+   \   00004C C650C9                LD        A, L:0x50c9
+   \   00004F B700                  LD        S:?b3, A
+   \   000051 202C                  JRA       L:??CLK_GetFlagStatus_1
+    583            }
+    584            else if (reg == 0x50) /* The flag to check is in CSSR register */
+   \                     ??CLK_GetFlagStatus_5:
+   \   000053 B600                  LD        A, S:?b3
+   \   000055 A150                  CP        A, #0x50
+   \   000057 2607                  JRNE      L:??CLK_GetFlagStatus_6
+    585            {
+    586              reg = CLK->CSSR;
+   \   000059 C650CA                LD        A, L:0x50ca
+   \   00005C B700                  LD        S:?b3, A
+   \   00005E 201F                  JRA       L:??CLK_GetFlagStatus_1
+    587            }
+    588            else if (reg == 0x70) /* The flag to check is in REGCSR register */
+   \                     ??CLK_GetFlagStatus_6:
+   \   000060 B600                  LD        A, S:?b3
+   \   000062 A170                  CP        A, #0x70
+   \   000064 2607                  JRNE      L:??CLK_GetFlagStatus_7
+    589            {
+    590              reg = CLK->REGCSR;
+   \   000066 C650CF                LD        A, L:0x50cf
+   \   000069 B700                  LD        S:?b3, A
+   \   00006B 2012                  JRA       L:??CLK_GetFlagStatus_1
+    591            }
+    592            else if (reg == 0x80) /* The flag to check is in CSSLSE_CSRregister */
+   \                     ??CLK_GetFlagStatus_7:
+   \   00006D B600                  LD        A, S:?b3
+   \   00006F A180                  CP        A, #0x80
+   \   000071 2607                  JRNE      L:??CLK_GetFlagStatus_8
+    593            {
+    594              reg = CSSLSE->CSR;
+   \   000073 C65190                LD        A, L:0x5190
+   \   000076 B700                  LD        S:?b3, A
+   \   000078 2005                  JRA       L:??CLK_GetFlagStatus_1
+    595            }
+    596            else /* The flag to check is in CBEEPR register */
+    597            {
+    598              reg = CLK->CBEEPR;
+   \                     ??CLK_GetFlagStatus_8:
+   \   00007A C650CB                LD        A, L:0x50cb
+   \   00007D B700                  LD        S:?b3, A
+    599            }
+    600          
+    601          
+    602            if ((reg & (uint8_t)((uint8_t)1 << (uint8_t)pos)) != (uint8_t)RESET)
+   \                     ??CLK_GetFlagStatus_1:
+   \   00007F 5F                    CLRW      X
+   \   000080 5C                    INCW      X
+   \   000081 B600                  LD        A, S:?b1
+   \   000083 CD0000                CALL      L:?sll16_x_x_a
+   \   000086 9F                    LD        A, XL
+   \   000087 B400                  AND       A, S:?b3
+   \   000089 A100                  CP        A, #0x0
+   \   00008B 2706                  JREQ      L:??CLK_GetFlagStatus_9
+    603            {
+    604              bitstatus = SET;
+   \   00008D 35010000              MOV       S:?b0, #0x1
+   \   000091 2002                  JRA       L:??CLK_GetFlagStatus_10
+    605            }
+    606            else
+    607            {
+    608              bitstatus = RESET;
+   \                     ??CLK_GetFlagStatus_9:
+   \   000093 3F00                  CLR       S:?b0
+    609            }
+    610          
+    611            /* Return the flag status */
+    612            return((FlagStatus)bitstatus);
+   \                     ??CLK_GetFlagStatus_10:
+   \   000095 B600                  LD        A, S:?b0
+   \   000097 81                    RET
+    613          }
+    614          
+    615          /**
+    616            * @brief  Clears the CSS LSE Flag.
+    617            * @param  None
+    618            * @retval None
+    619            */
+
+   \                                 In section .near_func.text, align 1
+    620          void CLK_ClearFlag(void)
+    621          {
+    622          
+    623            /* Clear the clock security system on LSE  dtetction Flag */
+    624            CSSLSE->CSR &= (uint8_t)(~CSSLSE_CSR_CSSF);
+   \                     CLK_ClearFlag:
+   \   000000 72175190              BRES      L:0x5190, #0x3
+    625          }
+   \   000004 81                    RET
+    626          
+    627          /**
+    628            * @brief  Checks whether the specified CLK interrupt has is enabled or not.
+    629            * @param  CLK_IT : specifies the CLK interrupt.
+    630            *         This parameter can be a value of @ref CLK_IT_TypeDef
+    631            * @retval ITStatus : state of CLK_IT (SET or RESET).
+    632            */
+
+   \                                 In section .near_func.text, align 1
+    633          ITStatus CLK_GetITStatus(CLK_IT_TypeDef CLK_IT)
+    634          {
+    635          
+    636            ITStatus bitstatus = RESET;
+   \                     CLK_GetITStatus:
+   \   000000 3F00                  CLR       S:?b0
+    637          
+    638            /* check the parameters */
+    639            assert_param(IS_CLK_IT(CLK_IT));
+    640          
+    641            if (CLK_IT == CLK_IT_SWIF)
+   \   000002 A11C                  CP        A, #0x1c
+   \   000004 2611                  JRNE      L:??CLK_GetITStatus_0
+    642            {
+    643              /* Check the status of the clock switch interrupt */
+    644              if ((CLK->SWCR & (uint8_t)CLK_IT) == (uint8_t)0x0C)
+   \   000006 C450C9                AND       A, L:0x50c9
+   \   000009 A10C                  CP        A, #0xc
+   \   00000B 2606                  JRNE      L:??CLK_GetITStatus_1
+    645              {
+    646                bitstatus = SET;
+   \   00000D 35010000              MOV       S:?b0, #0x1
+   \   000011 2028                  JRA       L:??CLK_GetITStatus_2
+    647              }
+    648              else
+    649              {
+    650                bitstatus = RESET;
+   \                     ??CLK_GetITStatus_1:
+   \   000013 3F00                  CLR       S:?b0
+   \   000015 2024                  JRA       L:??CLK_GetITStatus_2
+    651              }
+    652            }
+    653            else if (CLK_IT == CLK_IT_LSECSSF)
+   \                     ??CLK_GetITStatus_0:
+   \   000017 A12C                  CP        A, #0x2c
+   \   000019 2611                  JRNE      L:??CLK_GetITStatus_3
+    654            {
+    655              /* Check the status of the clock security system on LSE interrupt */
+    656              if ((CSSLSE->CSR & (uint8_t)CLK_IT) == (uint8_t)0x0C)
+   \   00001B C45190                AND       A, L:0x5190
+   \   00001E A10C                  CP        A, #0xc
+   \   000020 2606                  JRNE      L:??CLK_GetITStatus_4
+    657              {
+    658                bitstatus = SET;
+   \   000022 35010000              MOV       S:?b0, #0x1
+   \   000026 2013                  JRA       L:??CLK_GetITStatus_2
+    659              }
+    660              else
+    661              {
+    662                bitstatus = RESET;
+   \                     ??CLK_GetITStatus_4:
+   \   000028 3F00                  CLR       S:?b0
+   \   00002A 200F                  JRA       L:??CLK_GetITStatus_2
+    663              }
+    664            }
+    665            else /* CLK_IT == CLK_IT_CSSD */
+    666            {
+    667              /* Check the status of the security system detection interrupt */
+    668              if ((CLK->CSSR & (uint8_t)CLK_IT) == (uint8_t)0x0C)
+   \                     ??CLK_GetITStatus_3:
+   \   00002C C450CA                AND       A, L:0x50ca
+   \   00002F A10C                  CP        A, #0xc
+   \   000031 2606                  JRNE      L:??CLK_GetITStatus_5
+    669              {
+    670                bitstatus = SET;
+   \   000033 35010000              MOV       S:?b0, #0x1
+   \   000037 2002                  JRA       L:??CLK_GetITStatus_2
+    671              }
+    672              else
+    673              {
+    674                bitstatus = RESET;
+   \                     ??CLK_GetITStatus_5:
+   \   000039 3F00                  CLR       S:?b0
+    675              }
+    676            }
+    677          
+    678            /* Return the CLK_IT status */
+    679            return bitstatus;
+   \                     ??CLK_GetITStatus_2:
+   \   00003B B600                  LD        A, S:?b0
+   \   00003D 81                    RET
+    680          }
+    681          
+    682          
+    683          /**
+    684            * @brief  Clears the CLK’s interrupt pending bits.
+    685            * @param  CLK_IT : specifies the interrupt pending bits.
+    686            *         This parameter can be a value of CLK_IT_TypeDef
+    687            * @retval None
+    688            */
+
+   \                                 In section .near_func.text, align 1
+    689          void CLK_ClearITPendingBit(CLK_IT_TypeDef CLK_IT)
+    690          {
+    691          
+    692            /* check the parameters */
+    693            assert_param(IS_CLK_CLEAR_IT(CLK_IT));
+    694          
+    695            if ((uint8_t)((uint8_t)CLK_IT & (uint8_t)0xF0) == (uint8_t)0x20)
+   \                     CLK_ClearITPendingBit:
+   \   000000 A4F0                  AND       A, #0xf0
+   \   000002 A120                  CP        A, #0x20
+   \   000004 2605                  JRNE      L:??CLK_ClearITPendingBit_0
+    696            {
+    697              /* Clear the status of the clock security system on LSE interrupt */
+    698              CSSLSE->CSR &= (uint8_t)(~CSSLSE_CSR_CSSF);
+   \   000006 72175190              BRES      L:0x5190, #0x3
+   \   00000A 81                    RET
+    699            }
+    700            else
+    701            {
+    702              /* Clear the status of the clock switch interrupt */
+    703              CLK->SWCR &= (uint8_t)(~CLK_SWCR_SWIF);
+   \                     ??CLK_ClearITPendingBit_0:
+   \   00000B 721750C9              BRES      L:0x50c9, #0x3
+    704            }
+    705          }
+   \   00000F 81                    RET
+    706          
+    707          /**
+    708            * @brief  Enables the clock CSS on LSE.
+    709            * @note   Once Enabled, only POR can Disable it.
+    710            * @param  None
+    711            * @retval None
+    712            */
+
+   \                                 In section .near_func.text, align 1
+    713          void CLK_LSEClockSecuritySystemEnable(void)
+    714          {
+    715            /* Set CSSEN bit */
+    716            CSSLSE->CSR |= CSSLSE_CSR_CSSEN;
+   \                     CLK_LSEClockSecuritySystemEnable:
+   \   000000 72105190              BSET      L:0x5190, #0x0
+    717          }
+   \   000004 81                    RET
+    718          
+    719          /**
+    720            * @brief  Enables RTC clock switch to LSI in case of LSE failure.
+    721            * @note   Once Enabled, only POR can Disable it.
+    722            * @param  None
+    723            * @retval None
+    724            */
+
+   \                                 In section .near_func.text, align 1
+    725          void CLK_RTCCLKSwitchOnLSEFailureEnable(void)
+    726          {
+    727            /* Set SWITCHEN bit */
+    728            CSSLSE->CSR |= CSSLSE_CSR_SWITCHEN;
+   \                     CLK_RTCCLKSwitchOnLSEFailureEnable:
+   \   000000 72125190              BSET      L:0x5190, #0x1
+    729          }
+   \   000004 81                    RET
+    730          
+    731          
+    732          /**
+    733            * @}
+    734            */
+    735          
+    736          /**
+    737            * @}
+    738            */
+    739          
+    740          /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
+
+   Section sizes:
+
+     Function/Label                 Bytes
+     --------------                 -----
+     SYSDivFactor                      5
+     CLK_DeInit                       65
+     CLK_HSICmd                       13
+     CLK_AdjustHSICalibrationValue    12
+     CLK_LSICmd                       13
+     CLK_HSEConfig                    15
+     CLK_LSEConfig                    15
+     CLK_SYSCLKSourceConfig            4
+     CLK_SYSCLKDivConfig               4
+     CLK_SYSCLKSourceSwitchCmd        13
+     CLK_GetSYSCLKSource               4
+     CLK_ClockSecuritySystemEnable     5
+     CLK_ClockSecuritySytemDeglitchCmd
+                                      13
+     CLK_GetClockFreq                122
+     CLK_ITConfig                     50
+     CLK_CCOConfig                    10
+     CLK_RTCClockConfig               10
+     CLK_BEEPClockConfig               4
+     CLK_PeripheralClockConfig       137
+     CLK_HaltConfig                   19
+     CLK_MainRegulatorCmd             13
+     CLK_GetFlagStatus               152
+     CLK_ClearFlag                     5
+     CLK_GetITStatus                  62
+     CLK_ClearITPendingBit            16
+     CLK_LSEClockSecuritySystemEnable
+                                       5
+     CLK_RTCCLKSwitchOnLSEFailureEnable
+                                       5
+
+ 
+   5 bytes in section .near.rodata
+ 786 bytes in section .near_func.text
+ 
+ 786 bytes of CODE  memory
+   5 bytes of CONST memory
+
+Errors: none
+Warnings: none

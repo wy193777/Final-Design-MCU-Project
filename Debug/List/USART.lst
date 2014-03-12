@@ -1,0 +1,116 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.30.1.50036 for STM8             12/Mar/2014  16:17:20 #
+# Copyright 2010-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  F:\Skydrive\Final Design\Servo Motor                     #
+#                    STM8L\Project\Discover\src\USART.c                       #
+#    Command line =  "F:\Skydrive\Final Design\Servo Motor                    #
+#                    STM8L\Project\Discover\src\USART.c" -e -Ol --no_cse      #
+#                    --no_unroll --no_inline --no_code_motion --no_tbaa       #
+#                    --no_cross_call --debug --code_model small --data_model  #
+#                    medium -o "F:\Skydrive\Final Design\Servo Motor          #
+#                    STM8L\Debug\Obj\" --dlib_config "D:\IAR                  #
+#                    Systems\Embedded Workbench 6.0\stm8\LIB\dlstm8smn.h" -D  #
+#                    STM8L15X_MD -lCN "F:\Skydrive\Final Design\Servo Motor   #
+#                    STM8L\Debug\List\" --diag_suppress Pe177,Pe550 -I        #
+#                    "F:\Skydrive\Final Design\Servo Motor                    #
+#                    STM8L\Project\Discover\inc\" -I "F:\Skydrive\Final       #
+#                    Design\Servo Motor STM8L\Libraries\STM8L15x_StdPeriph_Dr #
+#                    iver\inc\" --vregs 16                                    #
+#    List file    =  F:\Skydrive\Final Design\Servo Motor                     #
+#                    STM8L\Debug\List\USART.lst                               #
+#    Object file  =  F:\Skydrive\Final Design\Servo Motor                     #
+#                    STM8L\Debug\Obj\USART.o                                  #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\USART.c
+      1          #include "USART.h"
+      2          
+
+   \                                 In section .near_func.text, align 1
+      3          void USART_SendByte(uint8_t data)
+      4          {
+      5            USART_SendData8(USART1, (unsigned char)data);
+   \                     USART_SendByte:
+   \   000000 AE5230                LDW       X, #0x5230
+   \   000003 CD0000                CALL      L:USART_SendData8
+      6            /* Loop until the end of transmission */
+      7            while(USART_GetFlageStatus(USART1, USART_FLAG_TXE) == RESET);
+   \                     ??USART_SendByte_0:
+   \   000006 90AE0080              LDW       Y, #0x80
+   \   00000A AE5230                LDW       X, #0x5230
+   \   00000D CD0000                CALL      L:USART_GetFlageStatus
+   \   000010 5D                    TNZW      X
+   \   000011 27F3                  JREQ      L:??USART_SendByte_0
+      8          }
+   \   000013 81                    RET
+      9          
+
+   \                                 In section .near_func.text, align 1
+     10          void USART_SendString(uint8_t* Data, uint16_t len)
+     11          {
+   \                     USART_SendString:
+   \   000000 CD0000                CALL      L:?push_l2
+   \   000003 CD0000                CALL      L:?push_w6
+   \   000006 BF00                  LDW       S:?w6, X
+   \   000008 90BF00                LDW       S:?w5, Y
+     12            //unit16_t i = 0;
+     13            for(int i = 0; i < len; i++)
+   \   00000B 3F00                  CLR       S:?b9
+   \   00000D 3F00                  CLR       S:?b8
+   \   00000F 200F                  JRA       L:??USART_SendString_0
+     14            {
+     15              USART_SendByte(Data[i]);  
+   \                     ??USART_SendString_1:
+   \   000011 BE00                  LDW       X, S:?w4
+   \   000013 72BB0000              ADDW      X, S:?w6
+   \   000017 F6                    LD        A, (X)
+   \   000018 CD0000                CALL      L:USART_SendByte
+     16            }
+   \   00001B BE00                  LDW       X, S:?w4
+   \   00001D 5C                    INCW      X
+   \   00001E BF00                  LDW       S:?w4, X
+   \                     ??USART_SendString_0:
+   \   000020 BE00                  LDW       X, S:?w4
+   \   000022 B300                  CPW       X, S:?w5
+   \   000024 25EB                  JRC       L:??USART_SendString_1
+     17          }
+   \   000026 CC0000                JP        L:?epilogue_l2_w6
+     18          
+
+   \                                 In section .near_func.text, align 1
+     19          uint8_t USART_ReceiveByte(void)
+     20          {
+     21            uint8_t USART_RX_BUF;
+     22            while(USART_GetFlageStatus(USART1, USART_FLAG_RXNE) == RESET);
+   \                     USART_ReceiveByte:
+   \                     ??USART_ReceiveByte_0:
+   \   000000 90AE0020              LDW       Y, #0x20
+   \   000004 AE5230                LDW       X, #0x5230
+   \   000007 CD0000                CALL      L:USART_GetFlageStatus
+   \   00000A 5D                    TNZW      X
+   \   00000B 27F3                  JREQ      L:??USART_ReceiveByte_0
+     23            USART_RX_BUF = USART_ReceiveData8(USART1);
+   \   00000D AE5230                LDW       X, #0x5230
+   \   000010 CC0000                JP        L:USART_ReceiveData8
+     24            return USART_RX_BUF;
+     25          }
+
+   Section sizes:
+
+     Function/Label    Bytes
+     --------------    -----
+     USART_SendByte      20
+     USART_SendString    41
+     USART_ReceiveByte   19
+
+ 
+ 80 bytes in section .near_func.text
+ 
+ 80 bytes of CODE memory
+
+Errors: none
+Warnings: 2

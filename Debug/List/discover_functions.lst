@@ -1,0 +1,1628 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.30.1.50036 for STM8             26/Nov/2013  16:06:05 #
+# Copyright 2010-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  F:\Skydrive\Final Design\STM8L-Discovery\Project\Discove #
+#                    r\src\discover_functions.c                               #
+#    Command line =  "F:\Skydrive\Final Design\STM8L-Discovery\Project\Discov #
+#                    er\src\discover_functions.c" -e -Ol --no_cse             #
+#                    --no_unroll --no_inline --no_code_motion --no_tbaa       #
+#                    --no_cross_call --debug --code_model small --data_model  #
+#                    medium -o "F:\Skydrive\Final                             #
+#                    Design\STM8L-Discovery\Debug\Obj\" --dlib_config         #
+#                    "D:\IAR Systems\Embedded Workbench                       #
+#                    6.0\stm8\LIB\dlstm8smn.h" -D STM8L15X_MD -lCN            #
+#                    "F:\Skydrive\Final Design\STM8L-Discovery\Debug\List\"   #
+#                    --diag_suppress Pe177,Pe550 -I "F:\Skydrive\Final        #
+#                    Design\STM8L-Discovery\Project\Discover\inc\" -I         #
+#                    "F:\Skydrive\Final Design\STM8L-Discovery\Libraries\STM8 #
+#                    L15x_StdPeriph_Driver\inc\" --vregs 16                   #
+#    List file    =  F:\Skydrive\Final Design\STM8L-Discovery\Debug\List\disc #
+#                    over_functions.lst                                       #
+#    Object file  =  F:\Skydrive\Final Design\STM8L-Discovery\Debug\Obj\disco #
+#                    ver_functions.o                                          #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+F:\Skydrive\Final Design\STM8L-Discovery\Project\Discover\src\discover_functions.c
+      1          /**
+      2          ******************************************************************************
+      3          * @file    discover_functions.c
+      4          * @author  Microcontroller Division
+      5          * @version V1.2.1
+      6          * @date    10/2010
+      7          * @brief   Discover demo functions
+      8          ******************************************************************************
+      9          * @copy
+     10          *
+     11          * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+     12          * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+     13          * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+     14          * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+     15          * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+     16          * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+     17          *
+     18          * <h2><center>&copy; COPYRIGHT 2010 STMicroelectronics</center></h2>
+     19          */
+     20          
+     21          /* Includes ------------------------------------------------------------------*/
+     22          
+     23          #include "discover_functions.h"
+     24          #include "discover_board.h"
+     25          #include "stm8l15x_flash.h"
+     26          #include "stm8l_discovery_lcd.h"
+     27          
+     28          /* Bias current is saved in Data E²Prom 
+     29          This value is stored by FLASH_ProgramBias function*/
+     30          
+     31          #ifdef _COSMIC_
+     32          #pragma section @near [dataeeprom] 
+     33          @near unsigned char  Bias_Current;
+     34          #pragma section []
+     35          #endif
+     36          
+     37          #ifdef _RAISONANCE_
+     38          unsigned char eeprom Bias_Current;
+     39          #endif
+     40          
+     41          #ifdef _IAR_
+
+   \                                 In section .eeprom.noinit, align 1
+     42          __no_init __eeprom unsigned char Bias_Current;
+   \                     Bias_Current:
+   \   000000                       DS8 1
+     43          #endif
+     44          
+     45          /* Used for indicate that the automatic test is ON (set in interrupt handler).*/
+
+   \                                 In section .near.bss, align 1
+     46          bool Auto_test;
+   \                     Auto_test:
+   \   000000                       DS8 1
+     47          
+     48          /* Used for detect keypressed*/
+     49          extern bool KeyPressed;
+     50          
+     51          /**
+     52            * @brief  Store in E²Prom bias value
+     53            * @caller Bias_measurement
+     54            * @param Data: Bias current value to store in E²Prom
+     55            * @retval None
+     56            */
+
+   \                                 In section .near_func.text, align 1
+     57          void FLASH_ProgramBias(uint8_t Data)
+     58          {
+   \                     FLASH_ProgramBias:
+   \   000000 3B0000                PUSH      S:?b8
+   \   000003 B700                  LD        S:?b8, A
+     59            FLASH_Unlock(FLASH_MemType_Data);
+   \   000005 A6F7                  LD        A, #0xf7
+   \   000007 CD0000                CALL      L:FLASH_Unlock
+     60            Bias_Current = Data;
+   \   00000A AE0000                LDW       X, #Bias_Current
+   \   00000D B600                  LD        A, S:?b8
+   \   00000F CD0000                CALL      L:__eeprom_write_8
+     61            FLASH_WaitForLastOperation(FLASH_MemType_Data);
+   \   000012 A6F7                  LD        A, #0xf7
+   \   000014 CD0000                CALL      L:FLASH_WaitForLastOperation
+     62            FLASH_Lock(FLASH_MemType_Data);
+   \   000017 A6F7                  LD        A, #0xf7
+   \   000019 CD0000                CALL      L:FLASH_Lock
+     63          }	
+   \   00001C 320000                POP       S:?b8
+   \   00001F 81                    RET
+     64          
+     65          /**
+     66            * @brief  automatic test for VDD
+     67            * @caller auto_test
+     68            * @param None
+     69            * @retval None
+     70            */
+
+   \                                 In section .near_func.text, align 1
+     71          void test_vdd(void)
+     72          {
+   \                     test_vdd:
+   \   000000 CD0000                CALL      L:?push_w4
+     73            uint16_t vdd_test;
+     74            
+     75            LCD_GLASS_DisplayString("VDD");
+   \   000003 AE0000                LDW       X, #`?<Constant "VDD">`
+   \   000006 CD0000                CALL      L:LCD_GLASS_DisplayString
+     76            delay_ms(200);
+   \   000009 AE00C8                LDW       X, #0xc8
+   \   00000C CD0000                CALL      L:delay_ms
+     77            
+     78            vdd_test = (int)Vref_measure();
+   \   00000F CD0000                CALL      L:Vref_measure
+   \   000012 BF00                  LDW       S:?w4, X
+     79            delay_ms(200);
+   \   000014 AE00C8                LDW       X, #0xc8
+   \   000017 CD0000                CALL      L:delay_ms
+     80            
+     81            /* Test if value is correct */	
+     82            if ((vdd_test>VCC_MAX) || (vdd_test<VCC_MIN))
+   \   00001A BE00                  LDW       X, S:?w4
+   \   00001C 1D0B63                SUBW      X, #0xb63
+   \   00001F A300BA                CPW       X, #0xba
+   \   000022 2515                  JRC       L:??test_vdd_0
+     83            {
+     84              while(1)
+     85              {
+     86                LCD_GLASS_ScrollSentence("VDD Not OK ",1,SCROLL_SPEED); //Press reset for exit
+   \                     ??test_vdd_1:
+   \   000024 AE0028                LDW       X, #0x28
+   \   000027 BF00                  LDW       S:?w0, X
+   \   000029 90AE0001              LDW       Y, #0x1
+   \   00002D AE0000                LDW       X, #`?<Constant "VDD Not OK ">`
+   \   000030 CD0000                CALL      L:LCD_GLASS_ScrollSentence
+     87                KeyPressed = FALSE;
+   \   000033 35000000              MOV       L:KeyPressed, #0x0
+   \   000037 20EB                  JRA       L:??test_vdd_1
+     88              }
+     89            }
+     90            
+     91            LCD_GLASS_DisplayString("VDD OK");
+   \                     ??test_vdd_0:
+   \   000039 AE0000                LDW       X, #`?<Constant "VDD OK">`
+   \   00003C CD0000                CALL      L:LCD_GLASS_DisplayString
+     92            delay_ms(200);
+   \   00003F AE00C8                LDW       X, #0xc8
+   \   000042 CD0000                CALL      L:delay_ms
+     93          }
+   \   000045 CC0000                JP        L:?epilogue_w4
+     94          
+     95          /**
+     96            * @brief  Automatic test current in Run Mode
+     97            * @caller auto_test
+     98            * @param None
+     99            * @retval None
+    100            */ 
+
+   \                                 In section .near_func.text, align 1
+    101          void test_icc_Run(void)
+    102          {
+   \                     test_icc_Run:
+   \   000000 CD0000                CALL      L:?push_w4
+    103            uint16_t icc_test;
+    104            
+    105            LCD_GLASS_DisplayString("RUN");
+   \   000003 AE0000                LDW       X, #`?<Constant "RUN">`
+   \   000006 CD0000                CALL      L:LCD_GLASS_DisplayString
+    106            delay_ms(200);
+   \   000009 AE00C8                LDW       X, #0xc8
+   \   00000C CD0000                CALL      L:delay_ms
+    107            
+    108            icc_test = (int)Icc_measure_RUN();
+   \   00000F CD0000                CALL      L:Icc_measure_RUN
+   \   000012 CD0000                CALL      L:?fcasts16f32_x_l0
+   \   000015 BF00                  LDW       S:?w4, X
+    109            delay_ms(200);
+   \   000017 AE00C8                LDW       X, #0xc8
+   \   00001A CD0000                CALL      L:delay_ms
+    110            
+    111            if ((icc_test>ICC_RUN_MAX) || (icc_test<ICC_RUN_MIN))
+   \   00001D BE00                  LDW       X, S:?w4
+   \   00001F 1D03E8                SUBW      X, #0x3e8
+   \   000022 A30259                CPW       X, #0x259
+   \   000025 2515                  JRC       L:??test_icc_Run_0
+    112            {
+    113              while (1)
+    114              {
+    115                LCD_GLASS_ScrollSentence("RUN Not OK ",1,SCROLL_SPEED); //Press reset for exit
+   \                     ??test_icc_Run_1:
+   \   000027 AE0028                LDW       X, #0x28
+   \   00002A BF00                  LDW       S:?w0, X
+   \   00002C 90AE0001              LDW       Y, #0x1
+   \   000030 AE0000                LDW       X, #`?<Constant "RUN Not OK ">`
+   \   000033 CD0000                CALL      L:LCD_GLASS_ScrollSentence
+    116                KeyPressed = FALSE;
+   \   000036 35000000              MOV       L:KeyPressed, #0x0
+   \   00003A 20EB                  JRA       L:??test_icc_Run_1
+    117              }
+    118            }
+    119          
+    120            LCD_GLASS_DisplayString("RUN OK");
+   \                     ??test_icc_Run_0:
+   \   00003C AE0000                LDW       X, #`?<Constant "RUN OK">`
+   \   00003F CD0000                CALL      L:LCD_GLASS_DisplayString
+    121            delay_ms(200);
+   \   000042 AE00C8                LDW       X, #0xc8
+   \   000045 CD0000                CALL      L:delay_ms
+    122          }
+   \   000048 CC0000                JP        L:?epilogue_w4
+    123          
+    124          /**
+    125            * @brief  Automatic test current in HALT Mode
+    126            * @caller auto_test
+    127            * @param None
+    128            * @retval None
+    129            */
+
+   \                                 In section .near_func.text, align 1
+    130          void test_icc_HALT(void)
+    131          {
+   \                     test_icc_HALT:
+   \   000000 CD0000                CALL      L:?push_w4
+    132            uint16_t icc_test;
+    133            
+    134            LCD_GLASS_DisplayString("HALT");
+   \   000003 AE0000                LDW       X, #`?<Constant "HALT">`
+   \   000006 CD0000                CALL      L:LCD_GLASS_DisplayString
+    135            delay_ms(200);
+   \   000009 AE00C8                LDW       X, #0xc8
+   \   00000C CD0000                CALL      L:delay_ms
+    136            
+    137            /* Current value measured in Halt mode*/	
+    138            icc_test = (int)Icc_measure_HALT();
+   \   00000F CD0000                CALL      L:Icc_measure_HALT
+   \   000012 CD0000                CALL      L:?fcasts16f32_x_l0
+   \   000015 BF00                  LDW       S:?w4, X
+    139            delay_ms(200);
+   \   000017 AE00C8                LDW       X, #0xc8
+   \   00001A CD0000                CALL      L:delay_ms
+    140            
+    141            /* Test if value is correct */
+    142            if ((icc_test>ICC_HALT_MAX) || (icc_test<ICC_HALT_MIN))
+   \   00001D BE00                  LDW       X, S:?w4
+   \   00001F 1D012C                SUBW      X, #0x12c
+   \   000022 A301F5                CPW       X, #0x1f5
+   \   000025 2533                  JRC       L:??test_icc_HALT_0
+    143            {
+    144              delay_ms(400);	
+   \   000027 AE0190                LDW       X, #0x190
+   \   00002A CD0000                CALL      L:delay_ms
+    145              icc_test = (int)Icc_measure_HALT();
+   \   00002D CD0000                CALL      L:Icc_measure_HALT
+   \   000030 CD0000                CALL      L:?fcasts16f32_x_l0
+   \   000033 BF00                  LDW       S:?w4, X
+    146              delay_ms(200);		
+   \   000035 AE00C8                LDW       X, #0xc8
+   \   000038 CD0000                CALL      L:delay_ms
+    147              
+    148            /* Test if value is correct */
+    149              if ((icc_test>ICC_HALT_MAX) || (icc_test<ICC_HALT_MIN))
+   \   00003B BE00                  LDW       X, S:?w4
+   \   00003D 1D012C                SUBW      X, #0x12c
+   \   000040 A301F5                CPW       X, #0x1f5
+   \   000043 2515                  JRC       L:??test_icc_HALT_0
+    150              {
+    151                while (1)
+    152                {
+    153                  LCD_GLASS_ScrollSentence("ICC HALT Not OK ",1,SCROLL_SPEED); //Press reset for exit
+   \                     ??test_icc_HALT_1:
+   \   000045 AE0028                LDW       X, #0x28
+   \   000048 BF00                  LDW       S:?w0, X
+   \   00004A 90AE0001              LDW       Y, #0x1
+   \   00004E AE0000                LDW       X, #`?<Constant "ICC HALT Not OK ">`
+   \   000051 CD0000                CALL      L:LCD_GLASS_ScrollSentence
+    154                  KeyPressed = FALSE;
+   \   000054 35000000              MOV       L:KeyPressed, #0x0
+   \   000058 20EB                  JRA       L:??test_icc_HALT_1
+    155                }
+    156              }
+    157            }
+    158            
+    159            LCD_GLASS_DisplayString("HALTOK");
+   \                     ??test_icc_HALT_0:
+   \   00005A AE0000                LDW       X, #`?<Constant "HALTOK">`
+   \   00005D CD0000                CALL      L:LCD_GLASS_DisplayString
+    160            delay_ms(200);
+   \   000060 AE00C8                LDW       X, #0xc8
+   \   000063 CD0000                CALL      L:delay_ms
+    161          }
+   \   000066 CC0000                JP        L:?epilogue_w4
+    162          
+    163          /**
+    164            * @brief  Automatic test current in low power mode
+    165            * @caller auto_test
+    166            * @param None
+    167            * @retval None
+    168            */
+
+   \                                 In section .near_func.text, align 1
+    169          void test_icc_LP(void)
+    170          {
+   \                     test_icc_LP:
+   \   000000 CD0000                CALL      L:?push_w4
+    171            uint16_t icc_test;
+    172            
+    173            LCD_GLASS_DisplayString("LP");
+   \   000003 AE0000                LDW       X, #`?<Constant "LP">`
+   \   000006 CD0000                CALL      L:LCD_GLASS_DisplayString
+    174            delay_ms(200);
+   \   000009 AE00C8                LDW       X, #0xc8
+   \   00000C CD0000                CALL      L:delay_ms
+    175            
+    176            /* Current value measured in low power mode*/	
+    177            icc_test = (int)Icc_measure_LPR();
+   \   00000F CD0000                CALL      L:Icc_measure_LPR
+   \   000012 CD0000                CALL      L:?fcasts16f32_x_l0
+   \   000015 BF00                  LDW       S:?w4, X
+    178            delay_ms(200);
+   \   000017 AE00C8                LDW       X, #0xc8
+   \   00001A CD0000                CALL      L:delay_ms
+    179          
+    180            /* Test if value is correct */  
+    181            if ((icc_test>ICC_LP_MAX) || (icc_test<ICC_LP_MIN))
+   \   00001D BE00                  LDW       X, S:?w4
+   \   00001F 1D09C4                SUBW      X, #0x9c4
+   \   000022 A30619                CPW       X, #0x619
+   \   000025 2533                  JRC       L:??test_icc_LP_0
+    182            {
+    183            /* check in twice measurements*/
+    184              delay_ms(400);
+   \   000027 AE0190                LDW       X, #0x190
+   \   00002A CD0000                CALL      L:delay_ms
+    185              icc_test = (int)Icc_measure_LPR();
+   \   00002D CD0000                CALL      L:Icc_measure_LPR
+   \   000030 CD0000                CALL      L:?fcasts16f32_x_l0
+   \   000033 BF00                  LDW       S:?w4, X
+    186              delay_ms(200);			
+   \   000035 AE00C8                LDW       X, #0xc8
+   \   000038 CD0000                CALL      L:delay_ms
+    187                
+    188          	/* Test if value is correct */
+    189              if ((icc_test>ICC_LP_MAX) || (icc_test<ICC_LP_MIN))
+   \   00003B BE00                  LDW       X, S:?w4
+   \   00003D 1D09C4                SUBW      X, #0x9c4
+   \   000040 A30619                CPW       X, #0x619
+   \   000043 2515                  JRC       L:??test_icc_LP_0
+    190              {
+    191                while(1)
+    192                {
+    193                  LCD_GLASS_ScrollSentence("LP Not OK ",1,SCROLL_SPEED); //press reset for exit
+   \                     ??test_icc_LP_1:
+   \   000045 AE0028                LDW       X, #0x28
+   \   000048 BF00                  LDW       S:?w0, X
+   \   00004A 90AE0001              LDW       Y, #0x1
+   \   00004E AE0000                LDW       X, #`?<Constant "LP Not OK ">`
+   \   000051 CD0000                CALL      L:LCD_GLASS_ScrollSentence
+    194                  KeyPressed = FALSE;
+   \   000054 35000000              MOV       L:KeyPressed, #0x0
+   \   000058 20EB                  JRA       L:??test_icc_LP_1
+    195                }
+    196              }
+    197            }
+    198            
+    199            LCD_GLASS_DisplayString("LP OK");
+   \                     ??test_icc_LP_0:
+   \   00005A AE0000                LDW       X, #`?<Constant "LP OK">`
+   \   00005D CD0000                CALL      L:LCD_GLASS_DisplayString
+    200            delay_ms(200);
+   \   000060 AE00C8                LDW       X, #0xc8
+   \   000063 CD0000                CALL      L:delay_ms
+    201          }
+   \   000066 CC0000                JP        L:?epilogue_w4
+    202          
+    203          /**
+    204            * @brief  Automatic test switch to LSE clock from HSI and return to HSI
+    205            * @caller auto_test
+    206            * @param None
+    207            * @retval None
+    208            */
+
+   \                                 In section .near_func.text, align 1
+    209          void test_LSE(void)
+    210          {
+    211          	
+    212          /* Switch the clock to LSE */
+    213          	
+    214            LCD_GLASS_DisplayString("LSE");
+   \                     test_LSE:
+   \   000000 AE0000                LDW       X, #`?<Constant "LSE">`
+   \   000003 CD0000                CALL      L:LCD_GLASS_DisplayString
+    215            
+    216            CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_1);
+   \   000006 4F                    CLR       A
+   \   000007 CD0000                CALL      L:CLK_SYSCLKDivConfig
+    217            CLK_LSEConfig(CLK_LSE_ON);
+   \   00000A A604                  LD        A, #0x4
+   \   00000C CD0000                CALL      L:CLK_LSEConfig
+    218            delay_ms(LSE_DELAY);	
+   \   00000F AE07D0                LDW       X, #0x7d0
+   \   000012 CD0000                CALL      L:delay_ms
+    219            
+    220            if((CLK->ECKCR & CLK_ECKCR_LSERDY) == RESET)
+   \   000015 720650C659            BTJT      L:0x50c6, #0x3, L:??test_LSE_0
+    221            {
+    222              LCD_GLASS_DisplayString("LSE");
+   \   00001A AE0000                LDW       X, #`?<Constant "LSE">`
+   \   00001D CD0000                CALL      L:LCD_GLASS_DisplayString
+    223              delay_ms(LSE_DELAY);
+   \   000020 AE07D0                LDW       X, #0x7d0
+   \   000023 CD0000                CALL      L:delay_ms
+    224              if((CLK->ECKCR & CLK_ECKCR_LSERDY) == RESET)
+   \   000026 720650C648            BTJT      L:0x50c6, #0x3, L:??test_LSE_0
+    225              {
+    226                LCD_GLASS_DisplayString("LSE");
+   \   00002B AE0000                LDW       X, #`?<Constant "LSE">`
+   \   00002E CD0000                CALL      L:LCD_GLASS_DisplayString
+    227                delay_ms(LSE_DELAY);
+   \   000031 AE07D0                LDW       X, #0x7d0
+   \   000034 CD0000                CALL      L:delay_ms
+    228                if((CLK->ECKCR & CLK_ECKCR_LSERDY) == RESET)
+   \   000037 720650C637            BTJT      L:0x50c6, #0x3, L:??test_LSE_0
+    229                {			
+    230                  /* Switch the clock to HSI*/
+    231                  CLK_LSEConfig(CLK_LSE_OFF);
+   \   00003C 4F                    CLR       A
+   \   00003D CD0000                CALL      L:CLK_LSEConfig
+    232                  CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_8);
+   \   000040 A603                  LD        A, #0x3
+   \   000042 CD0000                CALL      L:CLK_SYSCLKDivConfig
+    233                  CLK_HSICmd(ENABLE);
+   \   000045 A601                  LD        A, #0x1
+   \   000047 CD0000                CALL      L:CLK_HSICmd
+    234                  while (((CLK->ICKCR)& 0x02)!=0x02);
+   \                     ??test_LSE_1:
+   \   00004A 720350C2FB            BTJF      L:0x50c2, #0x1, L:??test_LSE_1
+    235                  CLK_SYSCLKSourceConfig(CLK_SYSCLKSource_HSI);
+   \   00004F A601                  LD        A, #0x1
+   \   000051 CD0000                CALL      L:CLK_SYSCLKSourceConfig
+    236                  CLK_SYSCLKSourceSwitchCmd(ENABLE);
+   \   000054 A601                  LD        A, #0x1
+   \   000056 CD0000                CALL      L:CLK_SYSCLKSourceSwitchCmd
+    237                  while (((CLK->SWCR)& 0x01)==0x01);
+   \                     ??test_LSE_2:
+   \   000059 720050C9FB            BTJT      L:0x50c9, #0x0, L:??test_LSE_2
+    238                  
+    239                  while(1)
+    240                  {
+    241                    LCD_GLASS_ScrollSentence("LSE Not OK ",1,SCROLL_SPEED); //Press reset for exit
+   \                     ??test_LSE_3:
+   \   00005E AE0028                LDW       X, #0x28
+   \   000061 BF00                  LDW       S:?w0, X
+   \   000063 90AE0001              LDW       Y, #0x1
+   \   000067 AE0000                LDW       X, #`?<Constant "LSE Not OK ">`
+   \   00006A CD0000                CALL      L:LCD_GLASS_ScrollSentence
+    242                    KeyPressed = FALSE;
+   \   00006D 35000000              MOV       L:KeyPressed, #0x0
+   \   000071 20EB                  JRA       L:??test_LSE_3
+    243                  }
+    244                }
+    245              }
+    246            }
+    247          
+    248          /* Wait flag LSE ready */
+    249            while (!((CLK->ECKCR)& CLK_ECKCR_LSERDY));	
+   \                     ??test_LSE_0:
+   \   000073 720750C6FB            BTJF      L:0x50c6, #0x3, L:??test_LSE_0
+    250          
+    251          /* Switch in LSE clock */
+    252            CLK_SYSCLKSourceConfig(CLK_SYSCLKSource_LSE);
+   \   000078 A608                  LD        A, #0x8
+   \   00007A CD0000                CALL      L:CLK_SYSCLKSourceConfig
+    253            CLK_SYSCLKSourceSwitchCmd(ENABLE);
+   \   00007D A601                  LD        A, #0x1
+   \   00007F CD0000                CALL      L:CLK_SYSCLKSourceSwitchCmd
+    254            while (((CLK->SWCR)& 0x01)==0x01);
+   \                     ??test_LSE_4:
+   \   000082 720050C9FB            BTJT      L:0x50c9, #0x0, L:??test_LSE_4
+    255            
+    256            LCD_GLASS_DisplayString("LSE OK");
+   \   000087 AE0000                LDW       X, #`?<Constant "LSE OK">`
+   \   00008A CD0000                CALL      L:LCD_GLASS_DisplayString
+    257          
+    258          /* Switch the clock to HSI */
+    259          
+    260            CLK_LSEConfig(CLK_LSE_OFF);
+   \   00008D 4F                    CLR       A
+   \   00008E CD0000                CALL      L:CLK_LSEConfig
+    261            CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_8);
+   \   000091 A603                  LD        A, #0x3
+   \   000093 CD0000                CALL      L:CLK_SYSCLKDivConfig
+    262            CLK_HSICmd(ENABLE);
+   \   000096 A601                  LD        A, #0x1
+   \   000098 CD0000                CALL      L:CLK_HSICmd
+    263            while (((CLK->ICKCR)& 0x02)!=0x02);
+   \                     ??test_LSE_5:
+   \   00009B 720350C2FB            BTJF      L:0x50c2, #0x1, L:??test_LSE_5
+    264            CLK_SYSCLKSourceConfig(CLK_SYSCLKSource_HSI);
+   \   0000A0 A601                  LD        A, #0x1
+   \   0000A2 CD0000                CALL      L:CLK_SYSCLKSourceConfig
+    265            CLK_SYSCLKSourceSwitchCmd(ENABLE);
+   \   0000A5 A601                  LD        A, #0x1
+   \   0000A7 CD0000                CALL      L:CLK_SYSCLKSourceSwitchCmd
+    266            while (((CLK->SWCR)& 0x01)==0x01);
+   \                     ??test_LSE_6:
+   \   0000AA 720050C9FB            BTJT      L:0x50c9, #0x0, L:??test_LSE_6
+    267            delay_ms(100);
+   \   0000AF AE0064                LDW       X, #0x64
+   \   0000B2 CC0000                JP        L:delay_ms
+    268          }
+    269          
+    270          /**
+    271            * @brief  Run auto test
+    272            * @caller main 
+    273            * @param None
+    274            * @retval None
+    275            */ 
+
+   \                                 In section .near_func.text, align 1
+    276          void auto_test(void)
+    277          {
+   \                     auto_test:
+   \   000000 520C                  SUB       SP, #0xc
+    278            uint16_t tab[6]={0x20,0x20,0x20,0x20,0x20,0x20};
+   \   000002 90AE0000              LDW       Y, #`?<Constant {32, 32, 32, 32, 32, 32}>`
+   \   000006 96                    LDW       X, SP
+   \   000007 1C0001                ADDW      X, #0x1
+   \   00000A 89                    PUSHW     X
+   \   00000B A60C                  LD        A, #0xc
+   \   00000D CD0000                CALL      L:?move1616_v_x_y_a
+   \   000010 85                    POPW      X
+    279            
+    280            Auto_test = TRUE;
+   \   000011 35010000              MOV       L:Auto_test, #0x1
+    281          	
+    282          	/* Switch off leds*/
+    283            GPIO_LOW(LED_GREEN_PORT,LED_GREEN_PIN);	
+   \   000015 721F5014              BRES      L:0x5014, #0x7
+    284            GPIO_LOW(LED_BLUE_PORT,LED_BLUE_PIN);		
+   \   000019 721F500A              BRES      L:0x500a, #0x7
+    285            
+    286            /* To display version */
+    287            LCD_GLASS_DisplayString(" TEST ");
+   \   00001D AE0000                LDW       X, #`?<Constant " TEST ">`
+   \   000020 CD0000                CALL      L:LCD_GLASS_DisplayString
+    288            delay_ms(150);
+   \   000023 AE0096                LDW       X, #0x96
+   \   000026 CD0000                CALL      L:delay_ms
+    289            STR_VERSION;
+   \   000029 AE0056                LDW       X, #0x56
+   \   00002C 1F03                  LDW       (0x3,SP), X
+   \   00002E AE8031                LDW       X, #0x8031
+   \   000031 1F05                  LDW       (0x5,SP), X
+   \   000033 AE8032                LDW       X, #0x8032
+   \   000036 1F07                  LDW       (0x7,SP), X
+   \   000038 AE0034                LDW       X, #0x34
+   \   00003B 1F09                  LDW       (0x9,SP), X
+    290            LCD_GLASS_DisplayStrDeci(tab);
+   \   00003D 96                    LDW       X, SP
+   \   00003E 1C0001                ADDW      X, #0x1
+   \   000041 CD0000                CALL      L:LCD_GLASS_DisplayStrDeci
+    291            delay_ms(200);
+   \   000044 AE00C8                LDW       X, #0xc8
+   \   000047 CD0000                CALL      L:delay_ms
+    292          			
+    293          	/* And launch the tests*/
+    294            test_LSE();
+   \   00004A CD0000                CALL      L:test_LSE
+    295            test_vdd();
+   \   00004D CD0000                CALL      L:test_vdd
+    296            test_icc_Run();
+   \   000050 CD0000                CALL      L:test_icc_Run
+    297            test_icc_HALT();
+   \   000053 CD0000                CALL      L:test_icc_HALT
+    298            test_icc_LP();
+   \   000056 CD0000                CALL      L:test_icc_LP
+    299            
+    300            Auto_test = FALSE;
+   \   000059 35000000              MOV       L:Auto_test, #0x0
+    301          
+    302            /* Infinite loop: Press reset button at the end of test for exit*/
+    303            while (1)
+    304            {
+    305              LCD_GLASS_ScrollSentence("TEST OK ",1,SCROLL_SPEED);
+   \                     ??auto_test_0:
+   \   00005D AE0028                LDW       X, #0x28
+   \   000060 BF00                  LDW       S:?w0, X
+   \   000062 90AE0001              LDW       Y, #0x1
+   \   000066 AE0000                LDW       X, #`?<Constant "TEST OK ">`
+   \   000069 CD0000                CALL      L:LCD_GLASS_ScrollSentence
+    306              KeyPressed = FALSE;
+   \   00006C 35000000              MOV       L:KeyPressed, #0x0
+   \   000070 20EB                  JRA       L:??auto_test_0
+    307            }
+    308          }
+    309          
+    310          /**
+    311            * @brief Measures the BIAS current PJ1 Must be on OFF position
+    312            * @caller main 
+    313            * @param None
+    314            * @retval None
+    315            */  
+
+   \                                 In section .near_func.text, align 1
+    316          void Bias_measurement(void)
+    317          {
+   \                     Bias_measurement:
+   \   000000 3B0000                PUSH      S:?b8
+    318            uint16_t V_Current;
+    319            uint8_t B_Current;
+    320            
+    321            LCD_GLASS_ScrollSentence("      ** BIAS CURRENT ** JP1 OFF **",1,SCROLL_SPEED);	
+   \   000003 AE0028                LDW       X, #0x28
+   \   000006 BF00                  LDW       S:?w0, X
+   \   000008 90AE0001              LDW       Y, #0x1
+   \   00000C AE0000                LDW       X, #`?<Constant "      ** BIAS CURRENT...">`
+   \   00000F CD0000                CALL      L:LCD_GLASS_ScrollSentence
+    322            
+    323            B_Current = ADC_Icc_Test(MCU_HALT);
+   \   000012 A603                  LD        A, #0x3
+   \   000014 CD0000                CALL      L:ADC_Icc_Test
+   \   000017 41                    EXG       A, XL
+   \   000018 B700                  LD        S:?b8, A
+   \   00001A 41                    EXG       A, XL
+    324            V_Current = (uint16_t)(B_Current * (Vdd_appli()/ADC_CONV)); 
+   \   00001B CD0000                CALL      L:Vdd_appli
+   \   00001E CD0000                CALL      L:?fdiv32_l0_l0_dc32
+   \   000021 45800000              DC32      0x45800000
+   \   000025 CD0000                CALL      L:?mov_l1_l0
+   \   000028 5F                    CLRW      X
+   \   000029 41                    EXG       A, XL
+   \   00002A B600                  LD        A, S:?b8
+   \   00002C 41                    EXG       A, XL
+   \   00002D CD0000                CALL      L:?fcastf32u16_l0_x
+   \   000030 CD0000                CALL      L:?fmul32_l0_l0_l1
+   \   000033 CD0000                CALL      L:?fcasts16f32_x_l0
+   \   000036 9093                  LDW       Y, X
+    325            V_Current *= 10L;
+   \   000038 AE000A                LDW       X, #0xa
+   \   00003B BF00                  LDW       S:?w0, X
+   \   00003D 93                    LDW       X, Y
+   \   00003E CD0000                CALL      L:?mul16_x_x_w0
+   \   000041 9093                  LDW       Y, X
+    326            display_MuAmp(V_Current);
+   \   000043 93                    LDW       X, Y
+   \   000044 CD0000                CALL      L:display_MuAmp
+    327          
+    328          /* To store the value in E²Prom */
+    329            FLASH_ProgramBias(B_Current);
+   \   000047 B600                  LD        A, S:?b8
+   \   000049 CD0000                CALL      L:FLASH_ProgramBias
+    330          	
+    331            while (1)  /* Infinite loop for force to restart application */
+    332            { 
+    333              B_Current = ADC_Icc_Test(MCU_HALT);
+   \                     ??Bias_measurement_0:
+   \   00004C A603                  LD        A, #0x3
+   \   00004E CD0000                CALL      L:ADC_Icc_Test
+   \   000051 41                    EXG       A, XL
+   \   000052 B700                  LD        S:?b8, A
+   \   000054 41                    EXG       A, XL
+    334              V_Current = (uint16_t)(B_Current * (Vdd_appli()/ADC_CONV)); 
+   \   000055 CD0000                CALL      L:Vdd_appli
+   \   000058 CD0000                CALL      L:?fdiv32_l0_l0_dc32
+   \   00005B 45800000              DC32      0x45800000
+   \   00005F CD0000                CALL      L:?mov_l1_l0
+   \   000062 5F                    CLRW      X
+   \   000063 41                    EXG       A, XL
+   \   000064 B600                  LD        A, S:?b8
+   \   000066 41                    EXG       A, XL
+   \   000067 CD0000                CALL      L:?fcastf32u16_l0_x
+   \   00006A CD0000                CALL      L:?fmul32_l0_l0_l1
+   \   00006D CD0000                CALL      L:?fcasts16f32_x_l0
+   \   000070 9093                  LDW       Y, X
+    335              V_Current *= 10L;
+   \   000072 AE000A                LDW       X, #0xa
+   \   000075 BF00                  LDW       S:?w0, X
+   \   000077 93                    LDW       X, Y
+   \   000078 CD0000                CALL      L:?mul16_x_x_w0
+   \   00007B 9093                  LDW       Y, X
+    336              display_MuAmp(V_Current);
+   \   00007D 93                    LDW       X, Y
+   \   00007E CD0000                CALL      L:display_MuAmp
+    337              delay_ms(300);
+   \   000081 AE012C                LDW       X, #0x12c
+   \   000084 CD0000                CALL      L:delay_ms
+   \   000087 20C3                  JRA       L:??Bias_measurement_0
+    338            }
+    339          
+    340          }
+    341          
+    342          /**
+    343            * @brief converts a number into char
+    344            * @caller several callers for display values
+    345            * @param Number digit to displays
+    346            *  p_tab values in array in ASCII   
+    347            * @retval None
+    348            */ 
+
+   \                                 In section .near_func.text, align 1
+    349          void convert_into_char(uint16_t number, uint16_t *p_tab)
+    350          {
+   \                     convert_into_char:
+   \   000000 CD0000                CALL      L:?push_l2
+   \   000003 CD0000                CALL      L:?push_w6
+   \   000006 BF00                  LDW       S:?w2, X
+   \   000008 90BF00                LDW       S:?w0, Y
+    351            uint16_t units=0, tens=0, hundreds=0, thousands=0, misc=0;
+   \   00000B 3F00                  CLR       S:?b13
+   \   00000D 3F00                  CLR       S:?b12
+   \   00000F 3F00                  CLR       S:?b11
+   \   000011 3F00                  CLR       S:?b10
+   \   000013 3F00                  CLR       S:?b9
+   \   000015 3F00                  CLR       S:?b8
+   \   000017 3F00                  CLR       S:?b7
+   \   000019 3F00                  CLR       S:?b6
+   \   00001B 3F00                  CLR       S:?b3
+   \   00001D 3F00                  CLR       S:?b2
+    352            
+    353            units = (((number%10000)%1000)%100)%10;
+   \   00001F 90AE2710              LDW       Y, #0x2710
+   \   000023 BE00                  LDW       X, S:?w2
+   \   000025 65                    DIVW      X, Y
+   \   000026 93                    LDW       X, Y
+   \   000027 90AE03E8              LDW       Y, #0x3e8
+   \   00002B 65                    DIVW      X, Y
+   \   00002C 93                    LDW       X, Y
+   \   00002D 90AE0064              LDW       Y, #0x64
+   \   000031 65                    DIVW      X, Y
+   \   000032 93                    LDW       X, Y
+   \   000033 90AE000A              LDW       Y, #0xa
+   \   000037 65                    DIVW      X, Y
+   \   000038 90BF00                LDW       S:?w6, Y
+    354            tens = ((((number-units)/10)%1000)%100)%10;
+   \   00003B BE00                  LDW       X, S:?w2
+   \   00003D 72B00000              SUBW      X, S:?w6
+   \   000041 90AE000A              LDW       Y, #0xa
+   \   000045 65                    DIVW      X, Y
+   \   000046 90AE03E8              LDW       Y, #0x3e8
+   \   00004A 65                    DIVW      X, Y
+   \   00004B 93                    LDW       X, Y
+   \   00004C 90AE0064              LDW       Y, #0x64
+   \   000050 65                    DIVW      X, Y
+   \   000051 93                    LDW       X, Y
+   \   000052 90AE000A              LDW       Y, #0xa
+   \   000056 65                    DIVW      X, Y
+   \   000057 90BF00                LDW       S:?w5, Y
+    355            hundreds = (((number-tens-units)/100))%100%10;
+   \   00005A BE00                  LDW       X, S:?w2
+   \   00005C 72B00000              SUBW      X, S:?w5
+   \   000060 72B00000              SUBW      X, S:?w6
+   \   000064 90AE0064              LDW       Y, #0x64
+   \   000068 65                    DIVW      X, Y
+   \   000069 90AE0064              LDW       Y, #0x64
+   \   00006D 65                    DIVW      X, Y
+   \   00006E 93                    LDW       X, Y
+   \   00006F 90AE000A              LDW       Y, #0xa
+   \   000073 65                    DIVW      X, Y
+   \   000074 90BF00                LDW       S:?w4, Y
+    356            thousands = ((number-hundreds-tens-units)/1000)%10;
+   \   000077 BE00                  LDW       X, S:?w2
+   \   000079 72B00000              SUBW      X, S:?w4
+   \   00007D 72B00000              SUBW      X, S:?w5
+   \   000081 72B00000              SUBW      X, S:?w6
+   \   000085 90AE03E8              LDW       Y, #0x3e8
+   \   000089 65                    DIVW      X, Y
+   \   00008A 90AE000A              LDW       Y, #0xa
+   \   00008E 65                    DIVW      X, Y
+   \   00008F 90BF00                LDW       S:?w3, Y
+    357            misc = ((number-thousands-hundreds-tens-units)/10000);
+   \   000092 BE00                  LDW       X, S:?w2
+   \   000094 72B00000              SUBW      X, S:?w3
+   \   000098 72B00000              SUBW      X, S:?w4
+   \   00009C 72B00000              SUBW      X, S:?w5
+   \   0000A0 72B00000              SUBW      X, S:?w6
+   \   0000A4 90AE2710              LDW       Y, #0x2710
+   \   0000A8 65                    DIVW      X, Y
+   \   0000A9 BF00                  LDW       S:?w1, X
+    358            
+    359            *(p_tab+4) = units + 0x30;
+   \   0000AB BE00                  LDW       X, S:?w6
+   \   0000AD 1C0030                ADDW      X, #0x30
+   \   0000B0 9093                  LDW       Y, X
+   \   0000B2 BE00                  LDW       X, S:?w0
+   \   0000B4 1C0008                ADDW      X, #0x8
+   \   0000B7 BF00                  LDW       S:?w2, X
+   \   0000B9 91CF00                LDW       [S:?w2.w], Y
+    360            *(p_tab+3) = tens + 0x30;
+   \   0000BC BE00                  LDW       X, S:?w5
+   \   0000BE 1C0030                ADDW      X, #0x30
+   \   0000C1 9093                  LDW       Y, X
+   \   0000C3 BE00                  LDW       X, S:?w0
+   \   0000C5 1C0006                ADDW      X, #0x6
+   \   0000C8 BF00                  LDW       S:?w2, X
+   \   0000CA 91CF00                LDW       [S:?w2.w], Y
+    361            *(p_tab+2) = hundreds + 0x30;
+   \   0000CD BE00                  LDW       X, S:?w4
+   \   0000CF 1C0030                ADDW      X, #0x30
+   \   0000D2 9093                  LDW       Y, X
+   \   0000D4 BE00                  LDW       X, S:?w0
+   \   0000D6 1C0004                ADDW      X, #0x4
+   \   0000D9 BF00                  LDW       S:?w2, X
+   \   0000DB 91CF00                LDW       [S:?w2.w], Y
+    362            *(p_tab+1) = thousands + 0x30;
+   \   0000DE BE00                  LDW       X, S:?w3
+   \   0000E0 1C0030                ADDW      X, #0x30
+   \   0000E3 9093                  LDW       Y, X
+   \   0000E5 BE00                  LDW       X, S:?w0
+   \   0000E7 1C0002                ADDW      X, #0x2
+   \   0000EA BF00                  LDW       S:?w2, X
+   \   0000EC 91CF00                LDW       [S:?w2.w], Y
+    363            *(p_tab) = misc + 0x30;
+   \   0000EF BE00                  LDW       X, S:?w1
+   \   0000F1 1C0030                ADDW      X, #0x30
+   \   0000F4 92CF00                LDW       [S:?w0.w], X
+    364          
+    365          }
+   \   0000F7 CC0000                JP        L:?epilogue_l2_w6
+    366          /**
+    367            * @brief Function in RAM used for test low power and wait modes
+    368            * @caller LPR_init
+    369            * @param None   
+    370            * @retval None
+    371            */
+    372          /* Begin Section LPRUN */ 	
+    373          #ifdef _COSMIC_
+    374          #pragma section (LPRUN)
+    375          void	LPR_Ram(void)
+    376          #endif
+    377          #ifdef _RAISONANCE_
+    378          void	LPR_Ram(void) inram
+    379          #endif
+    380          #ifdef _IAR_
+
+   \                                 In section .near_func.textrw, align 1
+    381          __ramfunc void	LPR_Ram(void)
+    382          #endif
+    383          { 
+    384            uint8_t i = 0;
+   \                     LPR_Ram:
+   \   000000 4F                    CLR       A
+    385          
+    386          /* To reduce consumption to minimal 
+    387            Swith off the Flash */
+    388            FLASH->CR1 = 0x08;
+   \   000001 35085050              MOV       L:0x5050, #0x8
+    389            while(((CLK->REGCSR)&0x80)==0x80);
+   \                     ??LPR_Ram_0:
+   \   000005 720E50CFFB            BTJT      L:0x50cf, #0x7, L:??LPR_Ram_0
+    390          	
+    391          /* Swith off the Regulator*/
+    392            CLK->REGCSR = 0x02;
+   \   00000A 350250CF              MOV       L:0x50cf, #0x2
+    393            while(((CLK->REGCSR)&0x01)==0x01);
+   \                     ??LPR_Ram_1:
+   \   00000E 720050CFFB            BTJT      L:0x50cf, #0x0, L:??LPR_Ram_1
+    394          
+    395          /* Set trigger on GPIOE pin6*/ 
+    396            WFE->CR2 = 0x04;
+   \   000013 350450A7              MOV       L:0x50a7, #0x4
+    397            GPIOE->CR2 = 0x44;
+   \   000017 35445018              MOV       L:0x5018, #0x44
+    398            
+    399            for (i=0; i<100; i++);
+   \   00001B 4F                    CLR       A
+   \   00001C 2002                  JRA       L:??LPR_Ram_2
+   \                     ??LPR_Ram_3:
+   \   00001E AB01                  ADD       A, #0x1
+   \                     ??LPR_Ram_2:
+   \   000020 A164                  CP        A, #0x64
+   \   000022 25FA                  JRC       L:??LPR_Ram_3
+    400          
+    401          /* To start counter on falling edge*/
+    402            GPIO_LOW(CTN_GPIO_PORT,CTN_CNTEN_GPIO_PIN);
+   \   000024 7219500A              BRES      L:0x500a, #0x4
+    403            
+    404          /*Wait for end of counter */
+    405            wfe();
+   \   000028 728F                  wfe
+    406            
+    407            EXTI->SR1 |= 0x40;
+   \   00002A 721C50A3              BSET      L:0x50a3, #0x6
+    408            WFE->CR2 = 0x00;
+   \   00002E 350050A7              MOV       L:0x50a7, #0x0
+    409            
+    410            //Switch on the regulator
+    411            CLK->REGCSR = 0x00;
+   \   000032 350050CF              MOV       L:0x50cf, #0x0
+    412            while(((CLK->REGCSR)&0x1) != 0x1);		
+   \                     ??LPR_Ram_4:
+   \   000036 720150CFFB            BTJF      L:0x50cf, #0x0, L:??LPR_Ram_4
+    413          }
+   \   00003B 81                    RET
+    414          /* End Section LPRUN */
+    415          #ifdef _COSMIC_
+    416          #pragma section ()
+    417          #endif
+    418          
+    419          /**
+    420            * @brief Function to initialize the entry in low power and wait modes
+    421            * @caller test low power mode
+    422            * @param None   
+    423            * @retval None
+    424            */
+
+   \                                 In section .near_func.text, align 1
+    425          void LPR_init(void)
+    426          {
+    427          
+    428          /*Switch the clock to LSE and disable HSI*/
+    429            #ifdef USE_LSE
+    430              CLK_SYSCLKSourceConfig(CLK_SYSCLKSource_LSE);	
+    431              CLK_SYSCLKSourceSwitchCmd(ENABLE);
+    432              while (((CLK->SWCR)& 0x01)==0x01);
+    433              CLK_HSICmd(DISABLE);
+    434            #else
+    435              CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_1);
+   \                     LPR_init:
+   \   000000 4F                    CLR       A
+   \   000001 CD0000                CALL      L:CLK_SYSCLKDivConfig
+    436              CLK_SYSCLKSourceConfig(CLK_SYSCLKSource_LSI);
+   \   000004 A602                  LD        A, #0x2
+   \   000006 CD0000                CALL      L:CLK_SYSCLKSourceConfig
+    437              CLK_SYSCLKSourceSwitchCmd(ENABLE);
+   \   000009 A601                  LD        A, #0x1
+   \   00000B CD0000                CALL      L:CLK_SYSCLKSourceSwitchCmd
+    438              while (((CLK->SWCR)& 0x01)==0x01);
+   \                     ??LPR_init_0:
+   \   00000E 720050C9FB            BTJT      L:0x50c9, #0x0, L:??LPR_init_0
+    439              CLK_HSICmd(DISABLE);
+   \   000013 4F                    CLR       A
+   \   000014 CD0000                CALL      L:CLK_HSICmd
+    440            #endif
+    441          
+    442          /*Configure event for WAKEUP and FUNCTION, disable the interrupts*/
+    443          
+    444            sim();
+   \   000017 9B                    sim
+    445          	
+    446          /* To copy function LPR_Ram in RAM section LPRUN*/
+    447          #ifdef _COSMIC_
+    448            if (!(_fctcpy('L')))
+    449              while(1);
+    450          #endif
+    451          
+    452            LPR_Ram(); // Call in RAM
+   \   000018 CD0000                CALL      L:LPR_Ram
+    453            
+    454            /*Switch the clock to HSI*/
+    455            CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_8);
+   \   00001B A603                  LD        A, #0x3
+   \   00001D CD0000                CALL      L:CLK_SYSCLKDivConfig
+    456            CLK_HSICmd(ENABLE);
+   \   000020 A601                  LD        A, #0x1
+   \   000022 CD0000                CALL      L:CLK_HSICmd
+    457            while (((CLK->ICKCR)& 0x02)!=0x02);
+   \                     ??LPR_init_1:
+   \   000025 720350C2FB            BTJF      L:0x50c2, #0x1, L:??LPR_init_1
+    458            
+    459            CLK_SYSCLKSourceConfig(CLK_SYSCLKSource_HSI);
+   \   00002A A601                  LD        A, #0x1
+   \   00002C CD0000                CALL      L:CLK_SYSCLKSourceConfig
+    460            CLK_SYSCLKSourceSwitchCmd(ENABLE);
+   \   00002F A601                  LD        A, #0x1
+   \   000031 CD0000                CALL      L:CLK_SYSCLKSourceSwitchCmd
+    461            while (((CLK->SWCR)& 0x01)==0x01);
+   \                     ??LPR_init_2:
+   \   000034 720050C9FB            BTJT      L:0x50c9, #0x0, L:??LPR_init_2
+    462          
+    463          }
+   \   000039 81                    RET
+    464          
+    465          /**
+    466            * @brief Function to return the VDD measurement
+    467            * @caller All measurements: VDD display or Current
+    468            * See STM8L152x4/6 and STM8L151x4/6 Errata sheet
+    469            * Limitation: "Bandgap VREFINT_Factory_CONV byte value not programmed"
+    470            *
+    471            * 2 Methods for VDD measurement:
+    472            * The first one offers a better accuracy
+    473            *
+    474            * 1st case: The VREFINT is stored in memory during factory tests
+    475            * We use this value for better accuracy in this case
+    476            *   Vdd_appli = ( VREF_Factory/Vref_measured ) * VDD_Factory 
+    477            *   VDD_Factory = 3V+-10mV
+    478            *   Vref_Factory +-5mV
+    479            *
+    480            * 2nd case: The VREFINT is not stored in memory.
+    481            *   In this case:
+    482            *   Vdd_appli = (Theorical_Vref/Vref mesure) * ADC_Converter
+    483            *   Theorical_Vref = 1.224V
+    484            *   ADC_Converter 4096
+    485            *   ---> LSBIdeal = VREF/4096 or VDA/4096
+    486            * @param None   
+    487            * @retval VDD measurements
+    488            */
+
+   \                                 In section .near_func.text, align 1
+    489          float Vdd_appli(void)
+    490          {
+   \                     Vdd_appli:
+   \   000000 CD0000                CALL      L:?push_w4
+    491            uint16_t MeasurINT,FullVREF_FACTORY  ;
+    492            uint8_t *P_VREFINT_Factory ;
+    493            float f_Vdd_appli ;
+    494            
+    495            P_VREFINT_Factory = VREFINT_Factory_CONV_ADDRESS;
+   \   000003 AE4910                LDW       X, #0x4910
+   \   000006 BF00                  LDW       S:?w4, X
+    496            
+    497            /*Read the BandGap value on ADC converter*/
+    498            MeasurINT = ADC_Supply();	
+   \   000008 CD0000                CALL      L:ADC_Supply
+    499            
+    500            /* To check if VREFINT_Factory_CONV has been set
+    501            the value is one byte we must add 0x600 to the factory byte */
+    502          
+    503          /* For use VREFINT_Factory_CONV, we must to define VREFINT_FACTORY_CONV (file discover_functions.h */
+    504          
+    505          #ifdef VREFINT_FACTORY_CONV
+    506            if ((*P_VREFINT_Factory>VREFINT_Factory_CONV_MIN ) && (*P_VREFINT_Factory<VREFINT_Factory_CONV_MAX ))
+    507            {
+    508              /* If the value exists:
+    509              Adds the hight byte to FullVREF_FACTORY */
+    510              FullVREF_FACTORY = VREFINT_Factory_CONV_MSB;
+    511              FullVREF_FACTORY += *P_VREFINT_Factory;
+    512              f_Vdd_appli = (float)(FullVREF_FACTORY*VDD_FACTORY);
+    513              f_Vdd_appli /= MeasurINT;
+    514            } else {
+    515              /* If the value doesn't exist (or not correct) in factory setting takes the theorical value 1.224 volt */
+    516              f_Vdd_appli = (VREF/MeasurINT) * ADC_CONV;
+    517            }
+    518          #else
+    519              /* We use the theorcial value */
+    520              f_Vdd_appli = (VREF/MeasurINT) * ADC_CONV;
+   \   00000B CD0000                CALL      L:?fcastf32u16_l0_x
+   \   00000E CD0000                CALL      L:?mov_l1_l0
+   \   000011 CD0000                CALL      L:?fdiv32_l0_dc32_l1
+   \   000014 3F9CAC08              DC32      0x3f9cac08
+   \   000018 CD0000                CALL      L:?fmul32_l0_l0_dc32
+   \   00001B 45800000              DC32      0x45800000
+    521          #endif
+    522          
+    523          /* Vdd_appli in mV */  
+    524            f_Vdd_appli *= 1000L;
+   \   00001F CD0000                CALL      L:?fmul32_l0_l0_dc32
+   \   000022 447A0000              DC32      0x447a0000
+    525          	
+    526            return f_Vdd_appli;
+   \   000026 CC0000                JP        L:?epilogue_w4
+    527          }
+    528          
+    529          /**
+    530            * @brief Function to measure VDD
+    531            * @caller main
+    532            * @param None   
+    533            * @retval Vdd value in mV
+    534            */
+
+   \                                 In section .near_func.text, align 1
+    535          uint16_t Vref_measure(void)
+    536          {
+   \                     Vref_measure:
+   \   000000 CD0000                CALL      L:?push_w4
+   \   000003 520C                  SUB       SP, #0xc
+    537            uint16_t tab[6];	
+    538            uint16_t Vdd_mV ;
+    539            
+    540            Vdd_mV = (uint16_t)Vdd_appli();
+   \   000005 CD0000                CALL      L:Vdd_appli
+   \   000008 CD0000                CALL      L:?fcasts16f32_x_l0
+   \   00000B BF00                  LDW       S:?w4, X
+    541          
+    542            convert_into_char (Vdd_mV, tab);
+   \   00000D 9096                  LDW       Y, SP
+   \   00000F 72A90001              ADDW      Y, #0x1
+   \   000013 BE00                  LDW       X, S:?w4
+   \   000015 CD0000                CALL      L:convert_into_char
+    543          	
+    544            /* To add unit and decimal point  */
+    545            tab[5] = 'V';
+   \   000018 AE0056                LDW       X, #0x56
+   \   00001B 1F0B                  LDW       (0xb,SP), X
+    546            tab[4] = ' ';
+   \   00001D AE0020                LDW       X, #0x20
+   \   000020 1F09                  LDW       (0x9,SP), X
+    547            tab[1] |= DOT; /* To add decimal point for display in volt */
+   \   000022 1E03                  LDW       X, (0x3,SP)
+   \   000024 02                    RLWA      X, A
+   \   000025 AA80                  OR        A, #0x80
+   \   000027 02                    RLWA      X, A
+   \   000028 AA00                  OR        A, #0x0
+   \   00002A 02                    RLWA      X, A
+   \   00002B 1F03                  LDW       (0x3,SP), X
+    548            tab[0] = ' ';
+   \   00002D AE0020                LDW       X, #0x20
+   \   000030 1F01                  LDW       (0x1,SP), X
+    549          	
+    550            LCD_GLASS_DisplayStrDeci(tab);
+   \   000032 96                    LDW       X, SP
+   \   000033 1C0001                ADDW      X, #0x1
+   \   000036 CD0000                CALL      L:LCD_GLASS_DisplayStrDeci
+    551          
+    552            return Vdd_mV;
+   \   000039 BE00                  LDW       X, S:?w4
+   \   00003B 5B0C                  ADD       SP, #0xc
+   \   00003D CC0000                JP        L:?epilogue_w4
+    553          }
+    554          
+    555          /**
+    556            * @brief funtion to display the current in µA
+    557            * @caller several funcions
+    558            * @param Current value.
+    559            * @retval none
+    560            */ 
+
+   \                                 In section .near_func.text, align 1
+    561          void display_MuAmp (uint16_t Current)
+    562          {
+   \                     display_MuAmp:
+   \   000000 520C                  SUB       SP, #0xc
+    563            uint16_t tab[6];
+    564                    
+    565            convert_into_char((int)Current, tab);
+   \   000002 9096                  LDW       Y, SP
+   \   000004 72A90001              ADDW      Y, #0x1
+   \   000008 CD0000                CALL      L:convert_into_char
+    566            tab[5] = 'A';
+   \   00000B AE0041                LDW       X, #0x41
+   \   00000E 1F0B                  LDW       (0xb,SP), X
+    567            tab[4] = 'µ';
+   \   000010 AE00B5                LDW       X, #0xb5
+   \   000013 1F09                  LDW       (0x9,SP), X
+    568          		
+    569          /* Test the significant digit for displays 3 or 4 digits*/
+    570            if ( tab[0] != '0')
+   \   000015 1E01                  LDW       X, (0x1,SP)
+   \   000017 A30030                CPW       X, #0x30
+   \   00001A 270D                  JREQ      L:??display_MuAmp_0
+    571            {
+    572              tab[1] |= DOT; /* To add decimal point */
+   \   00001C 1E03                  LDW       X, (0x3,SP)
+   \   00001E 02                    RLWA      X, A
+   \   00001F AA80                  OR        A, #0x80
+   \   000021 02                    RLWA      X, A
+   \   000022 AA00                  OR        A, #0x0
+   \   000024 02                    RLWA      X, A
+   \   000025 1F03                  LDW       (0x3,SP), X
+   \   000027 2018                  JRA       L:??display_MuAmp_1
+    573            }  else  {
+    574              /* To shift for suppress '0' before decimal */
+    575              tab[0] = tab[1] | DOT ;	
+   \                     ??display_MuAmp_0:
+   \   000029 1E03                  LDW       X, (0x3,SP)
+   \   00002B 02                    RLWA      X, A
+   \   00002C AA80                  OR        A, #0x80
+   \   00002E 02                    RLWA      X, A
+   \   00002F AA00                  OR        A, #0x0
+   \   000031 02                    RLWA      X, A
+   \   000032 1F01                  LDW       (0x1,SP), X
+    576              tab[1] = tab[2] ;
+   \   000034 1E05                  LDW       X, (0x5,SP)
+   \   000036 1F03                  LDW       (0x3,SP), X
+    577              tab[2] = tab[3] ;		
+   \   000038 1E07                  LDW       X, (0x7,SP)
+   \   00003A 1F05                  LDW       (0x5,SP), X
+    578              tab[3] = ' ';
+   \   00003C AE0020                LDW       X, #0x20
+   \   00003F 1F07                  LDW       (0x7,SP), X
+    579            }
+    580          	
+    581            LCD_GLASS_DisplayStrDeci(tab);
+   \                     ??display_MuAmp_1:
+   \   000041 96                    LDW       X, SP
+   \   000042 1C0001                ADDW      X, #0x1
+   \   000045 CD0000                CALL      L:LCD_GLASS_DisplayStrDeci
+    582          }
+   \   000048 5B0C                  ADD       SP, #0xc
+   \   00004A 81                    RET
+    583          
+    584          /**
+    585            * @brief funtion Current measurement in RUN mode
+    586            * @caller main and test_icc_RUN
+    587            * @param none
+    588            * @retval Current (mA)
+    589            */ 
+
+   \                                 In section .near_func.text, align 1
+    590          float Icc_measure_RUN(void)
+    591          {
+   \                     Icc_measure_RUN:
+   \   000000 CD0000                CALL      L:?push_l2
+   \   000003 CD0000                CALL      L:?push_w6
+   \   000006 520C                  SUB       SP, #0xc
+    592            float Run_Conso;
+    593            uint16_t MeasurINT;
+    594            uint16_t tab[6];	
+    595          	
+    596            MeasurINT = ADC_Icc_Test(MCU_RUN);
+   \   000008 4F                    CLR       A
+   \   000009 CD0000                CALL      L:ADC_Icc_Test
+   \   00000C BF00                  LDW       S:?w4, X
+    597            
+    598            Run_Conso = MeasurINT * Vdd_appli()/ADC_CONV;
+   \   00000E CD0000                CALL      L:Vdd_appli
+   \   000011 CD0000                CALL      L:?mov_l1_l0
+   \   000014 BE00                  LDW       X, S:?w4
+   \   000016 CD0000                CALL      L:?fcastf32u16_l0_x
+   \   000019 CD0000                CALL      L:?fmul32_l0_l0_l1
+   \   00001C CD0000                CALL      L:?fdiv32_l0_l0_dc32
+   \   00001F 45800000              DC32      0x45800000
+   \   000023 CD0000                CALL      L:?mov_l2_l0
+    599            Run_Conso *= 10L; 
+   \   000026 CD0000                CALL      L:?mov_l0_l2
+   \   000029 CD0000                CALL      L:?fmul32_l0_l0_dc32
+   \   00002C 41200000              DC32      0x41200000
+   \   000030 CD0000                CALL      L:?mov_l2_l0
+    600            
+    601            convert_into_char((int)(Run_Conso*10), tab);
+   \   000033 9096                  LDW       Y, SP
+   \   000035 72A90001              ADDW      Y, #0x1
+   \   000039 9089                  PUSHW     Y
+   \   00003B CD0000                CALL      L:?mov_l0_l2
+   \   00003E CD0000                CALL      L:?fmul32_l0_l0_dc32
+   \   000041 41200000              DC32      0x41200000
+   \   000045 CD0000                CALL      L:?fcasts16f32_x_l0
+   \   000048 9085                  POPW      Y
+   \   00004A CD0000                CALL      L:convert_into_char
+    602          
+    603            /* To add unit and decimal point  */
+    604            tab[5] = 'A';
+   \   00004D AE0041                LDW       X, #0x41
+   \   000050 1F0B                  LDW       (0xb,SP), X
+    605            tab[4] = 'm';
+   \   000052 AE006D                LDW       X, #0x6d
+   \   000055 1F09                  LDW       (0x9,SP), X
+    606            tab[3] = ' ';
+   \   000057 AE0020                LDW       X, #0x20
+   \   00005A 1F07                  LDW       (0x7,SP), X
+    607            tab[0] |= DOT; /* To add decimal point for display in volt */
+   \   00005C 1E01                  LDW       X, (0x1,SP)
+   \   00005E 02                    RLWA      X, A
+   \   00005F AA80                  OR        A, #0x80
+   \   000061 02                    RLWA      X, A
+   \   000062 AA00                  OR        A, #0x0
+   \   000064 02                    RLWA      X, A
+   \   000065 1F01                  LDW       (0x1,SP), X
+    608          
+    609            LCD_GLASS_DisplayStrDeci(tab);
+   \   000067 96                    LDW       X, SP
+   \   000068 1C0001                ADDW      X, #0x1
+   \   00006B CD0000                CALL      L:LCD_GLASS_DisplayStrDeci
+    610          	
+    611            return (Run_Conso);
+   \   00006E CD0000                CALL      L:?mov_l0_l2
+   \   000071 5B0C                  ADD       SP, #0xc
+   \   000073 CC0000                JP        L:?epilogue_l2_w6
+    612          }
+    613          
+    614          /**
+    615            * @brief funtion Current measurement in HALT mode
+    616            * @caller main and test_icc_HALT
+    617            * @param none
+    618            * @retval Current (µA)
+    619            */ 
+
+   \                                 In section .near_func.text, align 1
+    620          float Icc_measure_HALT(void)
+    621          {
+   \                     Icc_measure_HALT:
+   \   000000 CD0000                CALL      L:?push_l2
+    622            float Current;
+    623            uint16_t MeasurINT;
+    624            
+    625            /* To init the mode and measurement*/
+    626            MeasurINT = ADC_Icc_Test(MCU_HALT);
+   \   000003 A603                  LD        A, #0x3
+   \   000005 CD0000                CALL      L:ADC_Icc_Test
+   \   000008 BF00                  LDW       S:?w4, X
+    627            
+    628            /* Substract bias curent*/
+    629            MeasurINT -=	Bias_Current;
+   \   00000A C60000                LD        A, L:Bias_Current
+   \   00000D 5F                    CLRW      X
+   \   00000E 97                    LD        XL, A
+   \   00000F BF00                  LDW       S:?w0, X
+   \   000011 BE00                  LDW       X, S:?w4
+   \   000013 72B00000              SUBW      X, S:?w0
+   \   000017 BF00                  LDW       S:?w4, X
+    630            Current = MeasurINT * Vdd_appli()/ADC_CONV;  
+   \   000019 CD0000                CALL      L:Vdd_appli
+   \   00001C CD0000                CALL      L:?mov_l1_l0
+   \   00001F BE00                  LDW       X, S:?w4
+   \   000021 CD0000                CALL      L:?fcastf32u16_l0_x
+   \   000024 CD0000                CALL      L:?fmul32_l0_l0_l1
+   \   000027 CD0000                CALL      L:?fdiv32_l0_l0_dc32
+   \   00002A 45800000              DC32      0x45800000
+   \   00002E CD0000                CALL      L:?mov_l2_l0
+    631          
+    632            Current *= 10L;
+   \   000031 CD0000                CALL      L:?mov_l0_l2
+   \   000034 CD0000                CALL      L:?fmul32_l0_l0_dc32
+   \   000037 41200000              DC32      0x41200000
+   \   00003B CD0000                CALL      L:?mov_l2_l0
+    633            
+    634            if ((int) Current<MAX_CURRENT)
+   \   00003E CD0000                CALL      L:?mov_l0_l2
+   \   000041 CD0000                CALL      L:?fcasts16f32_x_l0
+   \   000044 A3270F                CPW       X, #0x270f
+   \   000047 2E0B                  JRSGE     L:??Icc_measure_HALT_0
+    635            {	
+    636              display_MuAmp((int)Current);
+   \   000049 CD0000                CALL      L:?mov_l0_l2
+   \   00004C CD0000                CALL      L:?fcasts16f32_x_l0
+   \   00004F CD0000                CALL      L:display_MuAmp
+   \   000052 2009                  JRA       L:??Icc_measure_HALT_1
+    637            } else{
+    638              LCD_GLASS_Clear();
+   \                     ??Icc_measure_HALT_0:
+   \   000054 CD0000                CALL      L:LCD_GLASS_Clear
+    639              LCD_GLASS_DisplayString("Error");
+   \   000057 AE0000                LDW       X, #`?<Constant "Error">`
+   \   00005A CD0000                CALL      L:LCD_GLASS_DisplayString
+    640            }
+    641            
+    642            return(Current);
+   \                     ??Icc_measure_HALT_1:
+   \   00005D CD0000                CALL      L:?mov_l0_l2
+   \   000060 CC0000                JP        L:?epilogue_l2
+    643          }
+    644          
+    645          /**
+    646            * @brief funtion Current measurement in LOW POWER mode with LCD off
+    647            * @caller main and test_icc_LCD
+    648            * @param none
+    649            * @retval Current (µA)
+    650            */
+
+   \                                 In section .near_func.text, align 1
+    651          float Icc_measure_LPR(void)
+    652          {
+   \                     Icc_measure_LPR:
+   \   000000 CD0000                CALL      L:?push_l2
+    653            float Current;
+    654            uint16_t MeasurINT;
+    655            
+    656            /* To init the mode and measurement*/	
+    657            MeasurINT = ADC_Icc_Test(MCU_LPR);
+   \   000003 A601                  LD        A, #0x1
+   \   000005 CD0000                CALL      L:ADC_Icc_Test
+   \   000008 BF00                  LDW       S:?w4, X
+    658            
+    659            /* Substract bias curent*/
+    660            MeasurINT -= Bias_Current;
+   \   00000A C60000                LD        A, L:Bias_Current
+   \   00000D 5F                    CLRW      X
+   \   00000E 97                    LD        XL, A
+   \   00000F BF00                  LDW       S:?w0, X
+   \   000011 BE00                  LDW       X, S:?w4
+   \   000013 72B00000              SUBW      X, S:?w0
+   \   000017 BF00                  LDW       S:?w4, X
+    661            
+    662            Current = MeasurINT * Vdd_appli()/ADC_CONV; 
+   \   000019 CD0000                CALL      L:Vdd_appli
+   \   00001C CD0000                CALL      L:?mov_l1_l0
+   \   00001F BE00                  LDW       X, S:?w4
+   \   000021 CD0000                CALL      L:?fcastf32u16_l0_x
+   \   000024 CD0000                CALL      L:?fmul32_l0_l0_l1
+   \   000027 CD0000                CALL      L:?fdiv32_l0_l0_dc32
+   \   00002A 45800000              DC32      0x45800000
+   \   00002E CD0000                CALL      L:?mov_l2_l0
+    663            Current *= 10L;
+   \   000031 CD0000                CALL      L:?mov_l0_l2
+   \   000034 CD0000                CALL      L:?fmul32_l0_l0_dc32
+   \   000037 41200000              DC32      0x41200000
+   \   00003B CD0000                CALL      L:?mov_l2_l0
+    664            
+    665            /* To test if value is "normal"   */
+    666            if ((int) Current<MAX_CURRENT)
+   \   00003E CD0000                CALL      L:?mov_l0_l2
+   \   000041 CD0000                CALL      L:?fcasts16f32_x_l0
+   \   000044 A3270F                CPW       X, #0x270f
+   \   000047 2E0B                  JRSGE     L:??Icc_measure_LPR_0
+    667            {	
+    668              display_MuAmp((int)Current);
+   \   000049 CD0000                CALL      L:?mov_l0_l2
+   \   00004C CD0000                CALL      L:?fcasts16f32_x_l0
+   \   00004F CD0000                CALL      L:display_MuAmp
+   \   000052 2010                  JRA       L:??Icc_measure_LPR_1
+    669            }
+    670            else
+    671            {
+    672              if (!Auto_test)
+   \                     ??Icc_measure_LPR_0:
+   \   000054 C60000                LD        A, L:Auto_test
+   \   000057 A100                  CP        A, #0x0
+   \   000059 2609                  JRNE      L:??Icc_measure_LPR_1
+    673              {
+    674                LCD_GLASS_Clear();
+   \   00005B CD0000                CALL      L:LCD_GLASS_Clear
+    675                LCD_GLASS_DisplayString("Error");
+   \   00005E AE0000                LDW       X, #`?<Constant "Error">`
+   \   000061 CD0000                CALL      L:LCD_GLASS_DisplayString
+    676              }
+    677            }
+    678          
+    679            return (Current);
+   \                     ??Icc_measure_LPR_1:
+   \   000064 CD0000                CALL      L:?mov_l0_l2
+   \   000067 CC0000                JP        L:?epilogue_l2
+    680          }
+    681          
+    682          /**
+    683            * @brief funtion Current measurement in LOW POWER mode with LCD ON
+    684            * @caller main
+    685            * @param none
+    686            * @retval none
+    687            */
+
+   \                                 In section .near_func.text, align 1
+    688          void Icc_measure_LPR_LCD(void)
+    689          {
+   \                     Icc_measure_LPR_LCD:
+   \   000000 CD0000                CALL      L:?push_w4
+    690            float Current;
+    691            uint16_t MeasurINT;
+    692          	
+    693            /* To init the mode and measurement*/		
+    694            MeasurINT = ADC_Icc_Test(MCU_LPR_LCD);
+   \   000003 A604                  LD        A, #0x4
+   \   000005 CD0000                CALL      L:ADC_Icc_Test
+   \   000008 BF00                  LDW       S:?w4, X
+    695            
+    696            /* Substract bias curent*/
+    697            MeasurINT -= Bias_Current;
+   \   00000A C60000                LD        A, L:Bias_Current
+   \   00000D 5F                    CLRW      X
+   \   00000E 97                    LD        XL, A
+   \   00000F BF00                  LDW       S:?w0, X
+   \   000011 BE00                  LDW       X, S:?w4
+   \   000013 72B00000              SUBW      X, S:?w0
+   \   000017 BF00                  LDW       S:?w4, X
+    698          
+    699            Current = MeasurINT * Vdd_appli()/ADC_CONV; 
+   \   000019 CD0000                CALL      L:Vdd_appli
+   \   00001C CD0000                CALL      L:?mov_l1_l0
+   \   00001F BE00                  LDW       X, S:?w4
+   \   000021 CD0000                CALL      L:?fcastf32u16_l0_x
+   \   000024 CD0000                CALL      L:?fmul32_l0_l0_l1
+   \   000027 CD0000                CALL      L:?fdiv32_l0_l0_dc32
+   \   00002A 45800000              DC32      0x45800000
+    700            Current *= 10L;
+   \   00002E CD0000                CALL      L:?fmul32_l0_l0_dc32
+   \   000031 41200000              DC32      0x41200000
+    701            
+    702            display_MuAmp((int)Current);
+   \   000035 CD0000                CALL      L:?fcasts16f32_x_l0
+   \   000038 CD0000                CALL      L:display_MuAmp
+    703          
+    704          }	
+   \   00003B CC0000                JP        L:?epilogue_w4
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant "VDD">`:
+   \   000000 56444400              DC8 "VDD"
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant "VDD Not OK ">`:
+   \   000000 564444204E6F          DC8 "VDD Not OK "
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant "VDD OK">`:
+   \   000000 564444204F4B          DC8 "VDD OK"
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant "RUN">`:
+   \   000000 52554E00              DC8 "RUN"
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant "RUN Not OK ">`:
+   \   000000 52554E204E6F          DC8 "RUN Not OK "
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant "RUN OK">`:
+   \   000000 52554E204F4B          DC8 "RUN OK"
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant "HALT">`:
+   \   000000 48414C5400            DC8 "HALT"
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant "ICC HALT Not OK ">`:
+   \   000000 494343204841          DC8 "ICC HALT Not OK "
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant "HALTOK">`:
+   \   000000 48414C544F4B          DC8 "HALTOK"
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant "LP">`:
+   \   000000 4C5000                DC8 "LP"
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant "LP Not OK ">`:
+   \   000000 4C50204E6F74          DC8 "LP Not OK "
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant "LP OK">`:
+   \   000000 4C50204F4B00          DC8 "LP OK"
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant "LSE">`:
+   \   000000 4C534500              DC8 "LSE"
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant "LSE Not OK ">`:
+   \   000000 4C5345204E6F          DC8 "LSE Not OK "
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant "LSE OK">`:
+   \   000000 4C5345204F4B          DC8 "LSE OK"
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant {32, 32, 32, 32, 32, 32}>`:
+   \   000000 002000200020          DC16 32, 32, 32, 32, 32, 32
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant " TEST ">`:
+   \   000000 205445535420          DC8 " TEST "
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant "TEST OK ">`:
+   \   000000 54455354204F          DC8 "TEST OK "
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant "      ** BIAS CURRENT...">`:
+   \   000000 202020202020          DC8 "      ** BIAS CURRENT ** JP1 OFF **"
+
+   \                                 In section .near.rodata, align 1
+   \                     `?<Constant "Error">`:
+   \   000000 4572726F7200          DC8 "Error"
+    705          
+    706          /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
+
+   Section sizes:
+
+     Function/Label                         Bytes
+     --------------                         -----
+     Bias_Current                              1
+     Auto_test                                 1
+     FLASH_ProgramBias                        32
+     test_vdd                                 72
+     test_icc_Run                             75
+     test_icc_HALT                           105
+     test_icc_LP                             105
+     test_LSE                                181
+     auto_test                               114
+     Bias_measurement                        137
+     convert_into_char                       250
+     LPR_Ram                                  60
+     LPR_init                                 58
+     Vdd_appli                                41
+     Vref_measure                             64
+     display_MuAmp                            75
+     Icc_measure_RUN                         118
+     Icc_measure_HALT                         99
+     Icc_measure_LPR                         106
+     Icc_measure_LPR_LCD                      62
+     ?<Constant "VDD">                         4
+     ?<Constant "VDD Not OK ">                12
+     ?<Constant "VDD OK">                      7
+     ?<Constant "RUN">                         4
+     ?<Constant "RUN Not OK ">                12
+     ?<Constant "RUN OK">                      7
+     ?<Constant "HALT">                        5
+     ?<Constant "ICC HALT Not OK ">           17
+     ?<Constant "HALTOK">                      7
+     ?<Constant "LP">                          3
+     ?<Constant "LP Not OK ">                 11
+     ?<Constant "LP OK">                       6
+     ?<Constant "LSE">                         4
+     ?<Constant "LSE Not OK ">                12
+     ?<Constant "LSE OK">                      7
+     ?<Constant {32, 32, 32, 32, 32, 32}>     12
+     ?<Constant " TEST ">                      7
+     ?<Constant "TEST OK ">                    9
+     ?<Constant "      ** BIAS CURRENT...">   36
+     ?<Constant "Error">                       6
+
+ 
+     1 byte  in section .eeprom.noinit
+     1 byte  in section .near.bss
+   188 bytes in section .near.rodata
+ 1 694 bytes in section .near_func.text
+    60 bytes in section .near_func.textrw
+ 
+ 1 754 bytes of CODE  memory
+   188 bytes of CONST memory
+     2 bytes of DATA  memory
+
+Errors: none
+Warnings: none

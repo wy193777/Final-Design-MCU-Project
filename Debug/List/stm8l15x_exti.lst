@@ -1,0 +1,841 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.30.1.50036 for STM8             12/Mar/2014  19:56:45 #
+# Copyright 2010-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  F:\Skydrive\Final Design\Servo Motor                     #
+#                    STM8L\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_e #
+#                    xti.c                                                    #
+#    Command line =  "F:\Skydrive\Final Design\Servo Motor                    #
+#                    STM8L\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_e #
+#                    xti.c" -e -Ol --no_cse --no_unroll --no_inline           #
+#                    --no_code_motion --no_tbaa --no_cross_call --debug       #
+#                    --code_model small --data_model medium -o                #
+#                    "F:\Skydrive\Final Design\Servo Motor STM8L\Debug\Obj\"  #
+#                    --dlib_config "D:\IAR Systems\Embedded Workbench         #
+#                    6.0\stm8\LIB\dlstm8smn.h" -D STM8L15X_MD -lCN            #
+#                    "F:\Skydrive\Final Design\Servo Motor                    #
+#                    STM8L\Debug\List\" --diag_suppress Pe177,Pe550 -I        #
+#                    "F:\Skydrive\Final Design\Servo Motor                    #
+#                    STM8L\Project\Discover\inc\" -I "F:\Skydrive\Final       #
+#                    Design\Servo Motor STM8L\Libraries\STM8L15x_StdPeriph_Dr #
+#                    iver\inc\" --vregs 16                                    #
+#    List file    =  F:\Skydrive\Final Design\Servo Motor                     #
+#                    STM8L\Debug\List\stm8l15x_exti.lst                       #
+#    Object file  =  F:\Skydrive\Final Design\Servo Motor                     #
+#                    STM8L\Debug\Obj\stm8l15x_exti.o                          #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+F:\Skydrive\Final Design\Servo Motor STM8L\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_exti.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    stm8l15x_exti.c
+      4            * @author  MCD Application Team
+      5            * @version V1.4.0
+      6            * @date    09/24/2010
+      7            * @brief   This file provides all the EXTI firmware functions.
+      8            ******************************************************************************
+      9            * @copy
+     10            *
+     11            * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+     12            * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+     13            * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+     14            * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+     15            * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+     16            * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+     17            *
+     18            * <h2><center>&copy; COPYRIGHT 2010 STMicroelectronics</center></h2>
+     19            */
+     20          
+     21          /* Includes ------------------------------------------------------------------*/
+     22          #include "stm8l15x_exti.h"
+     23          
+     24          /** @addtogroup STM8L15x_StdPeriph_Driver
+     25            * @{
+     26            */
+     27          
+     28          /* Private typedef -----------------------------------------------------------*/
+     29          /* Private define ------------------------------------------------------------*/
+     30          /* Private macro -------------------------------------------------------------*/
+     31          /* Private variables ---------------------------------------------------------*/
+     32          /* Private function prototypes -----------------------------------------------*/
+     33          /* Private functions ---------------------------------------------------------*/
+     34          
+     35          
+     36          /**
+     37            * @addtogroup EXTI_Public_Functions
+     38            * @{
+     39            */
+     40          
+     41          /**
+     42            * @brief  Deinitializes the EXTI registers to their default reset value.
+     43            * @param  None
+     44            * @retval None
+     45            */
+
+   \                                 In section .near_func.text, align 1
+     46          void EXTI_DeInit(void)
+     47          {
+     48            EXTI->CR1 = EXTI_CR1_RESET_VALUE;
+   \                     EXTI_DeInit:
+   \   000000 350050A0              MOV       L:0x50a0, #0x0
+     49            EXTI->CR2 = EXTI_CR2_RESET_VALUE;
+   \   000004 350050A1              MOV       L:0x50a1, #0x0
+     50            EXTI->CR3 = EXTI_CR3_RESET_VALUE;
+   \   000008 350050A2              MOV       L:0x50a2, #0x0
+     51            EXTI->CR4 = EXTI_CR4_RESET_VALUE;
+   \   00000C 350050AA              MOV       L:0x50aa, #0x0
+     52            EXTI->SR1 = 0xFF; /* Setting SR1 bits in order to clear flags */
+   \   000010 35FF50A3              MOV       L:0x50a3, #0xff
+     53            EXTI->SR2 = 0xFF; /* Setting SR2 bits in order to clear flags */
+   \   000014 35FF50A4              MOV       L:0x50a4, #0xff
+     54            EXTI->CONF1 = EXTI_CONF1_RESET_VALUE;
+   \   000018 350050A5              MOV       L:0x50a5, #0x0
+     55            EXTI->CONF2 = EXTI_CONF2_RESET_VALUE;
+   \   00001C 350050AB              MOV       L:0x50ab, #0x0
+     56          }
+   \   000020 81                    RET
+     57          
+     58          /**
+     59            * @brief  Sets the external interrupt sensitivity of the selected port.
+     60            * @note   - Global interrupts must be disabled before calling this function.
+     61            * @note   - The modification of external interrupt sensitivity is only possible
+     62            *         when the interrupts are disabled.
+     63            *         - The normal behavior is to disable the interrupts before calling this
+     64            *         function, and re-enable them after.
+     65            * @param  EXTI_Port : The port number to access.
+     66            *         This parameter can be a value of @ref EXTI_Port_TypeDef
+     67            * @param  EXTI_Trigger : The external interrupt sensitivity value to set.
+     68            *         This parameter can be a value of @ref EXTI_Trigger_TypeDef
+     69            * @retval None
+     70            */
+
+   \                                 In section .near_func.text, align 1
+     71          void EXTI_SetPortSensitivity(EXTI_Port_TypeDef EXTI_Port,
+     72                                       EXTI_Trigger_TypeDef EXTI_Trigger)
+     73          {
+   \                     EXTI_SetPortSensitivity:
+   \   000000 B700                  LD        S:?b1, A
+     74            /* Check function parameters */
+     75            assert_param(IS_EXTI_PORT(EXTI_Port));
+     76            assert_param(IS_EXTI_TRIGGER(EXTI_Trigger));
+     77          
+     78            /* Ceck if selected port is in EXTI_CR3 register */
+     79            if ((EXTI_Port & 0xF0) == 0x00)
+   \   000002 B600                  LD        A, S:?b1
+   \   000004 A4F0                  AND       A, #0xf0
+   \   000006 A100                  CP        A, #0x0
+   \   000008 2622                  JRNE      L:??EXTI_SetPortSensitivity_0
+     80            {
+     81              /* Reset the trigger bits corresponding to EXTI_Port */
+     82              EXTI->CR3 &= (uint8_t) (~(uint8_t)((uint8_t)0x03 << EXTI_Port));
+   \   00000A AE0003                LDW       X, #0x3
+   \   00000D B600                  LD        A, S:?b1
+   \   00000F CD0000                CALL      L:?sll16_x_x_a
+   \   000012 9F                    LD        A, XL
+   \   000013 43                    CPL       A
+   \   000014 C450A2                AND       A, L:0x50a2
+   \   000017 C750A2                LD        L:0x50a2, A
+     83              /* Write EXTI port trigger */
+     84              EXTI->CR3 |= (uint8_t)((uint8_t)(EXTI_Trigger) << EXTI_Port);
+   \   00001A 5F                    CLRW      X
+   \   00001B 41                    EXG       A, XL
+   \   00001C B600                  LD        A, S:?b0
+   \   00001E 41                    EXG       A, XL
+   \   00001F B600                  LD        A, S:?b1
+   \   000021 CD0000                CALL      L:?sll16_x_x_a
+   \   000024 9F                    LD        A, XL
+   \   000025 CA50A2                OR        A, L:0x50a2
+   \   000028 C750A2                LD        L:0x50a2, A
+   \   00002B 81                    RET
+     85            }
+     86            else /* selected port is in EXTI_CR4 register */
+     87            {
+     88              /* Reset the trigger bits corresponding to EXTI_Port */
+     89              EXTI->CR4 &= (uint8_t) (~(uint8_t)((uint8_t)0x03 << (EXTI_Port & 0x0F)));
+   \                     ??EXTI_SetPortSensitivity_0:
+   \   00002C B600                  LD        A, S:?b1
+   \   00002E A40F                  AND       A, #0xf
+   \   000030 AE0003                LDW       X, #0x3
+   \   000033 CD0000                CALL      L:?sll16_x_x_a
+   \   000036 9F                    LD        A, XL
+   \   000037 43                    CPL       A
+   \   000038 C450AA                AND       A, L:0x50aa
+   \   00003B C750AA                LD        L:0x50aa, A
+     90              /* Write EXTI port trigger */
+     91              EXTI->CR4 |= (uint8_t)(EXTI_Trigger << (EXTI_Port & 0x0F));
+   \   00003E B600                  LD        A, S:?b1
+   \   000040 A40F                  AND       A, #0xf
+   \   000042 5F                    CLRW      X
+   \   000043 41                    EXG       A, XL
+   \   000044 B600                  LD        A, S:?b0
+   \   000046 41                    EXG       A, XL
+   \   000047 CD0000                CALL      L:?sll16_x_x_a
+   \   00004A 9F                    LD        A, XL
+   \   00004B CA50AA                OR        A, L:0x50aa
+   \   00004E C750AA                LD        L:0x50aa, A
+     92            }
+     93          }
+   \   000051 81                    RET
+     94          
+     95          /**
+     96            * @brief  Sets the external interrupt sensitivity of the selected pin.
+     97            * @note   - Global interrupts must be disabled before calling this function.
+     98            * @note   - The modification of external interrupt sensitivity is only possible
+     99            *         when he interrupts are disabled.
+    100            *         - The normal behavior is to disable the interrupts before calling this
+    101            *         function, and re-enable them after.
+    102            * @param  EXTI_Pin : The pin to configure.
+    103            *         This parameter can be a value of @ref EXTI_Pin_TypeDef
+    104            * @param  EXTI_Trigger : The external interrupt sensitivity value to set.
+    105            *         This parameter can be a value of @ref EXTI_Trigger_TypeDef
+    106            * @retval None
+    107            */
+
+   \                                 In section .near_func.text, align 1
+    108          void EXTI_SetPinSensitivity(EXTI_Pin_TypeDef EXTI_Pin,
+    109                                      EXTI_Trigger_TypeDef EXTI_Trigger)
+    110          {
+   \                     EXTI_SetPinSensitivity:
+   \   000000 B700                  LD        S:?b1, A
+    111          
+    112            /* Check function parameters */
+    113            assert_param(IS_EXTI_PINNUM(EXTI_Pin));
+    114            assert_param(IS_EXTI_TRIGGER(EXTI_Trigger));
+    115          
+    116            /* Clear port sensitivity bits */
+    117            switch (EXTI_Pin)
+   \   000002 B600                  LD        A, S:?b1
+   \   000004 4D                    TNZ       A
+   \   000005 2726                  JREQ      L:??EXTI_SetPinSensitivity_0
+   \   000007 A002                  SUB       A, #0x2
+   \   000009 273C                  JREQ      L:??EXTI_SetPinSensitivity_1
+   \   00000B A002                  SUB       A, #0x2
+   \   00000D 2752                  JREQ      L:??EXTI_SetPinSensitivity_2
+   \   00000F A002                  SUB       A, #0x2
+   \   000011 2768                  JREQ      L:??EXTI_SetPinSensitivity_3
+   \   000013 A00A                  SUB       A, #0xa
+   \   000015 277E                  JREQ      L:??EXTI_SetPinSensitivity_4
+   \   000017 A002                  SUB       A, #0x2
+   \   000019 2603                  JRNE      ??lb_0
+   \   00001B CC0000                JP        L:??EXTI_SetPinSensitivity_5
+   \                     ??lb_0:
+   \   00001E A002                  SUB       A, #0x2
+   \   000020 2603                  JRNE      ??lb_1
+   \   000022 CC0000                JP        L:??EXTI_SetPinSensitivity_6
+   \                     ??lb_1:
+   \   000025 A002                  SUB       A, #0x2
+   \   000027 2603                  JRNE      ??lb_2
+   \   000029 CC0000                JP        L:??EXTI_SetPinSensitivity_7
+   \                     ??lb_2:
+   \   00002C 81                    RET
+    118            {
+    119              case EXTI_Pin_0:
+    120                EXTI->CR1 &=  (uint8_t)(~EXTI_CR1_P0IS);
+   \                     ??EXTI_SetPinSensitivity_0:
+   \   00002D C650A0                LD        A, L:0x50a0
+   \   000030 A4FC                  AND       A, #0xfc
+   \   000032 C750A0                LD        L:0x50a0, A
+    121                EXTI->CR1 |= (uint8_t)((uint8_t)(EXTI_Trigger) << EXTI_Pin);
+   \   000035 5F                    CLRW      X
+   \   000036 41                    EXG       A, XL
+   \   000037 B600                  LD        A, S:?b0
+   \   000039 41                    EXG       A, XL
+   \   00003A B600                  LD        A, S:?b1
+   \   00003C CD0000                CALL      L:?sll16_x_x_a
+   \   00003F 9F                    LD        A, XL
+   \   000040 CA50A0                OR        A, L:0x50a0
+   \   000043 C750A0                LD        L:0x50a0, A
+    122                break;
+   \   000046 81                    RET
+    123              case EXTI_Pin_1:
+    124                EXTI->CR1 &=  (uint8_t)(~EXTI_CR1_P1IS);
+   \                     ??EXTI_SetPinSensitivity_1:
+   \   000047 C650A0                LD        A, L:0x50a0
+   \   00004A A4F3                  AND       A, #0xf3
+   \   00004C C750A0                LD        L:0x50a0, A
+    125                EXTI->CR1 |= (uint8_t)((uint8_t)(EXTI_Trigger) << EXTI_Pin);
+   \   00004F 5F                    CLRW      X
+   \   000050 41                    EXG       A, XL
+   \   000051 B600                  LD        A, S:?b0
+   \   000053 41                    EXG       A, XL
+   \   000054 B600                  LD        A, S:?b1
+   \   000056 CD0000                CALL      L:?sll16_x_x_a
+   \   000059 9F                    LD        A, XL
+   \   00005A CA50A0                OR        A, L:0x50a0
+   \   00005D C750A0                LD        L:0x50a0, A
+    126                break;
+   \   000060 81                    RET
+    127              case EXTI_Pin_2:
+    128                EXTI->CR1 &=  (uint8_t)(~EXTI_CR1_P2IS);
+   \                     ??EXTI_SetPinSensitivity_2:
+   \   000061 C650A0                LD        A, L:0x50a0
+   \   000064 A4CF                  AND       A, #0xcf
+   \   000066 C750A0                LD        L:0x50a0, A
+    129                EXTI->CR1 |= (uint8_t)((uint8_t)(EXTI_Trigger) << EXTI_Pin);
+   \   000069 5F                    CLRW      X
+   \   00006A 41                    EXG       A, XL
+   \   00006B B600                  LD        A, S:?b0
+   \   00006D 41                    EXG       A, XL
+   \   00006E B600                  LD        A, S:?b1
+   \   000070 CD0000                CALL      L:?sll16_x_x_a
+   \   000073 9F                    LD        A, XL
+   \   000074 CA50A0                OR        A, L:0x50a0
+   \   000077 C750A0                LD        L:0x50a0, A
+    130                break;
+   \   00007A 81                    RET
+    131              case EXTI_Pin_3:
+    132                EXTI->CR1 &=  (uint8_t)(~EXTI_CR1_P3IS);
+   \                     ??EXTI_SetPinSensitivity_3:
+   \   00007B C650A0                LD        A, L:0x50a0
+   \   00007E A43F                  AND       A, #0x3f
+   \   000080 C750A0                LD        L:0x50a0, A
+    133                EXTI->CR1 |= (uint8_t)((uint8_t)(EXTI_Trigger) << EXTI_Pin);
+   \   000083 5F                    CLRW      X
+   \   000084 41                    EXG       A, XL
+   \   000085 B600                  LD        A, S:?b0
+   \   000087 41                    EXG       A, XL
+   \   000088 B600                  LD        A, S:?b1
+   \   00008A CD0000                CALL      L:?sll16_x_x_a
+   \   00008D 9F                    LD        A, XL
+   \   00008E CA50A0                OR        A, L:0x50a0
+   \   000091 C750A0                LD        L:0x50a0, A
+    134                break;
+   \   000094 81                    RET
+    135              case EXTI_Pin_4:
+    136                EXTI->CR2 &=  (uint8_t)(~EXTI_CR2_P4IS);
+   \                     ??EXTI_SetPinSensitivity_4:
+   \   000095 C650A1                LD        A, L:0x50a1
+   \   000098 A4FC                  AND       A, #0xfc
+   \   00009A C750A1                LD        L:0x50a1, A
+    137                EXTI->CR2 |= (uint8_t)((uint8_t)(EXTI_Trigger) << ((uint8_t)EXTI_Pin & (uint8_t)0xEF));
+   \   00009D B600                  LD        A, S:?b1
+   \   00009F A4EF                  AND       A, #0xef
+   \   0000A1 5F                    CLRW      X
+   \   0000A2 41                    EXG       A, XL
+   \   0000A3 B600                  LD        A, S:?b0
+   \   0000A5 41                    EXG       A, XL
+   \   0000A6 CD0000                CALL      L:?sll16_x_x_a
+   \   0000A9 9F                    LD        A, XL
+   \   0000AA CA50A1                OR        A, L:0x50a1
+   \   0000AD C750A1                LD        L:0x50a1, A
+    138                break;
+   \   0000B0 81                    RET
+    139              case EXTI_Pin_5:
+    140                EXTI->CR2 &=  (uint8_t)(~EXTI_CR2_P5IS);
+   \                     ??EXTI_SetPinSensitivity_5:
+   \   0000B1 C650A1                LD        A, L:0x50a1
+   \   0000B4 A4F3                  AND       A, #0xf3
+   \   0000B6 C750A1                LD        L:0x50a1, A
+    141                EXTI->CR2 |= (uint8_t)((uint8_t)(EXTI_Trigger) << ((uint8_t)EXTI_Pin & (uint8_t)0xEF));
+   \   0000B9 B600                  LD        A, S:?b1
+   \   0000BB A4EF                  AND       A, #0xef
+   \   0000BD 5F                    CLRW      X
+   \   0000BE 41                    EXG       A, XL
+   \   0000BF B600                  LD        A, S:?b0
+   \   0000C1 41                    EXG       A, XL
+   \   0000C2 CD0000                CALL      L:?sll16_x_x_a
+   \   0000C5 9F                    LD        A, XL
+   \   0000C6 CA50A1                OR        A, L:0x50a1
+   \   0000C9 C750A1                LD        L:0x50a1, A
+    142                break;
+   \   0000CC 81                    RET
+    143              case EXTI_Pin_6:
+    144                EXTI->CR2 &=  (uint8_t)(~EXTI_CR2_P6IS);
+   \                     ??EXTI_SetPinSensitivity_6:
+   \   0000CD C650A1                LD        A, L:0x50a1
+   \   0000D0 A4CF                  AND       A, #0xcf
+   \   0000D2 C750A1                LD        L:0x50a1, A
+    145                EXTI->CR2 |= (uint8_t)((uint8_t)(EXTI_Trigger) << ((uint8_t)EXTI_Pin & (uint8_t)0xEF));
+   \   0000D5 B600                  LD        A, S:?b1
+   \   0000D7 A4EF                  AND       A, #0xef
+   \   0000D9 5F                    CLRW      X
+   \   0000DA 41                    EXG       A, XL
+   \   0000DB B600                  LD        A, S:?b0
+   \   0000DD 41                    EXG       A, XL
+   \   0000DE CD0000                CALL      L:?sll16_x_x_a
+   \   0000E1 9F                    LD        A, XL
+   \   0000E2 CA50A1                OR        A, L:0x50a1
+   \   0000E5 C750A1                LD        L:0x50a1, A
+    146                break;
+   \   0000E8 81                    RET
+    147              case EXTI_Pin_7:
+    148                EXTI->CR2 &=  (uint8_t)(~EXTI_CR2_P7IS);
+   \                     ??EXTI_SetPinSensitivity_7:
+   \   0000E9 C650A1                LD        A, L:0x50a1
+   \   0000EC A43F                  AND       A, #0x3f
+   \   0000EE C750A1                LD        L:0x50a1, A
+    149                EXTI->CR2 |= (uint8_t)((uint8_t)(EXTI_Trigger) << ((uint8_t)EXTI_Pin & (uint8_t)0xEF));
+   \   0000F1 B600                  LD        A, S:?b1
+   \   0000F3 A4EF                  AND       A, #0xef
+   \   0000F5 5F                    CLRW      X
+   \   0000F6 41                    EXG       A, XL
+   \   0000F7 B600                  LD        A, S:?b0
+   \   0000F9 41                    EXG       A, XL
+   \   0000FA CD0000                CALL      L:?sll16_x_x_a
+   \   0000FD 9F                    LD        A, XL
+   \   0000FE CA50A1                OR        A, L:0x50a1
+   \   000101 C750A1                LD        L:0x50a1, A
+    150                break;
+    151              default:
+    152                break;
+    153            }
+    154          }
+   \   000104 81                    RET
+    155          
+    156          /**
+    157            * @brief  Selects the port interrupt selection.
+    158            * @param  EXTI_Port : The port number to access.
+    159            *         This parameter can be a value of @ref EXTI_Port_TypeDef
+    160            * @retval None
+    161            */
+
+   \                                 In section .near_func.text, align 1
+    162          void EXTI_SelectPort(EXTI_Port_TypeDef EXTI_Port)
+    163          {
+    164            /* Check function parameter */
+    165            assert_param(IS_EXTI_PORT(EXTI_Port));
+    166          
+    167            if (EXTI_Port == EXTI_Port_B)
+   \                     EXTI_SelectPort:
+   \   000000 4D                    TNZ       A
+   \   000001 2605                  JRNE      L:??EXTI_SelectPort_0
+    168            {
+    169              /* Select Port B by resetting PGBS bit in CONF2 register */
+    170              EXTI->CONF2 &= (uint8_t) (~EXTI_CONF2_PGBS);
+   \   000003 721B50AB              BRES      L:0x50ab, #0x5
+   \   000007 81                    RET
+    171            }
+    172            else if (EXTI_Port == EXTI_Port_D)
+   \                     ??EXTI_SelectPort_0:
+   \   000008 A102                  CP        A, #0x2
+   \   00000A 2605                  JRNE      L:??EXTI_SelectPort_1
+    173            {
+    174              /* Select Port D by resetting PHDS bit in CONF2 register */
+    175              EXTI->CONF2 &= (uint8_t) (~EXTI_CONF2_PHDS);
+   \   00000C 721D50AB              BRES      L:0x50ab, #0x6
+   \   000010 81                    RET
+    176            }
+    177            else if (EXTI_Port == EXTI_Port_E)
+   \                     ??EXTI_SelectPort_1:
+   \   000011 A104                  CP        A, #0x4
+   \   000013 2605                  JRNE      L:??EXTI_SelectPort_2
+    178            {
+    179              /* Select Port E by resetting PFES bit in CONF1 register */
+    180              EXTI->CONF1 &= (uint8_t) (~EXTI_CONF1_PFES);
+   \   000015 721F50A5              BRES      L:0x50a5, #0x7
+   \   000019 81                    RET
+    181            }
+    182            else if (EXTI_Port == EXTI_Port_F)
+   \                     ??EXTI_SelectPort_2:
+   \   00001A A106                  CP        A, #0x6
+   \   00001C 2605                  JRNE      L:??EXTI_SelectPort_3
+    183            {
+    184              /* Select Port F by setting PFES bit in CONF1 register */
+    185              EXTI->CONF1 |= (uint8_t) (EXTI_CONF1_PFES);
+   \   00001E 721E50A5              BSET      L:0x50a5, #0x7
+   \   000022 81                    RET
+    186            }
+    187            else if (EXTI_Port == EXTI_Port_G)
+   \                     ??EXTI_SelectPort_3:
+   \   000023 A110                  CP        A, #0x10
+   \   000025 2605                  JRNE      L:??EXTI_SelectPort_4
+    188            {
+    189              /* Select Port G by setting PGBS bit in CONF2 register */
+    190              EXTI->CONF2 |= (uint8_t) (EXTI_CONF2_PGBS);
+   \   000027 721A50AB              BSET      L:0x50ab, #0x5
+   \   00002B 81                    RET
+    191            }
+    192            else /* EXTI_Port is EXTI_Port_H */
+    193            {
+    194              /* Select Port H by setting PHDS bit in CONF2 register */
+    195              EXTI->CONF2 |= (uint8_t) (EXTI_CONF2_PHDS);
+   \                     ??EXTI_SelectPort_4:
+   \   00002C 721C50AB              BSET      L:0x50ab, #0x6
+    196            }
+    197          }
+   \   000030 81                    RET
+    198          
+    199          /**
+    200            * @brief  Configures the half port interrupt selection.
+    201            * @note   - This function should be called once the port sensitivity configured,
+    202            *         otherwise it will not have any effect on the port external interrupt.
+    203            *         - This function should be called after EXTI_SelectPort() function which
+    204            *         selects the port to be used otherwise ports are selected by default
+    205            * @param  EXTI_HalfPort : The port part to access (MSB or LSB).
+    206            *         This parameter can be a value of @ref EXTI_HalfPort_TypeDef
+    207            * @param  NewState : The external interrupt new state.
+    208            *         This parameter can be a value of @ref FunctionalState.
+    209            * @retval None
+    210            */
+
+   \                                 In section .near_func.text, align 1
+    211          void EXTI_SetHalfPortSelection(EXTI_HalfPort_TypeDef EXTI_HalfPort,
+    212                                         FunctionalState NewState)
+    213          {
+   \                     EXTI_SetHalfPortSelection:
+   \   000000 B700                  LD        S:?b1, A
+    214            /* Check function parameters */
+    215            assert_param(IS_EXTI_HALFPORT(EXTI_HalfPort));
+    216            assert_param(IS_FUNCTIONAL_STATE(NewState));
+    217          
+    218            if ((EXTI_HalfPort & 0x80) == 0x00)
+   \   000002 B600                  LD        A, S:?b1
+   \   000004 A480                  AND       A, #0x80
+   \   000006 A100                  CP        A, #0x0
+   \   000008 2618                  JRNE      L:??EXTI_SetHalfPortSelection_0
+    219            {
+    220              if (NewState != DISABLE)
+   \   00000A 3D00                  TNZ       S:?b0
+   \   00000C 2709                  JREQ      L:??EXTI_SetHalfPortSelection_1
+    221              {
+    222                /* Enable port interrupt selector */
+    223                EXTI->CONF1 |= (uint8_t)EXTI_HalfPort;
+   \   00000E B600                  LD        A, S:?b1
+   \   000010 CA50A5                OR        A, L:0x50a5
+   \   000013 C750A5                LD        L:0x50a5, A
+   \   000016 81                    RET
+    224              }
+    225              else /*NewState == DISABLE */
+    226              {
+    227                /* Disable port interrupt selector */
+    228                EXTI->CONF1 &= (uint8_t)(~(uint8_t)EXTI_HalfPort);
+   \                     ??EXTI_SetHalfPortSelection_1:
+   \   000017 3300                  CPL       S:?b1
+   \   000019 B600                  LD        A, S:?b1
+   \   00001B C450A5                AND       A, L:0x50a5
+   \   00001E C750A5                LD        L:0x50a5, A
+   \   000021 81                    RET
+    229              }
+    230            }
+    231            else
+    232            {
+    233              if (NewState != DISABLE)
+   \                     ??EXTI_SetHalfPortSelection_0:
+   \   000022 3D00                  TNZ       S:?b0
+   \   000024 270B                  JREQ      L:??EXTI_SetHalfPortSelection_2
+    234              {
+    235                /* Enable port interrupt selector */
+    236                EXTI->CONF2 |= (uint8_t)(EXTI_HalfPort & (uint8_t)0x7F);
+   \   000026 B600                  LD        A, S:?b1
+   \   000028 A47F                  AND       A, #0x7f
+   \   00002A CA50AB                OR        A, L:0x50ab
+   \   00002D C750AB                LD        L:0x50ab, A
+   \   000030 81                    RET
+    237              }
+    238              else /*NewState == DISABLE */
+    239              {
+    240                /* Disable port interrupt selector */
+    241                EXTI->CONF2 &= (uint8_t)(~(uint8_t) (EXTI_HalfPort & (uint8_t)0x7F));
+   \                     ??EXTI_SetHalfPortSelection_2:
+   \   000031 B600                  LD        A, S:?b1
+   \   000033 A47F                  AND       A, #0x7f
+   \   000035 43                    CPL       A
+   \   000036 C450AB                AND       A, L:0x50ab
+   \   000039 C750AB                LD        L:0x50ab, A
+    242              }
+    243            }
+    244          }
+   \   00003C 81                    RET
+    245          
+    246          /**
+    247            * @brief  Gets the external interrupt sensitivity of the selected port.
+    248            * @param  EXTI_Port : The port number to access.
+    249            *         This parameter can be a value of @ref EXTI_Port_TypeDef
+    250            * @retval EXTI_Trigger_TypeDef : The external interrupt sensitivity of the selected port.
+    251            */
+
+   \                                 In section .near_func.text, align 1
+    252          EXTI_Trigger_TypeDef EXTI_GetPortSensitivity(EXTI_Port_TypeDef EXTI_Port)
+    253          {
+   \                     EXTI_GetPortSensitivity:
+   \   000000 B700                  LD        S:?b1, A
+    254            uint8_t portsensitivity = 0;
+   \   000002 3F00                  CLR       S:?b0
+    255          
+    256            /* Check function parameters */
+    257            assert_param(IS_EXTI_PORT(EXTI_Port));
+    258          
+    259            /* Check if selected port is in EXTI_CR3 */
+    260            if ((EXTI_Port & 0xF0) == 0x00)
+   \   000004 B600                  LD        A, S:?b1
+   \   000006 A4F0                  AND       A, #0xf0
+   \   000008 A100                  CP        A, #0x0
+   \   00000A 2611                  JRNE      L:??EXTI_GetPortSensitivity_0
+    261            {
+    262              /* Get port sensitivity */
+    263              portsensitivity = (uint8_t)((uint8_t)0x03 & (uint8_t)(EXTI->CR3 >> EXTI_Port));
+   \   00000C C650A2                LD        A, L:0x50a2
+   \   00000F 5F                    CLRW      X
+   \   000010 97                    LD        XL, A
+   \   000011 B600                  LD        A, S:?b1
+   \   000013 CD0000                CALL      L:?sra16_x_x_a
+   \   000016 9F                    LD        A, XL
+   \   000017 A403                  AND       A, #0x3
+   \   000019 B700                  LD        S:?b0, A
+   \   00001B 2015                  JRA       L:??EXTI_GetPortSensitivity_1
+    264            }
+    265            /* selected port is in EXTI_CR4 */
+    266            else
+    267            {
+    268              /* Get port sensitivity */
+    269              portsensitivity = (uint8_t)((uint8_t)0x03 & (uint8_t)(EXTI->CR4 >> (EXTI_Port & 0x0F)));
+   \                     ??EXTI_GetPortSensitivity_0:
+   \   00001D B600                  LD        A, S:?b1
+   \   00001F A40F                  AND       A, #0xf
+   \   000021 B700                  LD        S:?b0, A
+   \   000023 C650AA                LD        A, L:0x50aa
+   \   000026 5F                    CLRW      X
+   \   000027 97                    LD        XL, A
+   \   000028 B600                  LD        A, S:?b0
+   \   00002A CD0000                CALL      L:?sra16_x_x_a
+   \   00002D 9F                    LD        A, XL
+   \   00002E A403                  AND       A, #0x3
+   \   000030 B700                  LD        S:?b0, A
+    270            }
+    271          
+    272            return((EXTI_Trigger_TypeDef)portsensitivity);
+   \                     ??EXTI_GetPortSensitivity_1:
+   \   000032 B600                  LD        A, S:?b0
+   \   000034 81                    RET
+    273          }
+    274          
+    275          /**
+    276            * @brief  Gets the external interrupt sensitivity of the selected pin.
+    277            * @param  EXTI_Pin : The pin number to access.
+    278            *         This parameter can be a value of @ref EXTI_Pin_TypeDef
+    279            * @retval EXTI_Trigger_TypeDef : The external interrupt sensitivity of the selected port.
+    280            */
+
+   \                                 In section .near_func.text, align 1
+    281          EXTI_Trigger_TypeDef EXTI_GetPinSensitivity(EXTI_Pin_TypeDef EXTI_Pin)
+    282          {
+    283            uint8_t value = 0;
+   \                     EXTI_GetPinSensitivity:
+   \   000000 3F00                  CLR       S:?b0
+    284          
+    285            /* Check function parameters */
+    286            assert_param(IS_EXTI_PINNUM(EXTI_Pin));
+    287          
+    288            switch (EXTI_Pin)
+   \   000002 4D                    TNZ       A
+   \   000003 271E                  JREQ      L:??EXTI_GetPinSensitivity_0
+   \   000005 A002                  SUB       A, #0x2
+   \   000007 2723                  JREQ      L:??EXTI_GetPinSensitivity_1
+   \   000009 A002                  SUB       A, #0x2
+   \   00000B 272A                  JREQ      L:??EXTI_GetPinSensitivity_2
+   \   00000D A002                  SUB       A, #0x2
+   \   00000F 2732                  JREQ      L:??EXTI_GetPinSensitivity_3
+   \   000011 A00A                  SUB       A, #0xa
+   \   000013 2738                  JREQ      L:??EXTI_GetPinSensitivity_4
+   \   000015 A002                  SUB       A, #0x2
+   \   000017 273D                  JREQ      L:??EXTI_GetPinSensitivity_5
+   \   000019 A002                  SUB       A, #0x2
+   \   00001B 2744                  JREQ      L:??EXTI_GetPinSensitivity_6
+   \   00001D A002                  SUB       A, #0x2
+   \   00001F 274C                  JREQ      L:??EXTI_GetPinSensitivity_7
+   \   000021 2052                  JRA       L:??EXTI_GetPinSensitivity_8
+    289            {
+    290              case EXTI_Pin_0:
+    291                value = (uint8_t)(EXTI->CR1 & EXTI_CR1_P0IS);
+   \                     ??EXTI_GetPinSensitivity_0:
+   \   000023 C650A0                LD        A, L:0x50a0
+   \   000026 A403                  AND       A, #0x3
+   \   000028 B700                  LD        S:?b0, A
+    292                break;
+   \   00002A 2049                  JRA       L:??EXTI_GetPinSensitivity_8
+    293              case EXTI_Pin_1:
+    294                value = (uint8_t)((uint8_t)(EXTI->CR1 & EXTI_CR1_P1IS) >> EXTI_Pin_1);
+   \                     ??EXTI_GetPinSensitivity_1:
+   \   00002C C650A0                LD        A, L:0x50a0
+   \   00002F A40C                  AND       A, #0xc
+   \   000031 44                    SRL       A
+   \   000032 44                    SRL       A
+   \   000033 B700                  LD        S:?b0, A
+    295                break;
+   \   000035 203E                  JRA       L:??EXTI_GetPinSensitivity_8
+    296              case EXTI_Pin_2:
+    297                value = (uint8_t)((uint8_t)(EXTI->CR1 & EXTI_CR1_P2IS) >> EXTI_Pin_2);
+   \                     ??EXTI_GetPinSensitivity_2:
+   \   000037 C650A0                LD        A, L:0x50a0
+   \   00003A A430                  AND       A, #0x30
+   \   00003C 4E                    SWAP      A
+   \   00003D A40F                  AND       A, #0xf
+   \   00003F B700                  LD        S:?b0, A
+    298                break;
+   \   000041 2032                  JRA       L:??EXTI_GetPinSensitivity_8
+    299              case EXTI_Pin_3:
+    300                value = (uint8_t)((uint8_t)(EXTI->CR1 & EXTI_CR1_P3IS) >> EXTI_Pin_3);
+   \                     ??EXTI_GetPinSensitivity_3:
+   \   000043 C650A0                LD        A, L:0x50a0
+   \   000046 CD0000                CALL      L:?srl8_a_a_6
+   \   000049 B700                  LD        S:?b0, A
+    301                break;
+   \   00004B 2028                  JRA       L:??EXTI_GetPinSensitivity_8
+    302              case EXTI_Pin_4:
+    303                value = (uint8_t)(EXTI->CR2 & EXTI_CR2_P4IS);
+   \                     ??EXTI_GetPinSensitivity_4:
+   \   00004D C650A1                LD        A, L:0x50a1
+   \   000050 A403                  AND       A, #0x3
+   \   000052 B700                  LD        S:?b0, A
+    304                break;
+   \   000054 201F                  JRA       L:??EXTI_GetPinSensitivity_8
+    305              case EXTI_Pin_5:
+    306                value = (uint8_t)((uint8_t)(EXTI->CR2 & EXTI_CR2_P5IS) >> ((uint8_t)EXTI_Pin_5 & (uint8_t)0x0F));
+   \                     ??EXTI_GetPinSensitivity_5:
+   \   000056 C650A1                LD        A, L:0x50a1
+   \   000059 A40C                  AND       A, #0xc
+   \   00005B 44                    SRL       A
+   \   00005C 44                    SRL       A
+   \   00005D B700                  LD        S:?b0, A
+    307                break;
+   \   00005F 2014                  JRA       L:??EXTI_GetPinSensitivity_8
+    308              case EXTI_Pin_6:
+    309                value = (uint8_t)((uint8_t)(EXTI->CR2 & EXTI_CR2_P6IS) >> ((uint8_t)EXTI_Pin_6 & (uint8_t)0x0F));
+   \                     ??EXTI_GetPinSensitivity_6:
+   \   000061 C650A1                LD        A, L:0x50a1
+   \   000064 A430                  AND       A, #0x30
+   \   000066 4E                    SWAP      A
+   \   000067 A40F                  AND       A, #0xf
+   \   000069 B700                  LD        S:?b0, A
+    310                break;
+   \   00006B 2008                  JRA       L:??EXTI_GetPinSensitivity_8
+    311              case EXTI_Pin_7:
+    312                value = (uint8_t)((uint8_t)(EXTI->CR2 & EXTI_CR2_P7IS) >> ((uint8_t)EXTI_Pin_7 & (uint8_t)0x0F));
+   \                     ??EXTI_GetPinSensitivity_7:
+   \   00006D C650A1                LD        A, L:0x50a1
+   \   000070 CD0000                CALL      L:?srl8_a_a_6
+   \   000073 B700                  LD        S:?b0, A
+    313                break;
+    314              default:
+    315                break;
+    316            }
+    317            return((EXTI_Trigger_TypeDef)value);
+   \                     ??EXTI_GetPinSensitivity_8:
+   \   000075 B600                  LD        A, S:?b0
+   \   000077 81                    RET
+    318          }
+    319          
+    320          /**
+    321            * @brief  Gets the external interrupt status.
+    322            * @param  EXTI_IT : Specifies the interrupt to read.
+    323            *         This parameter can be a value of @ref EXTI_IT_TypeDef
+    324            * @retval ITStatus : The status of the specified interrupt.
+    325            *         This parameter can be a value of @ref ITStatus.
+    326            */
+
+   \                                 In section .near_func.text, align 1
+    327          ITStatus EXTI_GetITStatus(EXTI_IT_TypeDef EXTI_IT)
+    328          {
+    329            ITStatus status = RESET;
+   \                     EXTI_GetITStatus:
+   \   000000 4F                    CLR       A
+    330            /* Check function parameters */
+    331            assert_param(IS_EXTI_ITPENDINGBIT(EXTI_IT));
+    332          
+    333            if (((uint16_t)EXTI_IT & (uint16_t)0xFF00) == 0x0100)
+   \   000001 9093                  LDW       Y, X
+   \   000003 51                    EXGW      X, Y
+   \   000004 02                    RLWA      X, A
+   \   000005 A4FF                  AND       A, #0xff
+   \   000007 02                    RLWA      X, A
+   \   000008 A400                  AND       A, #0x0
+   \   00000A 02                    RLWA      X, A
+   \   00000B 51                    EXGW      X, Y
+   \   00000C 90A30100              CPW       Y, #0x100
+   \   000010 2605                  JRNE      L:??EXTI_GetITStatus_0
+    334            {
+    335              status = (ITStatus)(EXTI->SR2 & (uint8_t)((uint16_t)EXTI_IT & (uint16_t)0x00FF));
+   \   000012 9F                    LD        A, XL
+   \   000013 C450A4                AND       A, L:0x50a4
+   \   000016 81                    RET
+    336            }
+    337            else
+    338            {
+    339              status = (ITStatus)(EXTI->SR1 & ((uint8_t)((uint16_t)EXTI_IT & (uint16_t)0x00FF)));
+   \                     ??EXTI_GetITStatus_0:
+   \   000017 9F                    LD        A, XL
+   \   000018 C450A3                AND       A, L:0x50a3
+    340            }
+    341            return((ITStatus)status);
+   \   00001B 81                    RET
+    342          }
+    343          
+    344          /**
+    345            * @brief  Clears the specified interrupt pending bit
+    346            * @param  EXTI_IT : Specifies the interrupt to clear
+    347            *         This parameter can be a value of @ref EXTI_IT_TypeDef
+    348            * @retval None
+    349            */
+
+   \                                 In section .near_func.text, align 1
+    350          void EXTI_ClearITPendingBit(EXTI_IT_TypeDef EXTI_IT)
+    351          {
+   \                     EXTI_ClearITPendingBit:
+   \   000000 BF00                  LDW       S:?w0, X
+    352            uint16_t tempvalue = 0;
+   \   000002 905F                  CLRW      Y
+    353          
+    354            /* Check function parameters */
+    355            assert_param(IS_EXTI_ITPENDINGBIT(EXTI_IT));
+    356          
+    357            tempvalue = ((uint16_t)EXTI_IT & (uint16_t)0xFF00);
+   \   000004 BE00                  LDW       X, S:?w0
+   \   000006 02                    RLWA      X, A
+   \   000007 A4FF                  AND       A, #0xff
+   \   000009 02                    RLWA      X, A
+   \   00000A A400                  AND       A, #0x0
+   \   00000C 02                    RLWA      X, A
+   \   00000D 9093                  LDW       Y, X
+    358          
+    359            if ( tempvalue == 0x0100)
+   \   00000F 90A30100              CPW       Y, #0x100
+   \   000013 2606                  JRNE      L:??EXTI_ClearITPendingBit_0
+    360            {
+    361              EXTI->SR2 = (uint8_t)((uint16_t)EXTI_IT & (uint16_t)0x00FF);
+   \   000015 B600                  LD        A, S:?b1
+   \   000017 C750A4                LD        L:0x50a4, A
+   \   00001A 81                    RET
+    362            }
+    363            else
+    364            {
+    365              EXTI->SR1 = (uint8_t) (EXTI_IT);
+   \                     ??EXTI_ClearITPendingBit_0:
+   \   00001B B600                  LD        A, S:?b1
+   \   00001D C750A3                LD        L:0x50a3, A
+    366            }
+    367          }
+   \   000020 81                    RET
+    368          /**
+    369            * @}
+    370            */
+    371          
+    372          /**
+    373            * @}
+    374            */
+    375          
+    376          /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
+
+   Section sizes:
+
+     Function/Label            Bytes
+     --------------            -----
+     EXTI_DeInit                 33
+     EXTI_SetPortSensitivity     82
+     EXTI_SetPinSensitivity     261
+     EXTI_SelectPort             49
+     EXTI_SetHalfPortSelection   61
+     EXTI_GetPortSensitivity     53
+     EXTI_GetPinSensitivity     120
+     EXTI_GetITStatus            28
+     EXTI_ClearITPendingBit      33
+
+ 
+ 720 bytes in section .near_func.text
+ 
+ 720 bytes of CODE memory
+
+Errors: none
+Warnings: none
