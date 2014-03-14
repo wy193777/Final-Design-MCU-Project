@@ -1,6 +1,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm8l15x.h"
+#include "stm8l15x_it.c"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -33,11 +34,14 @@ void Delay(int);
   */
 void main(void)
 {
-  __enable_interrupt(); 
+   
   CLK_Config(); 
   GPIO_Config();   
   TIM2_Config();  
   USART_Config();
+  
+  enableInterrupts();
+  
   USART_SendString("Test\n", sizeof("Test\n"));
   //delay_10us(100);
   //USART_SendByte("\n");
@@ -72,7 +76,8 @@ static void GPIO_Config(void)
 {
   /* GPIOD configuration: TIM1 channel 1 (PD2), channel 2 (PD4) and channel 3 (PD5) */
   GPIO_Init(GPIOB, GPIO_Pin_0, GPIO_Mode_Out_PP_Low_Fast);
-  GPIO_Init(GPIOE, GPIO_Pin_7, GPIO_Mode_Out_PP_High_Fast);
+  GPIO_Init(GPIOE, GPIO_Pin_7, GPIO_Mode_Out_PP_Low_Fast);  //Text int
+  GPIO_Init(GPIOC, GPIO_Pin_7, GPIO_Mode_Out_PP_Low_Fast);  //Receive int
   //GPIO_SetBits(GPIOE, GPIO_Pin_7);
 }
 
@@ -118,7 +123,7 @@ static void USART_Config(void)
   USART_ClockInit(USART1,USART_Clock_Disable,USART_CPOL_Low,USART_CPHA_2Edge,USART_LastBit_Disable);
   USART_ClearITPendingBit(USART1,USART_IT_RXNE);
   //USART_ITConfig(USART1, (USART_FLAG_TypeDef)(USART_IT_TXE | USART_IT_RXNE), ENABLE);
-  USART_ITConfig(USART1, USART_IT_OR, ENABLE);
+  USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
   USART_Cmd(USART1, ENABLE);
 }
 
@@ -151,21 +156,6 @@ void Delay(int time)
 {
   for(int i = 0; i < time; i++)
     for(int j = 0; j < 100; j++);
-}
-
-#pragma vector=27
-__interrupt void UART1_TX_IRQHandler(void)
-{
-  
-}
-
-#pragma vector=28
-__interrupt void UART1_RX_IRQHandler(void)
-{
-  uint8_t Buf;
-  Buf=USART_ReceiveData8(USART1);
-  while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
-  USART_SendData8(USART1,Buf);
 }
 
 

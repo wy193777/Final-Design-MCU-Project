@@ -195,91 +195,91 @@ INTERRUPT_HANDLER(EXTI0_IRQHandler,8)
   */
 INTERRUPT_HANDLER(EXTI1_IRQHandler,9)
 {
-
-  uint32_t i=0;	
-  
-  disableInterrupts();
-  
-  /* User button pressed */
-  KeyPressed = TRUE;
-  
-  if ((GPIOC->IDR & USER_GPIO_PIN) == 0x0) 
-  {
-          
-  /* If user button pressed 4 seconds (approx.) set autotest */
-  /* Autotest doesn't execute in Interrupt handler */
-  while ((GPIOC->IDR & USER_GPIO_PIN) == 0x0)
-  {
-    i++;
-    if (i == 0x011000)
-    {
-      EXTI_ClearITPendingBit(EXTI_IT_Pin1);	
-      Auto_test =TRUE ;
-      enableInterrupts();
-      return;
-    }
-  }
-  
-  /* To pass to next state*/
-    state_machine++;
-    
-    if (state_machine == MAX_STATE)
-    {	
-            state_machine = STATE_VREF;
-    }
-
-    /* To update Bar graph */  
-    switch (state_machine)
-    {
-      case STATE_VREF:
-              GPIO_HIGH(LED_GREEN_PORT,LED_GREEN_PIN);	
-              GPIO_LOW(LED_BLUE_PORT,LED_BLUE_PIN);
-              BAR0_OFF;
-              BAR1_OFF;
-              BAR2_OFF;
-              BAR3_OFF;
-              break;
-              
-      case STATE_ICC_RUN:
-              BAR0_ON;
-              BAR1_OFF;
-              BAR2_OFF;
-              BAR3_OFF;
-              break;
-              
-      case STATE_LPR_LCD:
-              BAR0_ON;
-              BAR1_ON;
-              BAR2_OFF;
-              BAR3_OFF;
-              break;
-              
-      case STATE_LPR:
-              BAR0_ON;
-              BAR1_ON;
-              BAR2_ON;
-              BAR3_OFF;
-              break;
-              
-      case STATE_HALT:
-              BAR0_ON;
-              BAR1_ON;
-              BAR2_ON;
-              BAR3_ON;
-              break;					
-    }	
-  }
-  
-  /* To stop leds for current measurement test*/	
-  if (state_machine != STATE_VREF)
-  {
-    GPIO_LOW(LED_GREEN_PORT,LED_GREEN_PIN);	
-    GPIO_LOW(LED_BLUE_PORT,LED_BLUE_PIN);		
-  }
-  
-  EXTI_ClearITPendingBit(EXTI_IT_Pin1);
-  
-  enableInterrupts();
+//
+//  uint32_t i=0;	
+//  
+//  disableInterrupts();
+//  
+//  /* User button pressed */
+//  KeyPressed = TRUE;
+//  
+//  if ((GPIOC->IDR & USER_GPIO_PIN) == 0x0) 
+//  {
+//          
+//  /* If user button pressed 4 seconds (approx.) set autotest */
+//  /* Autotest doesn't execute in Interrupt handler */
+//  while ((GPIOC->IDR & USER_GPIO_PIN) == 0x0)
+//  {
+//    i++;
+//    if (i == 0x011000)
+//    {
+//      EXTI_ClearITPendingBit(EXTI_IT_Pin1);	
+//      Auto_test =TRUE ;
+//      enableInterrupts();
+//      return;
+//    }
+//  }
+//  
+//  /* To pass to next state*/
+//    state_machine++;
+//    
+//    if (state_machine == MAX_STATE)
+//    {	
+//            state_machine = STATE_VREF;
+//    }
+//
+//    /* To update Bar graph */  
+//    switch (state_machine)
+//    {
+//      case STATE_VREF:
+//              GPIO_HIGH(LED_GREEN_PORT,LED_GREEN_PIN);	
+//              GPIO_LOW(LED_BLUE_PORT,LED_BLUE_PIN);
+//              BAR0_OFF;
+//              BAR1_OFF;
+//              BAR2_OFF;
+//              BAR3_OFF;
+//              break;
+//              
+//      case STATE_ICC_RUN:
+//              BAR0_ON;
+//              BAR1_OFF;
+//              BAR2_OFF;
+//              BAR3_OFF;
+//              break;
+//              
+//      case STATE_LPR_LCD:
+//              BAR0_ON;
+//              BAR1_ON;
+//              BAR2_OFF;
+//              BAR3_OFF;
+//              break;
+//              
+//      case STATE_LPR:
+//              BAR0_ON;
+//              BAR1_ON;
+//              BAR2_ON;
+//              BAR3_OFF;
+//              break;
+//              
+//      case STATE_HALT:
+//              BAR0_ON;
+//              BAR1_ON;
+//              BAR2_ON;
+//              BAR3_ON;
+//              break;					
+//    }	
+//  }
+//  
+//  /* To stop leds for current measurement test*/	
+//  if (state_machine != STATE_VREF)
+//  {
+//    GPIO_LOW(LED_GREEN_PORT,LED_GREEN_PIN);	
+//    GPIO_LOW(LED_BLUE_PORT,LED_BLUE_PIN);		
+//  }
+//  
+//  EXTI_ClearITPendingBit(EXTI_IT_Pin1);
+//  
+//  enableInterrupts();
 
 }
 
@@ -357,12 +357,12 @@ INTERRUPT_HANDLER(EXTI5_IRQHandler,13)
   */
 INTERRUPT_HANDLER(EXTI6_IRQHandler,14)
 {
-  disableInterrupts();
-  
-  /* To clear External IT Pin6 */
-  EXTI_ClearITPendingBit(EXTI_IT_Pin6);
-  
-  enableInterrupts();
+//  disableInterrupts();
+//  
+//  /* To clear External IT Pin6 */
+//  EXTI_ClearITPendingBit(EXTI_IT_Pin6);
+//  
+//  enableInterrupts();
 
 }
 
@@ -565,8 +565,8 @@ INTERRUPT_HANDLER(USART1_TX_IRQHandler,27)
 {
 /* In order to detect unexpected events during development,
    it is recommended to set a breakpoint on the following instruction.
-*/
-  while (1);
+*/GPIO_SetBits(GPIOC, GPIO_Pin_7);
+  //while (1);
 
 }
 
@@ -579,10 +579,11 @@ INTERRUPT_HANDLER(USART1_TX_IRQHandler,27)
   */
 INTERRUPT_HANDLER(USART1_RX_IRQHandler,28)
 {
-/* In order to detect unexpected events during development,
-   it is recommended to set a breakpoint on the following instruction.
-*/
-  while (1);
+  uint8_t Buf;
+  GPIO_SetBits(GPIOE, GPIO_Pin_7);
+  Buf = USART_ReceiveData8(USART1);
+  USART_SendData8(USART1, Buf);
+  //while (1);
 
 }
 
