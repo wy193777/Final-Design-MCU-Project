@@ -1,5 +1,9 @@
-Final-Design-MCU-Project
+Final Design MCU Project
 ========================
+Compiled with EWSTM81301
+
+
+
 ## 1 Servo Moto
 Using one Servo Moto to control laser.
 
