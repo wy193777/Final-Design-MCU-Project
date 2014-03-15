@@ -30,10 +30,15 @@
 extern uint8_t state_machine;
 extern bool Auto_test;
 extern uint8_t t_bar[2];*/
-
+void USART_SendString(uint8_t* Data, uint16_t len);
 /** @addtogroup IT_Functions
   * @{
   */
+uint16_t const BUFFER_SIZE;
+uint8_t const ERROR_MESSAGE[5];
+uint8_t usart_buffer[];
+uint16_t current_buffer_position;
+uint16_t current_buffer_size;
 INTERRUPT_HANDLER(NonHandledInterrupt,0)
 {
 /* In order to detect unexpected events during development,
@@ -576,15 +581,81 @@ INTERRUPT_HANDLER(USART1_TX_IRQHandler,27)
   * None
   * @retval 
   * None
+  * If receive a long series of data, this could excute every 
+  * bit received.
   */
 INTERRUPT_HANDLER(USART1_RX_IRQHandler,28)
 {
-  uint8_t Buf;
-  GPIO_SetBits(GPIOE, GPIO_Pin_7);
-  Buf = USART_ReceiveData8(USART1);
-  USART_SendData8(USART1, Buf);
+//  uint8_t Buf;
+//  GPIO_ToggleBits(GPIOE, GPIO_Pin_7);
+//  Buf = USART_ReceiveData8(USART1);
+//  USART_SendData8(USART1, Buf);
   //while (1);
-
+  uint8_t data_size = 0;
+  bool transmit_right_flag = 0; //set to true when receive finished and right
+  int sum = 0;
+  
+  usart_buffer[current_buffer_position] = USART_ReceiveData8(USART1);
+  
+  
+  //protocal
+  if(current_buffer_position >= 2 && 
+     usart_buffer[0] == 0x53 &&     //"STA", the beginning of protocal .
+     usart_buffer[1] == 0x54 &&
+     usart_buffer[2] == 0x41)
+  {
+    //When head right
+    USART_SendString("HEAD_RIGHT", sizeof("HEAD_RIGHT"));
+    if(current_buffer_position > BUFFER_SIZE)
+    {
+      current_buffer_position = BUFFER_SIZE;  
+    }
+    if(current_buffer_position>= 3)
+    {
+      data_size = usart_buffer[3];  
+    }
+    if(current_buffer_position == (4 + data_size +4) &&
+       usart_buffer[3 + data_size + 2] == 0x45 &&   //"END", the tail of protocal
+       usart_buffer[3 + data_size + 3] == 0x4E &&
+       usart_buffer[3 + data_size + 4] == 0x44)
+    {
+      current_buffer_position = 0;
+      transmit_right_flag = 1;
+      USART_SendString("END_FINISH", sizeof("END_FINISH"));  
+    }
+    else if(current_buffer_position == 4 + data_size + 4)
+    {
+      USART_SendString("END_ERROR", sizeof("END_ERROR")); 
+      current_buffer_position = 0;
+    }
+  }
+  else if(current_buffer_position >= 2)
+  {
+    if(usart_buffer[0] != 0x53 ||     //When head has been sent but not so right .
+       usart_buffer[1] != 0x54 ||
+       usart_buffer[2] != 0x41)
+    {
+      USART_SendString("START_ERROR", sizeof("START_ERROR"));    
+    }
+  }
+  
+  //Judge the rightness of data
+  if(transmit_right_flag)
+  {
+    for(int i = 1; i <= data_size; i++)
+    {
+      sum += usart_buffer[4 + i];   
+    }
+    if(sum == usart_buffer[3 + data_size + 1])
+    {
+      USART_SendString("Succeed!", sizeof("Succeed!")); 
+    }
+    else
+    {
+      USART_SendString("Check failed!", sizeof("Check failed!")); 
+    }
+  }
+  current_buffer_position++;
 }
 
 /**

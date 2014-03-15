@@ -8,12 +8,17 @@
 #define TIM2_PERIOD             65535
 #define TIM2_PRESCALER              39999
 #define TIM2_REPTETION_COUNTER      0
-
+#define BUFFER_SIZE  10   
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 __IO uint16_t CCR1_Val = 30000;
 __IO uint16_t CCR2_Val = 16384;
 __IO uint16_t CCR3_Val = 8192;
+
+extern uint8_t usart_buffer[BUFFER_SIZE];
+extern uint16_t current_buffer_size;
+extern uint16_t current_buffer_position;
+extern const uint8_t ERROR_MESSAGE[5] = "ERROR";
 
 /* Private function prototypes -----------------------------------------------*/
 static void CLK_Config(void);
@@ -21,9 +26,9 @@ static void GPIO_Config(void);
 static void TIM2_Config(void);
 static void USART_Config(void);
 
-void USART_SendByte(uint8_t data);
-void USART_SendString(uint8_t* Data, uint16_t len);
-uint8_t USART_ReceiveByte(void);
+extern void USART_SendByte(uint8_t data);
+extern void USART_SendString(uint8_t* Data, uint16_t len);
+extern uint8_t USART_ReceiveByte(void);
 void Delay(int);
 /* Private functions ---------------------------------------------------------*/
 
@@ -103,8 +108,10 @@ static void TIM2_Config(void)
 
 static void USART_Config(void)
 {
-  //PC3 Send
-  //PC2 receive
+  //PA3 Send
+  //PA2 receive
+  current_buffer_size = 0;
+  current_buffer_position = 0;
   SYSCFG_REMAPPinConfig(REMAP_Pin_USART1TxRxPortA, ENABLE);   //Map USART to PortA
   
   GPIO_Init(GPIOA,GPIO_Pin_2,GPIO_Mode_In_PU_No_IT);    //USART_RX
