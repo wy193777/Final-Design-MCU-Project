@@ -1,6 +1,6 @@
 ###############################################################################
 #                                                                             #
-# IAR C/C++ Compiler V1.30.1.50036 for STM8             15/Mar/2014  17:15:10 #
+# IAR C/C++ Compiler V1.30.1.50036 for STM8             16/Mar/2014  16:18:23 #
 # Copyright 2010-2011 IAR Systems AB.                                         #
 #                                                                             #
 #    Source file  =  F:\Skydrive\Final Design\Servo Motor                     #
@@ -35,7 +35,7 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
    \                                 In section .near.rodata, align 1
    \   uint16_t const BUFFER_SIZE
    \                     BUFFER_SIZE:
-   \   000000 0000                  DC8 0, 0
+   \   000000 000A                  DC16 10
 
    \                                 In section .near.bss, align 1
    \   uint8_t usart_buffer[10]
@@ -250,8 +250,8 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
    \   000006 CD0000                CALL      L:?push_l0
    \   000009 CD0000                CALL      L:?push_l1
    \   00000C CD0000                CALL      L:?push_l2
-   \   00000F 3F00                  CLR       S:?b10
-   \   000011 3F00                  CLR       S:?b11
+   \   00000F 3F00                  CLR       S:?b11
+   \   000011 3F00                  CLR       S:?b10
    \   000013 3F00                  CLR       S:?b9
    \   000015 3F00                  CLR       S:?b8
    \   000017 AE5230                LDW       X, #0x5230
@@ -260,159 +260,123 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
    \   000020 D70000                LD        (L:usart_buffer,X), A
    \   000023 CE0000                LDW       X, L:current_buffer_position
    \   000026 A30002                CPW       X, #0x2
-   \   000029 2403                  JRNC      ??lb_0
-   \   00002B CC0000                JP        L:??USART1_RX_IRQHandler_0
-   \                     ??lb_0:
-   \   00002E C60000                LD        A, L:usart_buffer
-   \   000031 A153                  CP        A, #0x53
-   \   000033 2703                  JREQ      ??lb_1
-   \   000035 CC0000                JP        L:??USART1_RX_IRQHandler_0
-   \                     ??lb_1:
-   \   000038 C60000                LD        A, L:usart_buffer + 1
-   \   00003B A154                  CP        A, #0x54
-   \   00003D 2703                  JREQ      ??lb_2
-   \   00003F CC0000                JP        L:??USART1_RX_IRQHandler_0
-   \                     ??lb_2:
-   \   000042 C60000                LD        A, L:usart_buffer + 2
-   \   000045 A141                  CP        A, #0x41
-   \   000047 2703                  JREQ      ??lb_3
-   \   000049 CC0000                JP        L:??USART1_RX_IRQHandler_0
-   \                     ??lb_3:
-   \   00004C 90AE000B              LDW       Y, #0xb
-   \   000050 AE0000                LDW       X, #`?<Constant "HEAD_RIGHT">`
-   \   000053 CD0000                CALL      L:USART_SendString
-   \   000056 CE0000                LDW       X, L:BUFFER_SIZE
-   \   000059 C30000                CPW       X, L:current_buffer_position
-   \   00005C 2406                  JRNC      L:??USART1_RX_IRQHandler_1
-   \   00005E CE0000                LDW       X, L:BUFFER_SIZE
-   \   000061 CF0000                LDW       L:current_buffer_position, X
+   \   000029 257F                  JRC       L:??USART1_RX_IRQHandler_0
+   \   00002B C60000                LD        A, L:usart_buffer
+   \   00002E A153                  CP        A, #0x53
+   \   000030 2678                  JRNE      L:??USART1_RX_IRQHandler_0
+   \   000032 C60000                LD        A, L:usart_buffer + 1
+   \   000035 A154                  CP        A, #0x54
+   \   000037 2671                  JRNE      L:??USART1_RX_IRQHandler_0
+   \   000039 C60000                LD        A, L:usart_buffer + 2
+   \   00003C A141                  CP        A, #0x41
+   \   00003E 266A                  JRNE      L:??USART1_RX_IRQHandler_0
+   \   000040 CE0000                LDW       X, L:BUFFER_SIZE
+   \   000043 C30000                CPW       X, L:current_buffer_position
+   \   000046 2404                  JRNC      L:??USART1_RX_IRQHandler_1
+   \   000048 5F                    CLRW      X
+   \   000049 CF0000                LDW       L:current_buffer_position, X
    \                     ??USART1_RX_IRQHandler_1:
-   \   000064 CE0000                LDW       X, L:current_buffer_position
-   \   000067 A30003                CPW       X, #0x3
-   \   00006A 2505                  JRC       L:??USART1_RX_IRQHandler_2
-   \   00006C C60000                LD        A, L:usart_buffer + 3
-   \   00006F B700                  LD        S:?b10, A
+   \   00004C CE0000                LDW       X, L:current_buffer_position
+   \   00004F A30003                CPW       X, #0x3
+   \   000052 2505                  JRC       L:??USART1_RX_IRQHandler_2
+   \   000054 C60000                LD        A, L:usart_buffer + 3
+   \   000057 B700                  LD        S:?b11, A
    \                     ??USART1_RX_IRQHandler_2:
-   \   000071 5F                    CLRW      X
-   \   000072 41                    EXG       A, XL
-   \   000073 B600                  LD        A, S:?b10
-   \   000075 41                    EXG       A, XL
-   \   000076 1C0008                ADDW      X, #0x8
-   \   000079 C30000                CPW       X, L:current_buffer_position
-   \   00007C 263B                  JRNE      L:??USART1_RX_IRQHandler_3
-   \   00007E 5F                    CLRW      X
-   \   00007F 41                    EXG       A, XL
-   \   000080 B600                  LD        A, S:?b10
-   \   000082 41                    EXG       A, XL
-   \   000083 1C0000                ADDW      X, #usart_buffer + 5
-   \   000086 F6                    LD        A, (X)
-   \   000087 A145                  CP        A, #0x45
-   \   000089 262E                  JRNE      L:??USART1_RX_IRQHandler_3
-   \   00008B 5F                    CLRW      X
-   \   00008C 41                    EXG       A, XL
-   \   00008D B600                  LD        A, S:?b10
-   \   00008F 41                    EXG       A, XL
-   \   000090 1C0000                ADDW      X, #usart_buffer + 6
-   \   000093 F6                    LD        A, (X)
-   \   000094 A14E                  CP        A, #0x4e
-   \   000096 2621                  JRNE      L:??USART1_RX_IRQHandler_3
-   \   000098 5F                    CLRW      X
-   \   000099 41                    EXG       A, XL
-   \   00009A B600                  LD        A, S:?b10
-   \   00009C 41                    EXG       A, XL
-   \   00009D 1C0000                ADDW      X, #usart_buffer + 7
-   \   0000A0 F6                    LD        A, (X)
-   \   0000A1 A144                  CP        A, #0x44
-   \   0000A3 2614                  JRNE      L:??USART1_RX_IRQHandler_3
-   \   0000A5 5F                    CLRW      X
-   \   0000A6 CF0000                LDW       L:current_buffer_position, X
-   \   0000A9 35010000              MOV       S:?b11, #0x1
-   \   0000AD 90AE000B              LDW       Y, #0xb
-   \   0000B1 AE0000                LDW       X, #`?<Constant "END_FINISH">`
-   \   0000B4 CD0000                CALL      L:USART_SendString
-   \   0000B7 2044                  JRA       L:??USART1_RX_IRQHandler_4
+   \   000059 5F                    CLRW      X
+   \   00005A 41                    EXG       A, XL
+   \   00005B B600                  LD        A, S:?b11
+   \   00005D 41                    EXG       A, XL
+   \   00005E 1C0007                ADDW      X, #0x7
+   \   000061 C30000                CPW       X, L:current_buffer_position
+   \   000064 2631                  JRNE      L:??USART1_RX_IRQHandler_3
+   \   000066 5F                    CLRW      X
+   \   000067 41                    EXG       A, XL
+   \   000068 B600                  LD        A, S:?b11
+   \   00006A 41                    EXG       A, XL
+   \   00006B 1C0000                ADDW      X, #usart_buffer + 5
+   \   00006E F6                    LD        A, (X)
+   \   00006F A145                  CP        A, #0x45
+   \   000071 2624                  JRNE      L:??USART1_RX_IRQHandler_3
+   \   000073 5F                    CLRW      X
+   \   000074 41                    EXG       A, XL
+   \   000075 B600                  LD        A, S:?b11
+   \   000077 41                    EXG       A, XL
+   \   000078 1C0000                ADDW      X, #usart_buffer + 6
+   \   00007B F6                    LD        A, (X)
+   \   00007C A14E                  CP        A, #0x4e
+   \   00007E 2617                  JRNE      L:??USART1_RX_IRQHandler_3
+   \   000080 5F                    CLRW      X
+   \   000081 41                    EXG       A, XL
+   \   000082 B600                  LD        A, S:?b11
+   \   000084 41                    EXG       A, XL
+   \   000085 1C0000                ADDW      X, #usart_buffer + 7
+   \   000088 F6                    LD        A, (X)
+   \   000089 A144                  CP        A, #0x44
+   \   00008B 260A                  JRNE      L:??USART1_RX_IRQHandler_3
+   \   00008D 5F                    CLRW      X
+   \   00008E CF0000                LDW       L:current_buffer_position, X
+   \   000091 35010000              MOV       S:?b10, #0x1
+   \   000095 2034                  JRA       L:??USART1_RX_IRQHandler_4
    \                     ??USART1_RX_IRQHandler_3:
-   \   0000B9 5F                    CLRW      X
-   \   0000BA 41                    EXG       A, XL
-   \   0000BB B600                  LD        A, S:?b10
-   \   0000BD 41                    EXG       A, XL
-   \   0000BE 1C0008                ADDW      X, #0x8
-   \   0000C1 C30000                CPW       X, L:current_buffer_position
-   \   0000C4 2637                  JRNE      L:??USART1_RX_IRQHandler_4
-   \   0000C6 90AE000A              LDW       Y, #0xa
-   \   0000CA AE0000                LDW       X, #`?<Constant "END_ERROR">`
-   \   0000CD CD0000                CALL      L:USART_SendString
-   \   0000D0 5F                    CLRW      X
-   \   0000D1 CF0000                LDW       L:current_buffer_position, X
-   \   0000D4 2027                  JRA       L:??USART1_RX_IRQHandler_4
+   \   000097 5F                    CLRW      X
+   \   000098 41                    EXG       A, XL
+   \   000099 B600                  LD        A, S:?b11
+   \   00009B 41                    EXG       A, XL
+   \   00009C 1C0007                ADDW      X, #0x7
+   \   00009F C30000                CPW       X, L:current_buffer_position
+   \   0000A2 2627                  JRNE      L:??USART1_RX_IRQHandler_4
+   \   0000A4 5F                    CLRW      X
+   \   0000A5 CF0000                LDW       L:current_buffer_position, X
+   \   0000A8 2021                  JRA       L:??USART1_RX_IRQHandler_4
    \                     ??USART1_RX_IRQHandler_0:
-   \   0000D6 CE0000                LDW       X, L:current_buffer_position
-   \   0000D9 A30002                CPW       X, #0x2
-   \   0000DC 251F                  JRC       L:??USART1_RX_IRQHandler_4
-   \   0000DE C60000                LD        A, L:usart_buffer
-   \   0000E1 A153                  CP        A, #0x53
-   \   0000E3 260E                  JRNE      L:??USART1_RX_IRQHandler_5
-   \   0000E5 C60000                LD        A, L:usart_buffer + 1
-   \   0000E8 A154                  CP        A, #0x54
-   \   0000EA 2607                  JRNE      L:??USART1_RX_IRQHandler_5
-   \   0000EC C60000                LD        A, L:usart_buffer + 2
-   \   0000EF A141                  CP        A, #0x41
-   \   0000F1 270A                  JREQ      L:??USART1_RX_IRQHandler_4
+   \   0000AA CE0000                LDW       X, L:current_buffer_position
+   \   0000AD A30002                CPW       X, #0x2
+   \   0000B0 2519                  JRC       L:??USART1_RX_IRQHandler_4
+   \   0000B2 C60000                LD        A, L:usart_buffer
+   \   0000B5 A153                  CP        A, #0x53
+   \   0000B7 260E                  JRNE      L:??USART1_RX_IRQHandler_5
+   \   0000B9 C60000                LD        A, L:usart_buffer + 1
+   \   0000BC A154                  CP        A, #0x54
+   \   0000BE 2607                  JRNE      L:??USART1_RX_IRQHandler_5
+   \   0000C0 C60000                LD        A, L:usart_buffer + 2
+   \   0000C3 A141                  CP        A, #0x41
+   \   0000C5 2704                  JREQ      L:??USART1_RX_IRQHandler_4
    \                     ??USART1_RX_IRQHandler_5:
-   \   0000F3 90AE000C              LDW       Y, #0xc
-   \   0000F7 AE0000                LDW       X, #`?<Constant "START_ERROR">`
-   \   0000FA CD0000                CALL      L:USART_SendString
+   \   0000C7 5F                    CLRW      X
+   \   0000C8 CF0000                LDW       L:current_buffer_position, X
    \                     ??USART1_RX_IRQHandler_4:
-   \   0000FD 3D00                  TNZ       S:?b11
-   \   0000FF 2747                  JREQ      L:??USART1_RX_IRQHandler_6
-   \   000101 5F                    CLRW      X
-   \   000102 5C                    INCW      X
-   \   000103 BF00                  LDW       S:?w0, X
-   \   000105 2013                  JRA       L:??USART1_RX_IRQHandler_7
+   \   0000CB 3D00                  TNZ       S:?b10
+   \   0000CD 2722                  JREQ      L:??USART1_RX_IRQHandler_6
+   \   0000CF 5F                    CLRW      X
+   \   0000D0 5C                    INCW      X
+   \   0000D1 BF00                  LDW       S:?w0, X
+   \   0000D3 2013                  JRA       L:??USART1_RX_IRQHandler_7
    \                     ??USART1_RX_IRQHandler_8:
-   \   000107 BE00                  LDW       X, S:?w0
-   \   000109 1C0000                ADDW      X, #usart_buffer + 4
-   \   00010C F6                    LD        A, (X)
-   \   00010D 5F                    CLRW      X
-   \   00010E 97                    LD        XL, A
-   \   00010F 72BB0000              ADDW      X, S:?w4
-   \   000113 BF00                  LDW       S:?w4, X
-   \   000115 BE00                  LDW       X, S:?w0
-   \   000117 5C                    INCW      X
-   \   000118 BF00                  LDW       S:?w0, X
+   \   0000D5 BE00                  LDW       X, S:?w0
+   \   0000D7 1C0000                ADDW      X, #usart_buffer + 3
+   \   0000DA F6                    LD        A, (X)
+   \   0000DB 5F                    CLRW      X
+   \   0000DC 97                    LD        XL, A
+   \   0000DD 72BB0000              ADDW      X, S:?w4
+   \   0000E1 BF00                  LDW       S:?w4, X
+   \   0000E3 BE00                  LDW       X, S:?w0
+   \   0000E5 5C                    INCW      X
+   \   0000E6 BF00                  LDW       S:?w0, X
    \                     ??USART1_RX_IRQHandler_7:
-   \   00011A 5F                    CLRW      X
-   \   00011B 41                    EXG       A, XL
-   \   00011C B600                  LD        A, S:?b10
-   \   00011E 41                    EXG       A, XL
-   \   00011F B300                  CPW       X, S:?w0
-   \   000121 2EE4                  JRSGE     L:??USART1_RX_IRQHandler_8
-   \   000123 5F                    CLRW      X
-   \   000124 41                    EXG       A, XL
-   \   000125 B600                  LD        A, S:?b10
-   \   000127 41                    EXG       A, XL
-   \   000128 1C0000                ADDW      X, #usart_buffer + 4
-   \   00012B F6                    LD        A, (X)
-   \   00012C 5F                    CLRW      X
-   \   00012D 97                    LD        XL, A
-   \   00012E B300                  CPW       X, S:?w4
-   \   000130 260C                  JRNE      L:??USART1_RX_IRQHandler_9
-   \   000132 90AE0009              LDW       Y, #0x9
-   \   000136 AE0000                LDW       X, #`?<Constant "Succeed!">`
-   \   000139 CD0000                CALL      L:USART_SendString
-   \   00013C 200A                  JRA       L:??USART1_RX_IRQHandler_6
-   \                     ??USART1_RX_IRQHandler_9:
-   \   00013E 90AE000E              LDW       Y, #0xe
-   \   000142 AE0000                LDW       X, #`?<Constant "Check failed!">`
-   \   000145 CD0000                CALL      L:USART_SendString
+   \   0000E8 5F                    CLRW      X
+   \   0000E9 41                    EXG       A, XL
+   \   0000EA B600                  LD        A, S:?b11
+   \   0000EC 41                    EXG       A, XL
+   \   0000ED B300                  CPW       X, S:?w0
+   \   0000EF 2EE4                  JRSGE     L:??USART1_RX_IRQHandler_8
    \                     ??USART1_RX_IRQHandler_6:
-   \   000148 CE0000                LDW       X, L:current_buffer_position
-   \   00014B 5C                    INCW      X
-   \   00014C CF0000                LDW       L:current_buffer_position, X
-   \   00014F CD0000                CALL      L:?pop_l2
-   \   000152 CD0000                CALL      L:?pop_l1
-   \   000155 CD0000                CALL      L:?pop_l0
-   \   000158 80                    IRET
+   \   0000F1 CE0000                LDW       X, L:current_buffer_position
+   \   0000F4 5C                    INCW      X
+   \   0000F5 CF0000                LDW       L:current_buffer_position, X
+   \   0000F8 CD0000                CALL      L:?pop_l2
+   \   0000FB CD0000                CALL      L:?pop_l1
+   \   0000FE CD0000                CALL      L:?pop_l0
+   \   000101 80                    IRET
 
    \                                 In section .near_func.text, align 1
    \   __interrupt void I2C1_IRQHandler(void)
@@ -525,122 +489,125 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
      74          static void CLK_Config(void)
      75          {
      76            /* Enable TIM1 clock */
-     77            CLK_PeripheralClockConfig(CLK_Peripheral_TIM2, ENABLE);
+     77            CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_1);
    \                     CLK_Config:
-   \   000000 35010000              MOV       S:?b0, #0x1
-   \   000004 4F                    CLR       A
-   \   000005 CC0000                JP        L:CLK_PeripheralClockConfig
-     78          }
-     79          
+   \   000000 4F                    CLR       A
+   \   000001 CD0000                CALL      L:CLK_SYSCLKDivConfig
+     78            CLK_PeripheralClockConfig(CLK_Peripheral_TIM2, ENABLE);
+   \   000004 35010000              MOV       S:?b0, #0x1
+   \   000008 4F                    CLR       A
+   \   000009 CC0000                JP        L:CLK_PeripheralClockConfig
+     79          }
+     80          
 
    \                                 In section .near_func.text, align 1
-     80          static void GPIO_Config(void)
-     81          {
-     82            /* GPIOD configuration: TIM1 channel 1 (PD2), channel 2 (PD4) and channel 3 (PD5) */
-     83            GPIO_Init(GPIOB, GPIO_Pin_0, GPIO_Mode_Out_PP_Low_Fast);
+     81          static void GPIO_Config(void)
+     82          {
+     83            /* GPIOD configuration: TIM1 channel 1 (PD2), channel 2 (PD4) and channel 3 (PD5) */
+     84            GPIO_Init(GPIOB, GPIO_Pin_0, GPIO_Mode_Out_PP_Low_Fast);
    \                     GPIO_Config:
    \   000000 35E00000              MOV       S:?b0, #0xe0
    \   000004 A601                  LD        A, #0x1
    \   000006 AE5005                LDW       X, #0x5005
    \   000009 CD0000                CALL      L:GPIO_Init
-     84            GPIO_Init(GPIOE, GPIO_Pin_7, GPIO_Mode_Out_PP_Low_Fast);  //Text int
+     85            GPIO_Init(GPIOE, GPIO_Pin_7, GPIO_Mode_Out_PP_Low_Fast);  //Text int
    \   00000C 35E00000              MOV       S:?b0, #0xe0
    \   000010 A680                  LD        A, #0x80
    \   000012 AE5014                LDW       X, #0x5014
    \   000015 CD0000                CALL      L:GPIO_Init
-     85            GPIO_Init(GPIOC, GPIO_Pin_7, GPIO_Mode_Out_PP_Low_Fast);  //Receive int
+     86            GPIO_Init(GPIOC, GPIO_Pin_7, GPIO_Mode_Out_PP_Low_Fast);  //Receive int
    \   000018 35E00000              MOV       S:?b0, #0xe0
    \   00001C A680                  LD        A, #0x80
    \   00001E AE500A                LDW       X, #0x500a
    \   000021 CC0000                JP        L:GPIO_Init
-     86            //GPIO_SetBits(GPIOE, GPIO_Pin_7);
-     87          }
-     88          
+     87            //GPIO_SetBits(GPIOE, GPIO_Pin_7);
+     88          }
+     89          
 
    \                                 In section .near_func.text, align 1
-     89          static void TIM2_Config(void)
-     90          {
-     91            /*
-     92            - TIM1CLK = 2 MHz
-     93            - TIM1 counter clock = TIM1CLK / TIM1_PRESCALER+1 = 2 MHz/39999+1 = 50 Hz
-     94            */
-     95            /*
-     96            - The TIM1 CCR1 register value is equal to 3000: 
-     97            - So the TIM1 Channel 1 generates a periodic signal with a frequency equal to 50 Hz.
-     98            - PB0
-     99            */
-    100            /* PWM1 Mode configuration: Channel1 */
-    101            TIM2_TimeBaseInit(TIM2_Prescaler_1, TIM2_CounterMode_Up, 39999);
+     90          static void TIM2_Config(void)
+     91          {
+     92            /*
+     93            - TIM1CLK = 2 MHz
+     94            - TIM1 counter clock = TIM1CLK / TIM1_PRESCALER+1 = 2 MHz/39999+1 = 50 Hz
+     95            */
+     96            /*
+     97            - The TIM1 CCR1 register value is equal to 3000: 
+     98            - So the TIM1 Channel 1 generates a periodic signal with a frequency equal to 50 Hz.
+     99            - PB0
+    100            */
+    101            /* PWM1 Mode configuration: Channel1 */
+    102            TIM2_TimeBaseInit(TIM2_Prescaler_1, TIM2_CounterMode_Up, 39999);
    \                     TIM2_Config:
    \   000000 AE9C3F                LDW       X, #0x9c3f
    \   000003 3F00                  CLR       S:?b0
    \   000005 4F                    CLR       A
    \   000006 CD0000                CALL      L:TIM2_TimeBaseInit
-    102            TIM2_OC1Init(TIM2_OCMode_PWM1, TIM2_OutputState_Enable, 0, TIM2_OCPolarity_High, TIM2_OCIdleState_Set);
+    103            TIM2_OC1Init(TIM2_OCMode_PWM1, TIM2_OutputState_Enable, 0, TIM2_OCPolarity_High, TIM2_OCIdleState_Set);
    \   000009 35010000              MOV       S:?b2, #0x1
    \   00000D 3F00                  CLR       S:?b1
    \   00000F 5F                    CLRW      X
    \   000010 35010000              MOV       S:?b0, #0x1
    \   000014 A660                  LD        A, #0x60
    \   000016 CD0000                CALL      L:TIM2_OC1Init
-    103            TIM2_OC1PreloadConfig(ENABLE);
+    104            TIM2_OC1PreloadConfig(ENABLE);
    \   000019 A601                  LD        A, #0x1
    \   00001B CD0000                CALL      L:TIM2_OC1PreloadConfig
-    104            TIM2_CtrlPWMOutputs(ENABLE);
+    105            TIM2_CtrlPWMOutputs(ENABLE);
    \   00001E A601                  LD        A, #0x1
    \   000020 CD0000                CALL      L:TIM2_CtrlPWMOutputs
-    105            TIM2_SetCompare1(3000);
+    106            TIM2_SetCompare1(3000);
    \   000023 AE0BB8                LDW       X, #0xbb8
    \   000026 CD0000                CALL      L:TIM2_SetCompare1
-    106            TIM2_Cmd(ENABLE);
+    107            TIM2_Cmd(ENABLE);
    \   000029 A601                  LD        A, #0x1
    \   00002B CC0000                JP        L:TIM2_Cmd
-    107          }
-    108          
+    108          }
+    109          
 
    \                                 In section .near_func.text, align 1
-    109          static void USART_Config(void)
-    110          {
-    111            //PA3 Send
-    112            //PA2 receive
-    113            current_buffer_size = 0;
+    110          static void USART_Config(void)
+    111          {
+    112            //PA3 Send
+    113            //PA2 receive
+    114            current_buffer_size = 0;
    \                     USART_Config:
    \   000000 5F                    CLRW      X
    \   000001 CF0000                LDW       L:current_buffer_size, X
-    114            current_buffer_position = 0;
+    115            current_buffer_position = 0;
    \   000004 5F                    CLRW      X
    \   000005 CF0000                LDW       L:current_buffer_position, X
-    115            SYSCFG_REMAPPinConfig(REMAP_Pin_USART1TxRxPortA, ENABLE);   //Map USART to PortA
+    116            SYSCFG_REMAPPinConfig(REMAP_Pin_USART1TxRxPortA, ENABLE);   //Map USART to PortA
    \   000008 A601                  LD        A, #0x1
    \   00000A AE011C                LDW       X, #0x11c
    \   00000D CD0000                CALL      L:SYSCFG_REMAPPinConfig
-    116            
-    117            GPIO_Init(GPIOA,GPIO_Pin_2,GPIO_Mode_In_PU_No_IT);    //USART_RX
+    117            
+    118            GPIO_Init(GPIOA,GPIO_Pin_2,GPIO_Mode_In_PU_No_IT);    //USART_RX
    \   000010 35400000              MOV       S:?b0, #0x40
    \   000014 A604                  LD        A, #0x4
    \   000016 AE5000                LDW       X, #0x5000
    \   000019 CD0000                CALL      L:GPIO_Init
-    118            //GPIO_Init(GPIOA,GPIO_Pin_3,GPIO_Mode_Out_PP_Low_Fast);     //USART_TX
-    119            GPIO_ExternalPullUpConfig(GPIOA, GPIO_Pin_3, ENABLE);        //Let this port been controlled by external signal
+    119            //GPIO_Init(GPIOA,GPIO_Pin_3,GPIO_Mode_Out_PP_Low_Fast);     //USART_TX
+    120            GPIO_ExternalPullUpConfig(GPIOA, GPIO_Pin_3, ENABLE);        //Let this port been controlled by external signal
    \   00001C 35010000              MOV       S:?b0, #0x1
    \   000020 A608                  LD        A, #0x8
    \   000022 AE5000                LDW       X, #0x5000
    \   000025 CD0000                CALL      L:GPIO_ExternalPullUpConfig
-    120            
-    121            CLK_PeripheralClockConfig(CLK_Peripheral_USART1, ENABLE);
+    121            
+    122            CLK_PeripheralClockConfig(CLK_Peripheral_USART1, ENABLE);
    \   000028 35010000              MOV       S:?b0, #0x1
    \   00002C A605                  LD        A, #0x5
    \   00002E CD0000                CALL      L:CLK_PeripheralClockConfig
-    122            //GPIO_ExternalPullUpConfig(GPIOA, GPIO_Pin_2|GPIO_Pin_3, ENABLE);
-    123            USART_DeInit(USART1);  
+    123            //GPIO_ExternalPullUpConfig(GPIOA, GPIO_Pin_2|GPIO_Pin_3, ENABLE);
+    124            USART_DeInit(USART1);  
    \   000031 AE5230                LDW       X, #0x5230
    \   000034 CD0000                CALL      L:USART_DeInit
-    124            USART_Init(USART1,
-    125                       9600, 
-    126                       USART_WordLength_8b,
-    127                       USART_StopBits_1,
-    128                       USART_Parity_No,
-    129                       (USART_Mode_TypeDef)(USART_Mode_Rx|USART_Mode_Tx));
+    125            USART_Init(USART1,
+    126                       9600, 
+    127                       USART_WordLength_8b,
+    128                       USART_StopBits_1,
+    129                       USART_Parity_No,
+    130                       (USART_Mode_TypeDef)(USART_Mode_Rx|USART_Mode_Tx));
    \   000037 350C0000              MOV       S:?b6, #0xc
    \   00003B 3F00                  CLR       S:?b5
    \   00003D 3F00                  CLR       S:?b4
@@ -651,71 +618,71 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
    \   000046 BF00                  LDW       S:?w0, X
    \   000048 AE5230                LDW       X, #0x5230
    \   00004B CD0000                CALL      L:USART_Init
-    130            USART_ClockInit(USART1,USART_Clock_Disable,USART_CPOL_Low,USART_CPHA_2Edge,USART_LastBit_Disable);
+    131            USART_ClockInit(USART1,USART_Clock_Disable,USART_CPOL_Low,USART_CPHA_2Edge,USART_LastBit_Disable);
    \   00004E 3F00                  CLR       S:?b2
    \   000050 35020000              MOV       S:?b1, #0x2
    \   000054 3F00                  CLR       S:?b0
    \   000056 4F                    CLR       A
    \   000057 AE5230                LDW       X, #0x5230
    \   00005A CD0000                CALL      L:USART_ClockInit
-    131            USART_ClearITPendingBit(USART1,USART_IT_RXNE);
+    132            USART_ClearITPendingBit(USART1,USART_IT_RXNE);
    \   00005D 90AE0255              LDW       Y, #0x255
    \   000061 AE5230                LDW       X, #0x5230
    \   000064 CD0000                CALL      L:USART_ClearITPendingBit
-    132            //USART_ITConfig(USART1, (USART_FLAG_TypeDef)(USART_IT_TXE | USART_IT_RXNE), ENABLE);
-    133            USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+    133            //USART_ITConfig(USART1, (USART_FLAG_TypeDef)(USART_IT_TXE | USART_IT_RXNE), ENABLE);
+    134            USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
    \   000067 A601                  LD        A, #0x1
    \   000069 90AE0255              LDW       Y, #0x255
    \   00006D AE5230                LDW       X, #0x5230
    \   000070 CD0000                CALL      L:USART_ITConfig
-    134            USART_Cmd(USART1, ENABLE);
+    135            USART_Cmd(USART1, ENABLE);
    \   000073 A601                  LD        A, #0x1
    \   000075 AE5230                LDW       X, #0x5230
    \   000078 CC0000                JP        L:USART_Cmd
-    135          }
-    136          
+    136          }
     137          
+    138          
 
    \                                 In section .near_func.text, align 1
-    138          void USART_SendByte(uint8_t data)
-    139          {
-    140            USART_SendData8(USART1, (unsigned char)data);
+    139          void USART_SendByte(uint8_t data)
+    140          {
+    141            USART_SendData8(USART1, (unsigned char)data);
    \                     USART_SendByte:
    \   000000 AE5230                LDW       X, #0x5230
    \   000003 CD0000                CALL      L:USART_SendData8
-    141            /* Loop until the end of transmission */
-    142            while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
+    142            /* Loop until the end of transmission */
+    143            while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
    \                     ??USART_SendByte_0:
    \   000006 90AE0080              LDW       Y, #0x80
    \   00000A AE5230                LDW       X, #0x5230
    \   00000D CD0000                CALL      L:USART_GetFlagStatus
    \   000010 A100                  CP        A, #0x0
    \   000012 27F2                  JREQ      L:??USART_SendByte_0
-    143          }
+    144          }
    \   000014 81                    RET
-    144          
+    145          
 
    \                                 In section .near_func.text, align 1
-    145          void USART_SendString(uint8_t* Data, uint16_t len)
-    146          {
+    146          void USART_SendString(uint8_t* Data, uint16_t len)
+    147          {
    \                     USART_SendString:
    \   000000 CD0000                CALL      L:?push_l2
    \   000003 CD0000                CALL      L:?push_w6
    \   000006 BF00                  LDW       S:?w6, X
    \   000008 90BF00                LDW       S:?w5, Y
-    147            //unit16_t i = 0;
-    148            for(int i = 0; i < len; i++)
+    148            //unit16_t i = 0;
+    149            for(int i = 0; i < len; i++)
    \   00000B 3F00                  CLR       S:?b9
    \   00000D 3F00                  CLR       S:?b8
    \   00000F 200F                  JRA       L:??USART_SendString_0
-    149            {
-    150              USART_SendByte(Data[i]);  
+    150            {
+    151              USART_SendByte(Data[i]);  
    \                     ??USART_SendString_1:
    \   000011 BE00                  LDW       X, S:?w4
    \   000013 72BB0000              ADDW      X, S:?w6
    \   000017 F6                    LD        A, (X)
    \   000018 CD0000                CALL      L:USART_SendByte
-    151            }
+    152            }
    \   00001B BE00                  LDW       X, S:?w4
    \   00001D 5C                    INCW      X
    \   00001E BF00                  LDW       S:?w4, X
@@ -723,15 +690,15 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
    \   000020 BE00                  LDW       X, S:?w4
    \   000022 B300                  CPW       X, S:?w5
    \   000024 25EB                  JRC       L:??USART_SendString_1
-    152          }
+    153          }
    \   000026 CC0000                JP        L:?epilogue_l2_w6
-    153          
+    154          
 
    \                                 In section .near_func.text, align 1
-    154          uint8_t USART_ReceiveByte(void)
-    155          {
-    156            uint8_t USART_RX_BUF;
-    157            while(USART_GetFlageStatus(USART1, USART_FLAG_RXNE) == RESET);
+    155          uint8_t USART_ReceiveByte(void)
+    156          {
+    157            uint8_t USART_RX_BUF;
+    158            while(USART_GetFlageStatus(USART1, USART_FLAG_RXNE) == RESET);
    \                     USART_ReceiveByte:
    \                     ??USART_ReceiveByte_0:
    \   000000 90AE0020              LDW       Y, #0x20
@@ -739,22 +706,22 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
    \   000007 CD0000                CALL      L:USART_GetFlageStatus
    \   00000A 5D                    TNZW      X
    \   00000B 27F3                  JREQ      L:??USART_ReceiveByte_0
-    158            USART_RX_BUF = USART_ReceiveData8(USART1);
+    159            USART_RX_BUF = USART_ReceiveData8(USART1);
    \   00000D AE5230                LDW       X, #0x5230
    \   000010 CC0000                JP        L:USART_ReceiveData8
-    159            return USART_RX_BUF;
-    160          }
-    161          
+    160            return USART_RX_BUF;
+    161          }
+    162          
 
    \                                 In section .near_func.text, align 1
-    162          void Delay(int time)
-    163          {
+    163          void Delay(int time)
+    164          {
    \                     Delay:
    \   000000 BF00                  LDW       S:?w0, X
-    164            for(int i = 0; i < time; i++)
+    165            for(int i = 0; i < time; i++)
    \   000002 905F                  CLRW      Y
    \   000004 2008                  JRA       L:??Delay_0
-    165              for(int j = 0; j < 100; j++);
+    166              for(int j = 0; j < 100; j++);
    \                     ??Delay_1:
    \   000006 5C                    INCW      X
    \                     ??Delay_2:
@@ -766,51 +733,27 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
    \   000011 2E03                  JRSGE     L:??Delay_3
    \   000013 5F                    CLRW      X
    \   000014 20F1                  JRA       L:??Delay_2
-    166          }
+    167          }
    \                     ??Delay_3:
    \   000016 81                    RET
 
    \                                 In section .near.rodata, align 1
-   \                     `?<Constant "HEAD_RIGHT">`:
-   \   000000 484541445F52          DC8 "HEAD_RIGHT"
-
-   \                                 In section .near.rodata, align 1
-   \                     `?<Constant "END_FINISH">`:
-   \   000000 454E445F4649          DC8 "END_FINISH"
-
-   \                                 In section .near.rodata, align 1
-   \                     `?<Constant "END_ERROR">`:
-   \   000000 454E445F4552          DC8 "END_ERROR"
-
-   \                                 In section .near.rodata, align 1
-   \                     `?<Constant "START_ERROR">`:
-   \   000000 53544152545F          DC8 "START_ERROR"
-
-   \                                 In section .near.rodata, align 1
-   \                     `?<Constant "Succeed!">`:
-   \   000000 537563636565          DC8 "Succeed!"
-
-   \                                 In section .near.rodata, align 1
-   \                     `?<Constant "Check failed!">`:
-   \   000000 436865636B20          DC8 "Check failed!"
-
-   \                                 In section .near.rodata, align 1
    \                     `?<Constant "Test\\n">`:
    \   000000 546573740A00          DC8 "Test\012"
-    167          
     168          
-    169          #ifdef  USE_FULL_ASSERT
-    170          
-    171          void assert_failed(uint8_t* file, uint32_t line)
-    172          {
-    173            /* User can add his own implementation to report the file name and line number,
-    174               ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-    175          
-    176            /* Infinite loop */
-    177            while (1)
-    178            {}
-    179          }
-    180          #endif
+    169          
+    170          #ifdef  USE_FULL_ASSERT
+    171          
+    172          void assert_failed(uint8_t* file, uint32_t line)
+    173          {
+    174            /* User can add his own implementation to report the file name and line number,
+    175               ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+    176          
+    177            /* Infinite loop */
+    178            while (1)
+    179            {}
+    180          }
+    181          #endif
 
    Section sizes:
 
@@ -853,14 +796,14 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
      TIM4_UPD_OVF_TRG_IRQHandler       2
      SPI1_IRQHandler                   2
      USART1_TX_IRQHandler             27
-     USART1_RX_IRQHandler            345
+     USART1_RX_IRQHandler            258
      I2C1_IRQHandler                   2
      CCR1_Val                          2
      CCR2_Val                          2
      CCR3_Val                          2
      ERROR_MESSAGE                     5
      main                             32
-     CLK_Config                        8
+     CLK_Config                       12
      GPIO_Config                      36
      TIM2_Config                      46
      USART_Config                    123
@@ -868,22 +811,16 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
      USART_SendString                 41
      USART_ReceiveByte                19
      Delay                            23
-     ?<Constant "HEAD_RIGHT">         11
-     ?<Constant "END_FINISH">         11
-     ?<Constant "END_ERROR">          10
-     ?<Constant "START_ERROR">        12
-     ?<Constant "Succeed!">            9
-     ?<Constant "Check failed!">      14
      ?<Constant "Test\n">              6
 
  
   14 bytes in section .near.bss
    6 bytes in section .near.data
-  80 bytes in section .near.rodata
- 777 bytes in section .near_func.text
+  13 bytes in section .near.rodata
+ 694 bytes in section .near_func.text
  
- 777 bytes of CODE  memory
-  80 bytes of CONST memory
+ 694 bytes of CODE  memory
+  13 bytes of CONST memory
   20 bytes of DATA  memory
 
 Errors: none

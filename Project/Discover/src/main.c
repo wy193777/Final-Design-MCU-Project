@@ -74,6 +74,7 @@ void main(void)
 static void CLK_Config(void)
 {
   /* Enable TIM1 clock */
+  CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_1);
   CLK_PeripheralClockConfig(CLK_Peripheral_TIM2, ENABLE);
 }
 

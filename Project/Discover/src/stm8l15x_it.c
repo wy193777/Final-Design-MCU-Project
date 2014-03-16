@@ -34,7 +34,7 @@ void USART_SendString(uint8_t* Data, uint16_t len);
 /** @addtogroup IT_Functions
   * @{
   */
-uint16_t const BUFFER_SIZE;
+uint16_t const BUFFER_SIZE = 10;
 uint8_t const ERROR_MESSAGE[5];
 uint8_t usart_buffer[];
 uint16_t current_buffer_position;
@@ -591,6 +591,7 @@ INTERRUPT_HANDLER(USART1_RX_IRQHandler,28)
 //  Buf = USART_ReceiveData8(USART1);
 //  USART_SendData8(USART1, Buf);
   //while (1);
+  //disableInterrupts();
   uint8_t data_size = 0;
   bool transmit_right_flag = 0; //set to true when receive finished and right
   int sum = 0;
@@ -605,27 +606,27 @@ INTERRUPT_HANDLER(USART1_RX_IRQHandler,28)
      usart_buffer[2] == 0x41)
   {
     //When head right
-    USART_SendString("HEAD_RIGHT", sizeof("HEAD_RIGHT"));
+    //USART_SendString("HEAD_RIGHT", sizeof("HEAD_RIGHT"));
     if(current_buffer_position > BUFFER_SIZE)
     {
-      current_buffer_position = BUFFER_SIZE;  
+      current_buffer_position = 0;
     }
     if(current_buffer_position>= 3)
     {
       data_size = usart_buffer[3];  
     }
-    if(current_buffer_position == (4 + data_size +4) &&
+    if(current_buffer_position == (3 + data_size +4) &&
        usart_buffer[3 + data_size + 2] == 0x45 &&   //"END", the tail of protocal
        usart_buffer[3 + data_size + 3] == 0x4E &&
        usart_buffer[3 + data_size + 4] == 0x44)
     {
       current_buffer_position = 0;
       transmit_right_flag = 1;
-      USART_SendString("END_FINISH", sizeof("END_FINISH"));  
+      //USART_SendString("END_FINISH", sizeof("END_FINISH"));  
     }
-    else if(current_buffer_position == 4 + data_size + 4)
+    else if(current_buffer_position == 3 + data_size + 4)
     {
-      USART_SendString("END_ERROR", sizeof("END_ERROR")); 
+      //USART_SendString("END_ERROR", sizeof("END_ERROR")); 
       current_buffer_position = 0;
     }
   }
@@ -635,7 +636,8 @@ INTERRUPT_HANDLER(USART1_RX_IRQHandler,28)
        usart_buffer[1] != 0x54 ||
        usart_buffer[2] != 0x41)
     {
-      USART_SendString("START_ERROR", sizeof("START_ERROR"));    
+      //USART_SendString("START_ERROR", sizeof("START_ERROR")); 
+      current_buffer_position = 0;
     }
   }
   
@@ -644,18 +646,19 @@ INTERRUPT_HANDLER(USART1_RX_IRQHandler,28)
   {
     for(int i = 1; i <= data_size; i++)
     {
-      sum += usart_buffer[4 + i];   
+      sum += usart_buffer[3 + i];   
     }
     if(sum == usart_buffer[3 + data_size + 1])
     {
-      USART_SendString("Succeed!", sizeof("Succeed!")); 
+      //USART_SendString("Succeed!", sizeof("Succeed!")); 
     }
     else
     {
-      USART_SendString("Check failed!", sizeof("Check failed!")); 
+      //USART_SendString("Check failed!", sizeof("Check failed!")); 
     }
   }
   current_buffer_position++;
+  //enableInterrupts();
 }
 
 /**
