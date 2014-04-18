@@ -36,9 +36,12 @@ void USART_SendString(uint8_t* Data, uint16_t len);
   */
 uint16_t const BUFFER_SIZE = 10;
 uint8_t const ERROR_MESSAGE[5];
-uint8_t usart_buffer[];
+unsigned char usart_buffer[];
 uint16_t current_buffer_position;
 uint16_t current_buffer_size;
+short degree_interval;
+short time_interval;
+bool config_complete_flag;
 INTERRUPT_HANDLER(NonHandledInterrupt,0)
 {
 /* In order to detect unexpected events during development,
@@ -586,14 +589,80 @@ INTERRUPT_HANDLER(USART1_TX_IRQHandler,27)
   */
 INTERRUPT_HANDLER(USART1_RX_IRQHandler,28)
 {
-//  uint8_t Buf;
+  unsigned char Buf;
+  Buf = USART_ReceiveData8(USART1);
+  if(Buf == 'D')
+  {
+    usart_buffer[0] = Buf;
+    current_buffer_position = 1;  
+    config_complete_flag = FALSE;
+  }
+  else if(Buf == 'T')
+  {
+    usart_buffer[2] = Buf;
+    current_buffer_position = 3;  
+    config_complete_flag = FALSE;
+  }
+  else if(Buf != 'D' && Buf != 'T' && current_buffer_position == 1)
+  {
+    usart_buffer[1] = Buf;
+    //degree_interval = Buf; 
+    config_complete_flag = FALSE;
+  }
+  else if(Buf != 'D' && Buf != 'T' && current_buffer_position == 3)
+  {
+    usart_buffer[3] = Buf;
+    //time_interval = Buf; 
+    config_complete_flag = TRUE;
+    current_buffer_position = 0;
+  }
+  else
+  {
+    config_complete_flag = FALSE;
+    current_buffer_position = 0;
+  }
+  degree_interval = usart_buffer[1]; 
+  time_interval = usart_buffer[3];
+  //while (1);
+  //RXNE flag couldn't been cleared by automatically if 
+  //ReceiveData wasn't been called
+  
+  //USART_ClearFlag(USART1, USART_FLAG_RXNE);    
+}
+
+/**
+  * @brief I2C1 Interrupt routine.
+  * @par Parameters:
+  * None
+  * @retval 
+  * None
+  */
+INTERRUPT_HANDLER(I2C1_IRQHandler,29)
+{
+/* In order to detect unexpected events during development,
+   it is recommended to set a breakpoint on the following instruction.
+*/
+  while (1);
+}
+
+/**
+  * @}
+  */
+/******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
+
+
+/* This part of code is to heavy to use
+ *
+INTERRUPT_HANDLER(USART1_RX_IRQHandler,28)
+{
+  uint8_t Buf;
 //  GPIO_ToggleBits(GPIOE, GPIO_Pin_7);
 //  Buf = USART_ReceiveData8(USART1);
 //  USART_SendData8(USART1, Buf);
   //while (1);
   //disableInterrupts();
-  uint8_t data_size = 0;
-  bool transmit_right_flag = 0; //set to true when receive finished and right
+  /*uint8_t data_size = 0;
+  bool transmit_right_flag = FALSE; //set to true when receive finished and right
   int sum = 0;
   
   usart_buffer[current_buffer_position] = USART_ReceiveData8(USART1);
@@ -621,7 +690,7 @@ INTERRUPT_HANDLER(USART1_RX_IRQHandler,28)
        usart_buffer[3 + data_size + 4] == 0x44)
     {
       current_buffer_position = 0;
-      transmit_right_flag = 1;
+      transmit_right_flag = TRUE;
       //USART_SendString("END_FINISH", sizeof("END_FINISH"));  
     }
     else if(current_buffer_position == 3 + data_size + 4)
@@ -659,25 +728,11 @@ INTERRUPT_HANDLER(USART1_RX_IRQHandler,28)
   }
   current_buffer_position++;
   //enableInterrupts();
+  //USART_SendByte(0x53);  
+  //USART_SendString("C", sizeof("C")); 
+  //RXNE flag couldn't been cleared by automatically if 
+  //ReceiveData wasn't been called
+  
+  USART_ClearFlag(USART1, USART_FLAG_RXNE);    
 }
-
-/**
-  * @brief I2C1 Interrupt routine.
-  * @par Parameters:
-  * None
-  * @retval 
-  * None
-  */
-INTERRUPT_HANDLER(I2C1_IRQHandler,29)
-{
-/* In order to detect unexpected events during development,
-   it is recommended to set a breakpoint on the following instruction.
 */
-  while (1);
-}
-
-/**
-  * @}
-  */
-/******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
-

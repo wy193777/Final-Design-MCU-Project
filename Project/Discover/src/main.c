@@ -15,9 +15,12 @@ __IO uint16_t CCR1_Val = 30000;
 __IO uint16_t CCR2_Val = 16384;
 __IO uint16_t CCR3_Val = 8192;
 
-extern uint8_t usart_buffer[BUFFER_SIZE];
+extern unsigned char usart_buffer[BUFFER_SIZE];
 extern uint16_t current_buffer_size;
 extern uint16_t current_buffer_position;
+extern short degree_interval;
+extern short time_interval;
+extern bool config_complete_flag;
 extern const uint8_t ERROR_MESSAGE[5] = "ERROR";
 
 /* Private function prototypes -----------------------------------------------*/
@@ -47,7 +50,7 @@ void main(void)
   
   enableInterrupts();
   
-  USART_SendString("Test\n", sizeof("Test\n"));
+  //USART_SendString("Test\n", sizeof("Test\n"));
   //delay_10us(100);
   //USART_SendByte("\n");
   Delay(100);
@@ -65,6 +68,21 @@ void main(void)
 //    {
 //      USART_SendData8(USART1, Buf);
 //    }
+    //USART_SendString("Succeed!\n", sizeof("Succeed!\n")); 
+    //Delay(1000);
+    
+    /* This block of code is used to test whether the PC program can generate 
+       right information to send. 
+    Buf = USART_ReceiveData8(USART1);
+    if(Buf == 'C')
+    {
+      GPIO_SetBits(GPIOE, GPIO_Pin_7);
+    }
+    else
+    {
+      GPIO_ResetBits(GPIOE, GPIO_Pin_7); 
+    }
+    */
   }
 }
 
@@ -74,7 +92,7 @@ void main(void)
 static void CLK_Config(void)
 {
   /* Enable TIM1 clock */
-  CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_1);
+  CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_8);
   CLK_PeripheralClockConfig(CLK_Peripheral_TIM2, ENABLE);
 }
 
@@ -82,8 +100,8 @@ static void GPIO_Config(void)
 {
   /* GPIOD configuration: TIM1 channel 1 (PD2), channel 2 (PD4) and channel 3 (PD5) */
   GPIO_Init(GPIOB, GPIO_Pin_0, GPIO_Mode_Out_PP_Low_Fast);
-  GPIO_Init(GPIOE, GPIO_Pin_7, GPIO_Mode_Out_PP_Low_Fast);  //Text int
-  GPIO_Init(GPIOC, GPIO_Pin_7, GPIO_Mode_Out_PP_Low_Fast);  //Receive int
+  GPIO_Init(GPIOE, GPIO_Pin_7, GPIO_Mode_Out_PP_Low_Fast);  
+  GPIO_Init(GPIOC, GPIO_Pin_7, GPIO_Mode_Out_PP_Low_Fast);
   //GPIO_SetBits(GPIOE, GPIO_Pin_7);
 }
 
