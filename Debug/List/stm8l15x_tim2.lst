@@ -1,6 +1,6 @@
 ###############################################################################
 #                                                                             #
-# IAR C/C++ Compiler V1.30.1.50036 for STM8             20/Apr/2014  20:40:39 #
+# IAR C/C++ Compiler V1.30.1.50036 for STM8             21/Apr/2014  17:19:26 #
 # Copyright 2010-2011 IAR Systems AB.                                         #
 #                                                                             #
 #    Source file  =  F:\Skydrive\Final Design\Servo Motor                     #
@@ -1988,153 +1988,266 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Libraries\STM8L15x_StdPeriph_Driver\s
    1258            */
 
    \                                 In section .near_func.text, align 1, keep-with-next
-   1259          void TIM2_SetCompare1(uint16_t Compare)
+   1259          INTERRUPT_HANDLER(NonHandledInterrupt,0)
    1260          {
+   1261          /* In order to detect unexpected events during development,
+   1262             it is recommended to set a breakpoint on the following instruction.
+   1263          */
+   1264            while (1);
+   \                     NonHandledInterrupt:
+   \                     _interrupt_2:
+   \   000000 20FE                  JRA       L:_interrupt_2
+   1265          
+   1266          }
+   1267          /**
+   1268            * @brief TRAP interrupt routine
+   1269            * @par Parameters:
+   1270            * None
+   1271            * @retval 
+   1272            * None
+   1273          */
+
+   \                                 In section .near_func.text, align 1, keep-with-next
+   1274          INTERRUPT_HANDLER_TRAP(TRAP_IRQHandler)
+   1275          {
+   1276          /* In order to detect unexpected events during development,
+   1277             it is recommended to set a breakpoint on the following instruction.
+   1278          */
+   1279            while (1);
+   \                     TRAP_IRQHandler:
+   \                     _interrupt_1:
+   \   000000 20FE                  JRA       L:_interrupt_1
+   1280          
+   1281          }
+   1282          /**
+   1283            * @brief FLASH Interrupt routine.
+   1284            * @par Parameters:
+   1285            * None
+   1286            * @retval 
+   1287            * None
+   1288            */
+
+   \                                 In section .near_func.text, align 1, keep-with-next
+   1289          INTERRUPT_HANDLER(FLASH_IRQHandler,1)
+   1290          {
+   1291          /* In order to detect unexpected events during development,
+   1292             it is recommended to set a breakpoint on the following instruction.
+   1293          */
+   1294            while (1);
+   \                     FLASH_IRQHandler:
+   \                     _interrupt_3:
+   \   000000 20FE                  JRA       L:_interrupt_3
+   1295          
+   1296          }
+   1297          /**
+   1298            * @brief DMA1 channel0 and channel1 Interrupt routine.
+   1299            * @par Parameters:
+   1300            * None
+   1301            * @retval 
+   1302            * None
+   1303            */
+
+   \                                 In section .near_func.text, align 1, keep-with-next
+   1304          INTERRUPT_HANDLER(DMA1_CHANNEL0_1_IRQHandler,2)
+   1305          {
+   1306          /* In order to detect unexpected events during development,
+   1307             it is recommended to set a breakpoint on the following instruction.
+   1308          */
+   1309            while (1);
+   \                     DMA1_CHANNEL0_1_IRQHandler:
+   \                     _interrupt_4:
+   \   000000 20FE                  JRA       L:_interrupt_4
+   1310          
+   1311          }
+   1312          /**
+   1313            * @brief DMA1 channel2 and channel3 Interrupt routine.
+   1314            * @par Parameters:
+   1315            * None
+   1316            * @retval 
+   1317            * None
+   1318            */
+
+   \                                 In section .near_func.text, align 1, keep-with-next
+   1319          INTERRUPT_HANDLER(DMA1_CHANNEL2_3_IRQHandler,3)
+   1320          {
+   1321          /* In order to detect unexpected events during development,
+   1322             it is recommended to set a breakpoint on the following instruction.
+   1323          */
+   1324            while (1);
+   \                     DMA1_CHANNEL2_3_IRQHandler:
+   \                     _interrupt_5:
+   \   000000 20FE                  JRA       L:_interrupt_5
+   1325          
+   1326          }
+   1327          /**
+   1328            * @brief RTC Interrupt routine.
+   1329            * @par Parameters:
+   1330            * None
+   1331            * @retval 
+   1332            * None
+   1333            */
+   1334          
+
+   \                                 In section .near_func.text, align 1, keep-with-next
+   1335          INTERRUPT_HANDLER(RTC_IRQHandler,4)
+   1336          {
+   1337          /* In order to detect unexpected events during development,
+   1338             it is recommended to set a breakpoint on the following instruction.
+   1339          */
+   1340            while (1);
+   \                     RTC_IRQHandler:
+   \                     _interrupt_6:
+   \   000000 20FE                  JRA       L:_interrupt_6
+   1341          
+   1342          }void TIM2_SetCompare1(uint16_t Compare)
+
+   \                                 In section .near_func.text, align 1, keep-with-next
+   1343          {
    \                     TIM2_SetCompare1:
    \   000000 9093                  LDW       Y, X
-   1261            /* Set the Capture Compare1 Register value */
-   1262            TIM2->CCR1H = (uint8_t)(Compare >> 8);
+   1344            /* Set the Capture Compare1 Register value */
+   1345            TIM2->CCR1H = (uint8_t)(Compare >> 8);
    \   000002 93                    LDW       X, Y
    \   000003 4F                    CLR       A
    \   000004 01                    RRWA      X, A
    \   000005 9F                    LD        A, XL
    \   000006 C75261                LD        L:0x5261, A
-   1263            TIM2->CCR1L = (uint8_t)(Compare);
+   1346            TIM2->CCR1L = (uint8_t)(Compare);
    \   000009 909F                  LD        A, YL
    \   00000B C75262                LD        L:0x5262, A
-   1264          }
+   1347          }
    \   00000E 81                    RET
-   1265          
-   1266          /**
-   1267            * @brief  Sets the TIM2 Capture Compare2 Register value.
-   1268            * @param  Compare : Specifies the Capture Compare2 register new value.
-   1269            *   This parameter is between 0x0000 and 0xFFFF.
-   1270            * @retval None
-   1271            */
+   1348          
+   1349          /**
+   1350            * @brief  Sets the TIM2 Capture Compare2 Register value.
+   1351            * @param  Compare : Specifies the Capture Compare2 register new value.
+   1352            *   This parameter is between 0x0000 and 0xFFFF.
+   1353            * @retval None
+   1354            */
 
    \                                 In section .near_func.text, align 1, keep-with-next
-   1272          void TIM2_SetCompare2(uint16_t Compare)
-   1273          {
+   1355          void TIM2_SetCompare2(uint16_t Compare)
+   1356          {
    \                     TIM2_SetCompare2:
    \   000000 9093                  LDW       Y, X
-   1274            /* Set the Capture Compare2 Register value */
-   1275            TIM2->CCR2H = (uint8_t)(Compare >> 8);
+   1357            /* Set the Capture Compare2 Register value */
+   1358            TIM2->CCR2H = (uint8_t)(Compare >> 8);
    \   000002 93                    LDW       X, Y
    \   000003 4F                    CLR       A
    \   000004 01                    RRWA      X, A
    \   000005 9F                    LD        A, XL
    \   000006 C75263                LD        L:0x5263, A
-   1276            TIM2->CCR2L = (uint8_t)(Compare);
+   1359            TIM2->CCR2L = (uint8_t)(Compare);
    \   000009 909F                  LD        A, YL
    \   00000B C75264                LD        L:0x5264, A
-   1277          }
+   1360          }
    \   00000E 81                    RET
-   1278          
-   1279          /**
-   1280            * @brief  Sets the TIM2 Input Capture 1 prescaler.
-   1281            * @param  TIM2_IC1Prescaler : Specifies the Input Capture prescaler new value
-   1282            *   This parameter can be one of the @ref TIM2_ICPSC_TypeDef enumeration.
-   1283            * @retval None
-   1284            */
+   1361          
+   1362          /**
+   1363            * @brief  Sets the TIM2 Input Capture 1 prescaler.
+   1364            * @param  TIM2_IC1Prescaler : Specifies the Input Capture prescaler new value
+   1365            *   This parameter can be one of the @ref TIM2_ICPSC_TypeDef enumeration.
+   1366            * @retval None
+   1367            */
 
    \                                 In section .near_func.text, align 1, keep-with-next
-   1285          void TIM2_SetIC1Prescaler(TIM2_ICPSC_TypeDef TIM2_IC1Prescaler)
-   1286          {
+   1368          void TIM2_SetIC1Prescaler(TIM2_ICPSC_TypeDef TIM2_IC1Prescaler)
+   1369          {
    \                     TIM2_SetIC1Prescaler:
    \   000000 B700                  LD        S:?b0, A
-   1287            uint8_t tmpccmr1 = 0;
+   1370            uint8_t tmpccmr1 = 0;
    \   000002 3F00                  CLR       S:?b1
-   1288          
-   1289            /* Check the parameters */
-   1290            assert_param(IS_TIM2_IC_PRESCALER(TIM2_IC1Prescaler));
-   1291          
-   1292            tmpccmr1 = TIM2->CCMR1;
+   1371          
+   1372            /* Check the parameters */
+   1373            assert_param(IS_TIM2_IC_PRESCALER(TIM2_IC1Prescaler));
+   1374          
+   1375            tmpccmr1 = TIM2->CCMR1;
    \   000004 C65259                LD        A, L:0x5259
    \   000007 B700                  LD        S:?b1, A
-   1293          
-   1294            /* Reset the IC1PSC Bits */
-   1295            tmpccmr1 &= (uint8_t)(~TIM_CCMR_ICxPSC);
+   1376          
+   1377            /* Reset the IC1PSC Bits */
+   1378            tmpccmr1 &= (uint8_t)(~TIM_CCMR_ICxPSC);
    \   000009 B600                  LD        A, S:?b1
    \   00000B A4F3                  AND       A, #0xf3
    \   00000D B700                  LD        S:?b1, A
-   1296          
-   1297            /* Set the IC1PSC value */
-   1298            tmpccmr1 |= (uint8_t)TIM2_IC1Prescaler;
+   1379          
+   1380            /* Set the IC1PSC value */
+   1381            tmpccmr1 |= (uint8_t)TIM2_IC1Prescaler;
    \   00000F B600                  LD        A, S:?b0
    \   000011 BA00                  OR        A, S:?b1
    \   000013 B700                  LD        S:?b1, A
-   1299          
-   1300            TIM2->CCMR1 = tmpccmr1;
+   1382          
+   1383            TIM2->CCMR1 = tmpccmr1;
    \   000015 B600                  LD        A, S:?b1
    \   000017 C75259                LD        L:0x5259, A
-   1301          }
+   1384          }
    \   00001A 81                    RET
-   1302          
-   1303          /**
-   1304            * @brief  Sets the TIM2 Input Capture 2 prescaler.
-   1305            * @param  TIM2_IC2Prescaler : Specifies the Input Capture prescaler new value
-   1306            *   This parameter can be one of the @ref TIM2_ICPSC_TypeDef enumeration.
-   1307            * @retval None
-   1308            */
+   1385          
+   1386          /**
+   1387            * @brief  Sets the TIM2 Input Capture 2 prescaler.
+   1388            * @param  TIM2_IC2Prescaler : Specifies the Input Capture prescaler new value
+   1389            *   This parameter can be one of the @ref TIM2_ICPSC_TypeDef enumeration.
+   1390            * @retval None
+   1391            */
 
    \                                 In section .near_func.text, align 1, keep-with-next
-   1309          void TIM2_SetIC2Prescaler(TIM2_ICPSC_TypeDef TIM2_IC2Prescaler)
-   1310          {
+   1392          void TIM2_SetIC2Prescaler(TIM2_ICPSC_TypeDef TIM2_IC2Prescaler)
+   1393          {
    \                     TIM2_SetIC2Prescaler:
    \   000000 B700                  LD        S:?b0, A
-   1311            uint8_t tmpccmr2 = 0;
+   1394            uint8_t tmpccmr2 = 0;
    \   000002 3F00                  CLR       S:?b1
-   1312          
-   1313            /* Check the parameters */
-   1314            assert_param(IS_TIM2_IC_PRESCALER(TIM2_IC2Prescaler));
-   1315          
-   1316            tmpccmr2 = TIM2->CCMR2;
+   1395          
+   1396            /* Check the parameters */
+   1397            assert_param(IS_TIM2_IC_PRESCALER(TIM2_IC2Prescaler));
+   1398          
+   1399            tmpccmr2 = TIM2->CCMR2;
    \   000004 C6525A                LD        A, L:0x525a
    \   000007 B700                  LD        S:?b1, A
-   1317          
-   1318            /* Reset the IC2PSC Bits */
-   1319            tmpccmr2 &= (uint8_t)(~TIM_CCMR_ICxPSC);
+   1400          
+   1401            /* Reset the IC2PSC Bits */
+   1402            tmpccmr2 &= (uint8_t)(~TIM_CCMR_ICxPSC);
    \   000009 B600                  LD        A, S:?b1
    \   00000B A4F3                  AND       A, #0xf3
    \   00000D B700                  LD        S:?b1, A
-   1320          
-   1321            /* Set the IC2PSC value */
-   1322            tmpccmr2 |= (uint8_t)TIM2_IC2Prescaler;
+   1403          
+   1404            /* Set the IC2PSC value */
+   1405            tmpccmr2 |= (uint8_t)TIM2_IC2Prescaler;
    \   00000F B600                  LD        A, S:?b0
    \   000011 BA00                  OR        A, S:?b1
    \   000013 B700                  LD        S:?b1, A
-   1323          
-   1324            TIM2->CCMR2 = tmpccmr2;
+   1406          
+   1407            TIM2->CCMR2 = tmpccmr2;
    \   000015 B600                  LD        A, S:?b1
    \   000017 C7525A                LD        L:0x525a, A
-   1325          }
+   1408          }
    \   00001A 81                    RET
-   1326          
-   1327          /**
-   1328            * @brief  Gets the TIM2 Input Capture 1 value.
-   1329            * @param  None
-   1330            * @retval Capture Compare 1 Register value.
-   1331            */
+   1409          
+   1410          /**
+   1411            * @brief  Gets the TIM2 Input Capture 1 value.
+   1412            * @param  None
+   1413            * @retval Capture Compare 1 Register value.
+   1414            */
 
    \                                 In section .near_func.text, align 1
-   1332          uint16_t TIM2_GetCapture1(void)
-   1333          {
-   1334            uint16_t tmpccr1 = 0;
+   1415          uint16_t TIM2_GetCapture1(void)
+   1416          {
+   1417            uint16_t tmpccr1 = 0;
    \                     TIM2_GetCapture1:
    \   000000 905F                  CLRW      Y
-   1335            uint8_t tmpccr1l, tmpccr1h;
-   1336          
-   1337            tmpccr1h = TIM2->CCR1H;
+   1418            uint8_t tmpccr1l, tmpccr1h;
+   1419          
+   1420            tmpccr1h = TIM2->CCR1H;
    \   000002 C65261                LD        A, L:0x5261
    \   000005 B700                  LD        S:?b0, A
-   1338            tmpccr1l = TIM2->CCR1L;
+   1421            tmpccr1l = TIM2->CCR1L;
    \   000007 C65262                LD        A, L:0x5262
-   1339          
-   1340            tmpccr1 = (uint16_t)(tmpccr1l);
+   1422          
+   1423            tmpccr1 = (uint16_t)(tmpccr1l);
    \   00000A 5F                    CLRW      X
    \   00000B 97                    LD        XL, A
    \   00000C 9093                  LDW       Y, X
-   1341            tmpccr1 |= (uint16_t)((uint16_t)tmpccr1h << 8);
+   1424            tmpccr1 |= (uint16_t)((uint16_t)tmpccr1h << 8);
    \   00000E 5F                    CLRW      X
    \   00000F 41                    EXG       A, XL
    \   000010 B600                  LD        A, S:?b0
@@ -2149,37 +2262,37 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Libraries\STM8L15x_StdPeriph_Driver\s
    \   00001C BA00                  OR        A, S:?b0
    \   00001E 01                    RRWA      X, A
    \   00001F 51                    EXGW      X, Y
-   1342            /* Get the Capture 1 Register value */
-   1343            return ((uint16_t)tmpccr1);
+   1425            /* Get the Capture 1 Register value */
+   1426            return ((uint16_t)tmpccr1);
    \   000020 93                    LDW       X, Y
    \   000021 81                    RET
-   1344          }
-   1345          
-   1346          /**
-   1347            * @brief  Gets the TIM2 Input Capture 2 value.
-   1348            * @param  None
-   1349            * @retval Capture Compare 2 Register value.
-   1350            */
+   1427          }
+   1428          
+   1429          /**
+   1430            * @brief  Gets the TIM2 Input Capture 2 value.
+   1431            * @param  None
+   1432            * @retval Capture Compare 2 Register value.
+   1433            */
 
    \                                 In section .near_func.text, align 1
-   1351          uint16_t TIM2_GetCapture2(void)
-   1352          {
-   1353            uint16_t tmpccr2 = 0;
+   1434          uint16_t TIM2_GetCapture2(void)
+   1435          {
+   1436            uint16_t tmpccr2 = 0;
    \                     TIM2_GetCapture2:
    \   000000 905F                  CLRW      Y
-   1354            uint8_t tmpccr2l, tmpccr2h;
-   1355          
-   1356            tmpccr2h = TIM2->CCR2H;
+   1437            uint8_t tmpccr2l, tmpccr2h;
+   1438          
+   1439            tmpccr2h = TIM2->CCR2H;
    \   000002 C65263                LD        A, L:0x5263
    \   000005 B700                  LD        S:?b0, A
-   1357            tmpccr2l = TIM2->CCR2L;
+   1440            tmpccr2l = TIM2->CCR2L;
    \   000007 C65264                LD        A, L:0x5264
-   1358          
-   1359            tmpccr2 = (uint16_t)(tmpccr2l);
+   1441          
+   1442            tmpccr2 = (uint16_t)(tmpccr2l);
    \   00000A 5F                    CLRW      X
    \   00000B 97                    LD        XL, A
    \   00000C 9093                  LDW       Y, X
-   1360            tmpccr2 |= (uint16_t)((uint16_t)tmpccr2h << 8);
+   1443            tmpccr2 |= (uint16_t)((uint16_t)tmpccr2h << 8);
    \   00000E 5F                    CLRW      X
    \   00000F 41                    EXG       A, XL
    \   000010 B600                  LD        A, S:?b0
@@ -2194,37 +2307,37 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Libraries\STM8L15x_StdPeriph_Driver\s
    \   00001C BA00                  OR        A, S:?b0
    \   00001E 01                    RRWA      X, A
    \   00001F 51                    EXGW      X, Y
-   1361            /* Get the Capture 2 Register value */
-   1362            return ((uint16_t)tmpccr2);
+   1444            /* Get the Capture 2 Register value */
+   1445            return ((uint16_t)tmpccr2);
    \   000020 93                    LDW       X, Y
    \   000021 81                    RET
-   1363          }
-   1364          
-   1365          /**
-   1366            * @brief  Gets the TIM2 Counter value.
-   1367            * @param  None
-   1368            * @retval Counter Register value.
-   1369            */
+   1446          }
+   1447          
+   1448          /**
+   1449            * @brief  Gets the TIM2 Counter value.
+   1450            * @param  None
+   1451            * @retval Counter Register value.
+   1452            */
 
    \                                 In section .near_func.text, align 1
-   1370          uint16_t TIM2_GetCounter(void)
-   1371          {
-   1372            uint16_t tmpcnt = 0;
+   1453          uint16_t TIM2_GetCounter(void)
+   1454          {
+   1455            uint16_t tmpcnt = 0;
    \                     TIM2_GetCounter:
    \   000000 905F                  CLRW      Y
-   1373            uint8_t tmpcntrl, tmpcntrh;
-   1374          
-   1375            tmpcntrh = TIM2->CNTRH;
+   1456            uint8_t tmpcntrl, tmpcntrh;
+   1457          
+   1458            tmpcntrh = TIM2->CNTRH;
    \   000002 C6525C                LD        A, L:0x525c
    \   000005 B700                  LD        S:?b0, A
-   1376            tmpcntrl = TIM2->CNTRL;
+   1459            tmpcntrl = TIM2->CNTRL;
    \   000007 C6525D                LD        A, L:0x525d
-   1377          
-   1378            tmpcnt = (uint16_t)(tmpcntrl);
+   1460          
+   1461            tmpcnt = (uint16_t)(tmpcntrl);
    \   00000A 5F                    CLRW      X
    \   00000B 97                    LD        XL, A
    \   00000C 9093                  LDW       Y, X
-   1379            tmpcnt |= (uint16_t)((uint16_t)tmpcntrh << 8);
+   1462            tmpcnt |= (uint16_t)((uint16_t)tmpcntrh << 8);
    \   00000E 5F                    CLRW      X
    \   00000F 41                    EXG       A, XL
    \   000010 B600                  LD        A, S:?b0
@@ -2239,377 +2352,377 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Libraries\STM8L15x_StdPeriph_Driver\s
    \   00001C BA00                  OR        A, S:?b0
    \   00001E 01                    RRWA      X, A
    \   00001F 51                    EXGW      X, Y
-   1380            /* Get the Counter Register value */
-   1381            return ((uint16_t)tmpcnt);
+   1463            /* Get the Counter Register value */
+   1464            return ((uint16_t)tmpcnt);
    \   000020 93                    LDW       X, Y
    \   000021 81                    RET
-   1382          }
-   1383          
-   1384          /**
-   1385            * @brief  Gets the TIM2 Prescaler value.
-   1386            * @param  None
-   1387            * @retval TIM2_Prescaler_TypeDef : Prescaler Register value.
-   1388            */
+   1465          }
+   1466          
+   1467          /**
+   1468            * @brief  Gets the TIM2 Prescaler value.
+   1469            * @param  None
+   1470            * @retval TIM2_Prescaler_TypeDef : Prescaler Register value.
+   1471            */
 
    \                                 In section .near_func.text, align 1
-   1389          TIM2_Prescaler_TypeDef TIM2_GetPrescaler(void)
-   1390          {
-   1391            /* Get the Prescaler Register value */
-   1392            return ((TIM2_Prescaler_TypeDef)TIM2->PSCR);
+   1472          TIM2_Prescaler_TypeDef TIM2_GetPrescaler(void)
+   1473          {
+   1474            /* Get the Prescaler Register value */
+   1475            return ((TIM2_Prescaler_TypeDef)TIM2->PSCR);
    \                     TIM2_GetPrescaler:
    \   000000 C6525E                LD        A, L:0x525e
    \   000003 81                    RET
-   1393          }
-   1394          
-   1395          /**
-   1396            * @brief  Selects the TIM2 peripheral Capture Compare DMA source.
-   1397            * @param   NewState: new state of the Capture Compare DMA source.
-   1398            *   This parameter can be: ENABLE or DISABLE.
-   1399            * @retval None
-   1400            */
+   1476          }
+   1477          
+   1478          /**
+   1479            * @brief  Selects the TIM2 peripheral Capture Compare DMA source.
+   1480            * @param   NewState: new state of the Capture Compare DMA source.
+   1481            *   This parameter can be: ENABLE or DISABLE.
+   1482            * @retval None
+   1483            */
 
    \                                 In section .near_func.text, align 1
-   1401          void TIM2_SelectCCDMA(FunctionalState NewState)
-   1402          {
-   1403            /* Check the parameters */
-   1404            assert_param(IS_FUNCTIONAL_STATE(NewState));
-   1405          
-   1406            if (NewState != DISABLE)
+   1484          void TIM2_SelectCCDMA(FunctionalState NewState)
+   1485          {
+   1486            /* Check the parameters */
+   1487            assert_param(IS_FUNCTIONAL_STATE(NewState));
+   1488          
+   1489            if (NewState != DISABLE)
    \                     TIM2_SelectCCDMA:
    \   000000 4D                    TNZ       A
    \   000001 2705                  JREQ      L:??TIM2_SelectCCDMA_0
-   1407            {
-   1408              /* Set the CCDS Bit */
-   1409              TIM2->CR2 |= TIM_CR2_CCDS;
+   1490            {
+   1491              /* Set the CCDS Bit */
+   1492              TIM2->CR2 |= TIM_CR2_CCDS;
    \   000003 72165251              BSET      L:0x5251, #0x3
    \   000007 81                    RET
-   1410            }
-   1411            else
-   1412            {
-   1413              /* Reset the CCDS Bit */
-   1414              TIM2->CR2 &= (uint8_t)(~TIM_CR2_CCDS);
+   1493            }
+   1494            else
+   1495            {
+   1496              /* Reset the CCDS Bit */
+   1497              TIM2->CR2 &= (uint8_t)(~TIM_CR2_CCDS);
    \                     ??TIM2_SelectCCDMA_0:
    \   000008 72175251              BRES      L:0x5251, #0x3
-   1415            }
-   1416          }
+   1498            }
+   1499          }
    \   00000C 81                    RET
-   1417          
-   1418          /**
-   1419            * @brief  Checks whether the specified TIM2 flag is set or not.
-   1420            * @param  TIM2_FLAG : Specifies the flag to check.
-   1421            *   This parameter can be one of the @ref TIM2_FLAG_TypeDef enumeration.
-   1422            * @retval FlagStatus : The new state of TIM2_FLAG.
-   1423            *   This parameter can be any of the @ref FlagStatus enumeration.
-   1424            */
+   1500          
+   1501          /**
+   1502            * @brief  Checks whether the specified TIM2 flag is set or not.
+   1503            * @param  TIM2_FLAG : Specifies the flag to check.
+   1504            *   This parameter can be one of the @ref TIM2_FLAG_TypeDef enumeration.
+   1505            * @retval FlagStatus : The new state of TIM2_FLAG.
+   1506            *   This parameter can be any of the @ref FlagStatus enumeration.
+   1507            */
 
    \                                 In section .near_func.text, align 1
-   1425          FlagStatus TIM2_GetFlagStatus(TIM2_FLAG_TypeDef TIM2_FLAG)
-   1426          {
-   1427            FlagStatus bitstatus = RESET;
+   1508          FlagStatus TIM2_GetFlagStatus(TIM2_FLAG_TypeDef TIM2_FLAG)
+   1509          {
+   1510            FlagStatus bitstatus = RESET;
    \                     TIM2_GetFlagStatus:
    \   000000 3F00                  CLR       S:?b0
-   1428            uint8_t tim2_flag_l = 0, tim2_flag_h = 0;
+   1511            uint8_t tim2_flag_l = 0, tim2_flag_h = 0;
    \   000002 3F00                  CLR       S:?b2
    \   000004 3F00                  CLR       S:?b1
-   1429          
-   1430            /* Check the parameters */
-   1431            assert_param(IS_TIM2_GET_FLAG(TIM2_FLAG));
-   1432          
-   1433            tim2_flag_l = (uint8_t)(TIM2->SR1 & (uint8_t)(TIM2_FLAG));
+   1512          
+   1513            /* Check the parameters */
+   1514            assert_param(IS_TIM2_GET_FLAG(TIM2_FLAG));
+   1515          
+   1516            tim2_flag_l = (uint8_t)(TIM2->SR1 & (uint8_t)(TIM2_FLAG));
    \   000006 9F                    LD        A, XL
    \   000007 C45256                AND       A, L:0x5256
    \   00000A B700                  LD        S:?b2, A
-   1434            tim2_flag_h = (uint8_t)(TIM2->SR2 & (uint8_t)((uint16_t)TIM2_FLAG >> 8));
+   1517            tim2_flag_h = (uint8_t)(TIM2->SR2 & (uint8_t)((uint16_t)TIM2_FLAG >> 8));
    \   00000C 4F                    CLR       A
    \   00000D 01                    RRWA      X, A
    \   00000E 9F                    LD        A, XL
    \   00000F C45257                AND       A, L:0x5257
    \   000012 B700                  LD        S:?b1, A
-   1435          
-   1436            if ((uint8_t)(tim2_flag_l | tim2_flag_h) != 0)
+   1518          
+   1519            if ((uint8_t)(tim2_flag_l | tim2_flag_h) != 0)
    \   000014 B600                  LD        A, S:?b1
    \   000016 BA00                  OR        A, S:?b2
    \   000018 A100                  CP        A, #0x0
    \   00001A 2706                  JREQ      L:??TIM2_GetFlagStatus_0
-   1437            {
-   1438              bitstatus = SET;
+   1520            {
+   1521              bitstatus = SET;
    \   00001C 35010000              MOV       S:?b0, #0x1
    \   000020 2002                  JRA       L:??TIM2_GetFlagStatus_1
-   1439            }
-   1440            else
-   1441            {
-   1442              bitstatus = RESET;
+   1522            }
+   1523            else
+   1524            {
+   1525              bitstatus = RESET;
    \                     ??TIM2_GetFlagStatus_0:
    \   000022 3F00                  CLR       S:?b0
-   1443            }
-   1444            return ((FlagStatus)bitstatus);
+   1526            }
+   1527            return ((FlagStatus)bitstatus);
    \                     ??TIM2_GetFlagStatus_1:
    \   000024 B600                  LD        A, S:?b0
    \   000026 81                    RET
-   1445          }
-   1446          
-   1447          /**
-   1448            * @brief  Clears the TIM’s pending flags.
-   1449            * @param  TIM2_FLAG : Specifies the flag to clear.
-   1450            *   This parameter can be one of the @ref TIM2_FLAG_TypeDef enumeration.
-   1451            * @retval None
-   1452            */
+   1528          }
+   1529          
+   1530          /**
+   1531            * @brief  Clears the TIM’s pending flags.
+   1532            * @param  TIM2_FLAG : Specifies the flag to clear.
+   1533            *   This parameter can be one of the @ref TIM2_FLAG_TypeDef enumeration.
+   1534            * @retval None
+   1535            */
 
    \                                 In section .near_func.text, align 1
-   1453          void TIM2_ClearFlag(TIM2_FLAG_TypeDef TIM2_FLAG)
-   1454          {
-   1455            /* Check the parameters */
-   1456            assert_param(IS_TIM2_CLEAR_FLAG((uint16_t)TIM2_FLAG));
-   1457            /* Clear the flags (rc_w0) clear this bit by writing 0. Writing ‘1’ has no effect*/
-   1458            TIM2->SR1 = (uint8_t)(~(uint8_t)(TIM2_FLAG));
+   1536          void TIM2_ClearFlag(TIM2_FLAG_TypeDef TIM2_FLAG)
+   1537          {
+   1538            /* Check the parameters */
+   1539            assert_param(IS_TIM2_CLEAR_FLAG((uint16_t)TIM2_FLAG));
+   1540            /* Clear the flags (rc_w0) clear this bit by writing 0. Writing ??has no effect*/
+   1541            TIM2->SR1 = (uint8_t)(~(uint8_t)(TIM2_FLAG));
    \                     TIM2_ClearFlag:
    \   000000 9F                    LD        A, XL
    \   000001 43                    CPL       A
    \   000002 C75256                LD        L:0x5256, A
-   1459            TIM2->SR2 = (uint8_t)(~(uint8_t)((uint16_t)TIM2_FLAG >> 8));
+   1542            TIM2->SR2 = (uint8_t)(~(uint8_t)((uint16_t)TIM2_FLAG >> 8));
    \   000005 4F                    CLR       A
    \   000006 01                    RRWA      X, A
    \   000007 9F                    LD        A, XL
    \   000008 43                    CPL       A
    \   000009 C75257                LD        L:0x5257, A
-   1460          }
+   1543          }
    \   00000C 81                    RET
-   1461          
-   1462          /**
-   1463            * @brief  Checks whether the TIM2 interrupt has occurred or not.
-   1464            * @param  TIM2_IT : Specifies the TIM2 interrupt source to check.
-   1465            *   This parameter can be one of the @ref TIM2_IT_TypeDef enumeration.
-   1466            * @retval ITStatus : The new state of the TIM2_IT.
-   1467            *   This parameter can be any of the @ref ITStatus enumeration.
-   1468            */
+   1544          
+   1545          /**
+   1546            * @brief  Checks whether the TIM2 interrupt has occurred or not.
+   1547            * @param  TIM2_IT : Specifies the TIM2 interrupt source to check.
+   1548            *   This parameter can be one of the @ref TIM2_IT_TypeDef enumeration.
+   1549            * @retval ITStatus : The new state of the TIM2_IT.
+   1550            *   This parameter can be any of the @ref ITStatus enumeration.
+   1551            */
 
    \                                 In section .near_func.text, align 1
-   1469          ITStatus TIM2_GetITStatus(TIM2_IT_TypeDef TIM2_IT)
-   1470          {
+   1552          ITStatus TIM2_GetITStatus(TIM2_IT_TypeDef TIM2_IT)
+   1553          {
    \                     TIM2_GetITStatus:
    \   000000 B700                  LD        S:?b3, A
-   1471            ITStatus bitstatus = RESET;
+   1554            ITStatus bitstatus = RESET;
    \   000002 3F00                  CLR       S:?b0
-   1472          
-   1473            uint8_t TIM2_itStatus = 0x0, TIM2_itEnable = 0x0;
+   1555          
+   1556            uint8_t TIM2_itStatus = 0x0, TIM2_itEnable = 0x0;
    \   000004 3F00                  CLR       S:?b2
    \   000006 3F00                  CLR       S:?b1
-   1474          
-   1475            /* Check the parameters */
-   1476            assert_param(IS_TIM2_GET_IT(TIM2_IT));
-   1477          
-   1478            TIM2_itStatus = (uint8_t)(TIM2->SR1 & (uint8_t)TIM2_IT);
+   1557          
+   1558            /* Check the parameters */
+   1559            assert_param(IS_TIM2_GET_IT(TIM2_IT));
+   1560          
+   1561            TIM2_itStatus = (uint8_t)(TIM2->SR1 & (uint8_t)TIM2_IT);
    \   000008 B600                  LD        A, S:?b3
    \   00000A C45256                AND       A, L:0x5256
    \   00000D B700                  LD        S:?b2, A
-   1479          
-   1480            TIM2_itEnable = (uint8_t)(TIM2->IER & (uint8_t)TIM2_IT);
+   1562          
+   1563            TIM2_itEnable = (uint8_t)(TIM2->IER & (uint8_t)TIM2_IT);
    \   00000F B600                  LD        A, S:?b3
    \   000011 C45255                AND       A, L:0x5255
    \   000014 B700                  LD        S:?b1, A
-   1481          
-   1482            if ((TIM2_itStatus != (uint8_t)RESET ) && (TIM2_itEnable != (uint8_t)RESET))
+   1564          
+   1565            if ((TIM2_itStatus != (uint8_t)RESET ) && (TIM2_itEnable != (uint8_t)RESET))
    \   000016 3D00                  TNZ       S:?b2
    \   000018 270A                  JREQ      L:??TIM2_GetITStatus_0
    \   00001A 3D00                  TNZ       S:?b1
    \   00001C 2706                  JREQ      L:??TIM2_GetITStatus_0
-   1483            {
-   1484              bitstatus = (ITStatus)SET;
+   1566            {
+   1567              bitstatus = (ITStatus)SET;
    \   00001E 35010000              MOV       S:?b0, #0x1
    \   000022 2002                  JRA       L:??TIM2_GetITStatus_1
-   1485            }
-   1486            else
-   1487            {
-   1488              bitstatus = (ITStatus)RESET;
+   1568            }
+   1569            else
+   1570            {
+   1571              bitstatus = (ITStatus)RESET;
    \                     ??TIM2_GetITStatus_0:
    \   000024 3F00                  CLR       S:?b0
-   1489            }
-   1490            return ((ITStatus)bitstatus);
+   1572            }
+   1573            return ((ITStatus)bitstatus);
    \                     ??TIM2_GetITStatus_1:
    \   000026 B600                  LD        A, S:?b0
    \   000028 81                    RET
-   1491          }
-   1492          
-   1493          /**
-   1494            * @brief  Clears the TIM's interrupt pending bits.
-   1495            * @param  TIM2_IT : Specifies the pending bit to clear.
-   1496            *   This parameter can be one of the @ref TIM2_IT_TypeDef enumeration.
-   1497            * @retval None
-   1498            */
+   1574          }
+   1575          
+   1576          /**
+   1577            * @brief  Clears the TIM's interrupt pending bits.
+   1578            * @param  TIM2_IT : Specifies the pending bit to clear.
+   1579            *   This parameter can be one of the @ref TIM2_IT_TypeDef enumeration.
+   1580            * @retval None
+   1581            */
 
    \                                 In section .near_func.text, align 1
-   1499          void TIM2_ClearITPendingBit(TIM2_IT_TypeDef TIM2_IT)
-   1500          {
-   1501            /* Check the parameters */
-   1502            assert_param(IS_TIM2_IT(TIM2_IT));
-   1503          
-   1504            /* Clear the IT pending Bit */
-   1505            TIM2->SR1 = (uint8_t)(~(uint8_t)TIM2_IT);
+   1582          void TIM2_ClearITPendingBit(TIM2_IT_TypeDef TIM2_IT)
+   1583          {
+   1584            /* Check the parameters */
+   1585            assert_param(IS_TIM2_IT(TIM2_IT));
+   1586          
+   1587            /* Clear the IT pending Bit */
+   1588            TIM2->SR1 = (uint8_t)(~(uint8_t)TIM2_IT);
    \                     TIM2_ClearITPendingBit:
    \   000000 43                    CPL       A
    \   000001 C75256                LD        L:0x5256, A
-   1506          }
+   1589          }
    \   000004 81                    RET
-   1507          
-   1508          /**
-   1509            * @brief  Configure the TI1 as Input.
-   1510            * @param  TIM2_ICPolarity : The Input Polarity.
-   1511            *   This parameter can be one of the @ref TIM2_ICPolarity_TypeDef enumeration.
-   1512            * @param  TIM2_ICSelection : Specifies the input to be used.
-   1513            *   This parameter can be one of the @ref TIM2_ICSelection_TypeDef enumeration.
-   1514            * @param  TIM2_ICFilter : Specifies the Input Capture Filter.
-   1515            *   This parameter must be a value between 0x00 and 0x0F.
-   1516            * @retval None
-   1517            */
+   1590          
+   1591          /**
+   1592            * @brief  Configure the TI1 as Input.
+   1593            * @param  TIM2_ICPolarity : The Input Polarity.
+   1594            *   This parameter can be one of the @ref TIM2_ICPolarity_TypeDef enumeration.
+   1595            * @param  TIM2_ICSelection : Specifies the input to be used.
+   1596            *   This parameter can be one of the @ref TIM2_ICSelection_TypeDef enumeration.
+   1597            * @param  TIM2_ICFilter : Specifies the Input Capture Filter.
+   1598            *   This parameter must be a value between 0x00 and 0x0F.
+   1599            * @retval None
+   1600            */
 
    \                                 In section .near_func.text, align 1
-   1518          static void TI1_Config(TIM2_ICPolarity_TypeDef TIM2_ICPolarity, \
-   1519                                 TIM2_ICSelection_TypeDef TIM2_ICSelection, \
-   1520                                 uint8_t TIM2_ICFilter)
-   1521          {
+   1601          static void TI1_Config(TIM2_ICPolarity_TypeDef TIM2_ICPolarity, \
+   1602                                 TIM2_ICSelection_TypeDef TIM2_ICSelection, \
+   1603                                 uint8_t TIM2_ICFilter)
+   1604          {
    \                     TI1_Config:
    \   000000 B700                  LD        S:?b2, A
-   1522            uint8_t tmpccmr1 = 0;
+   1605            uint8_t tmpccmr1 = 0;
    \   000002 3F00                  CLR       S:?b3
-   1523            uint8_t tmpicpolarity = (uint8_t)TIM2_ICPolarity;
-   1524            tmpccmr1 = TIM2->CCMR1;
+   1606            uint8_t tmpicpolarity = (uint8_t)TIM2_ICPolarity;
+   1607            tmpccmr1 = TIM2->CCMR1;
    \   000004 C65259                LD        A, L:0x5259
    \   000007 B700                  LD        S:?b3, A
-   1525          
-   1526            /* Check the parameters */
-   1527            assert_param(IS_TIM2_IC_POLARITY(TIM2_ICPolarity));
-   1528            assert_param(IS_TIM2_IC_SELECTION(TIM2_ICSelection));
-   1529            assert_param(IS_TIM2_IC_FILTER(TIM2_ICFilter));
-   1530          
-   1531            /* Disable the Channel 1: Reset the CCE Bit */
-   1532            TIM2->CCER1 &=  (uint8_t)(~TIM_CCER1_CC1E);
+   1608          
+   1609            /* Check the parameters */
+   1610            assert_param(IS_TIM2_IC_POLARITY(TIM2_ICPolarity));
+   1611            assert_param(IS_TIM2_IC_SELECTION(TIM2_ICSelection));
+   1612            assert_param(IS_TIM2_IC_FILTER(TIM2_ICFilter));
+   1613          
+   1614            /* Disable the Channel 1: Reset the CCE Bit */
+   1615            TIM2->CCER1 &=  (uint8_t)(~TIM_CCER1_CC1E);
    \   000009 7211525B              BRES      L:0x525b, #0x0
-   1533          
-   1534            /* Select the Input and set the filter */
-   1535            tmpccmr1 &= (uint8_t)(~TIM_CCMR_CCxS) & (uint8_t)(~TIM_CCMR_ICxF);
+   1616          
+   1617            /* Select the Input and set the filter */
+   1618            tmpccmr1 &= (uint8_t)(~TIM_CCMR_CCxS) & (uint8_t)(~TIM_CCMR_ICxF);
    \   00000D B600                  LD        A, S:?b3
    \   00000F A40C                  AND       A, #0xc
    \   000011 B700                  LD        S:?b3, A
-   1536            tmpccmr1 |= (uint8_t)(((uint8_t)(TIM2_ICSelection)) | ((uint8_t)(TIM2_ICFilter << 4)));
+   1619            tmpccmr1 |= (uint8_t)(((uint8_t)(TIM2_ICSelection)) | ((uint8_t)(TIM2_ICFilter << 4)));
    \   000013 B600                  LD        A, S:?b1
    \   000015 4E                    SWAP      A
    \   000016 A4F0                  AND       A, #0xf0
    \   000018 BA00                  OR        A, S:?b0
    \   00001A BA00                  OR        A, S:?b3
    \   00001C B700                  LD        S:?b3, A
-   1537          
-   1538            TIM2->CCMR1 = tmpccmr1;
+   1620          
+   1621            TIM2->CCMR1 = tmpccmr1;
    \   00001E B600                  LD        A, S:?b3
    \   000020 C75259                LD        L:0x5259, A
-   1539          
-   1540            /* Select the Polarity */
-   1541            if (tmpicpolarity == (uint8_t)(TIM2_ICPolarity_Falling))
+   1622          
+   1623            /* Select the Polarity */
+   1624            if (tmpicpolarity == (uint8_t)(TIM2_ICPolarity_Falling))
    \   000023 B600                  LD        A, S:?b2
    \   000025 A101                  CP        A, #0x1
    \   000027 2606                  JRNE      L:??TI1_Config_0
-   1542            {
-   1543              TIM2->CCER1 |= TIM_CCER1_CC1P;
+   1625            {
+   1626              TIM2->CCER1 |= TIM_CCER1_CC1P;
    \   000029 7212525B              BSET      L:0x525b, #0x1
    \   00002D 2004                  JRA       L:??TI1_Config_1
-   1544            }
-   1545            else
-   1546            {
-   1547              TIM2->CCER1 &= (uint8_t)(~TIM_CCER1_CC1P);
+   1627            }
+   1628            else
+   1629            {
+   1630              TIM2->CCER1 &= (uint8_t)(~TIM_CCER1_CC1P);
    \                     ??TI1_Config_0:
    \   00002F 7213525B              BRES      L:0x525b, #0x1
-   1548            }
-   1549          
-   1550            /* Set the CCE Bit */
-   1551            TIM2->CCER1 |=  TIM_CCER1_CC1E;
+   1631            }
+   1632          
+   1633            /* Set the CCE Bit */
+   1634            TIM2->CCER1 |=  TIM_CCER1_CC1E;
    \                     ??TI1_Config_1:
    \   000033 7210525B              BSET      L:0x525b, #0x0
-   1552          }
+   1635          }
    \   000037 81                    RET
-   1553          
-   1554          /**
-   1555            * @brief  Configure the TI2 as Input.
-   1556            * @param  TIM2_ICPolarity : The Input Polarity.
-   1557            *   This parameter can be one of the @ref TIM2_ICPolarity_TypeDef enumeration.
-   1558            * @param  TIM2_ICSelection : Specifies the input to be used.
-   1559            *   This parameter can be one of the @ref TIM2_ICSelection_TypeDef enumeration.
-   1560            * @param  TIM2_ICFilter : Specifies the Input Capture Filter.
-   1561            *   This parameter must be a value between 0x00 and 0x0F.
-   1562            * @retval None
-   1563            */
+   1636          
+   1637          /**
+   1638            * @brief  Configure the TI2 as Input.
+   1639            * @param  TIM2_ICPolarity : The Input Polarity.
+   1640            *   This parameter can be one of the @ref TIM2_ICPolarity_TypeDef enumeration.
+   1641            * @param  TIM2_ICSelection : Specifies the input to be used.
+   1642            *   This parameter can be one of the @ref TIM2_ICSelection_TypeDef enumeration.
+   1643            * @param  TIM2_ICFilter : Specifies the Input Capture Filter.
+   1644            *   This parameter must be a value between 0x00 and 0x0F.
+   1645            * @retval None
+   1646            */
 
    \                                 In section .near_func.text, align 1
-   1564          static void TI2_Config(TIM2_ICPolarity_TypeDef TIM2_ICPolarity,
-   1565                                 TIM2_ICSelection_TypeDef TIM2_ICSelection,
-   1566                                 uint8_t TIM2_ICFilter)
-   1567          {
+   1647          static void TI2_Config(TIM2_ICPolarity_TypeDef TIM2_ICPolarity,
+   1648                                 TIM2_ICSelection_TypeDef TIM2_ICSelection,
+   1649                                 uint8_t TIM2_ICFilter)
+   1650          {
    \                     TI2_Config:
    \   000000 B700                  LD        S:?b2, A
-   1568            uint8_t tmpccmr2 = 0;
+   1651            uint8_t tmpccmr2 = 0;
    \   000002 3F00                  CLR       S:?b3
-   1569            uint8_t tmpicpolarity = (uint8_t)TIM2_ICPolarity;
-   1570          
-   1571            /* Check the parameters */
-   1572            assert_param(IS_TIM2_IC_POLARITY(TIM2_ICPolarity));
-   1573            assert_param(IS_TIM2_IC_SELECTION(TIM2_ICSelection));
-   1574            assert_param(IS_TIM2_IC_FILTER(TIM2_ICFilter));
-   1575          
-   1576            tmpccmr2 = TIM2->CCMR2;
+   1652            uint8_t tmpicpolarity = (uint8_t)TIM2_ICPolarity;
+   1653          
+   1654            /* Check the parameters */
+   1655            assert_param(IS_TIM2_IC_POLARITY(TIM2_ICPolarity));
+   1656            assert_param(IS_TIM2_IC_SELECTION(TIM2_ICSelection));
+   1657            assert_param(IS_TIM2_IC_FILTER(TIM2_ICFilter));
+   1658          
+   1659            tmpccmr2 = TIM2->CCMR2;
    \   000004 C6525A                LD        A, L:0x525a
    \   000007 B700                  LD        S:?b3, A
-   1577          
-   1578            /* Disable the Channel 2: Reset the CCE Bit */
-   1579            TIM2->CCER1 &=  (uint8_t)(~TIM_CCER1_CC2E);
+   1660          
+   1661            /* Disable the Channel 2: Reset the CCE Bit */
+   1662            TIM2->CCER1 &=  (uint8_t)(~TIM_CCER1_CC2E);
    \   000009 7219525B              BRES      L:0x525b, #0x4
-   1580          
-   1581            /* Select the Input and set the filter */
-   1582            tmpccmr2 &= (uint8_t)(~TIM_CCMR_CCxS) & (uint8_t)(~TIM_CCMR_ICxF);
+   1663          
+   1664            /* Select the Input and set the filter */
+   1665            tmpccmr2 &= (uint8_t)(~TIM_CCMR_CCxS) & (uint8_t)(~TIM_CCMR_ICxF);
    \   00000D B600                  LD        A, S:?b3
    \   00000F A40C                  AND       A, #0xc
    \   000011 B700                  LD        S:?b3, A
-   1583            tmpccmr2 |= (uint8_t)(((uint8_t)(TIM2_ICSelection)) | ((uint8_t)(TIM2_ICFilter << 4)));
+   1666            tmpccmr2 |= (uint8_t)(((uint8_t)(TIM2_ICSelection)) | ((uint8_t)(TIM2_ICFilter << 4)));
    \   000013 B600                  LD        A, S:?b1
    \   000015 4E                    SWAP      A
    \   000016 A4F0                  AND       A, #0xf0
    \   000018 BA00                  OR        A, S:?b0
    \   00001A BA00                  OR        A, S:?b3
    \   00001C B700                  LD        S:?b3, A
-   1584          
-   1585            TIM2->CCMR2 = tmpccmr2;
+   1667          
+   1668            TIM2->CCMR2 = tmpccmr2;
    \   00001E B600                  LD        A, S:?b3
    \   000020 C7525A                LD        L:0x525a, A
-   1586          
-   1587            /* Select the Polarity */
-   1588            if (tmpicpolarity == TIM2_ICPolarity_Falling)
+   1669          
+   1670            /* Select the Polarity */
+   1671            if (tmpicpolarity == TIM2_ICPolarity_Falling)
    \   000023 B600                  LD        A, S:?b2
    \   000025 A101                  CP        A, #0x1
    \   000027 2606                  JRNE      L:??TI2_Config_0
-   1589            {
-   1590              TIM2->CCER1 |= TIM_CCER1_CC2P ;
+   1672            {
+   1673              TIM2->CCER1 |= TIM_CCER1_CC2P ;
    \   000029 721A525B              BSET      L:0x525b, #0x5
    \   00002D 2004                  JRA       L:??TI2_Config_1
-   1591            }
-   1592            else
-   1593            {
-   1594              TIM2->CCER1 &= (uint8_t)(~TIM_CCER1_CC2P) ;
+   1674            }
+   1675            else
+   1676            {
+   1677              TIM2->CCER1 &= (uint8_t)(~TIM_CCER1_CC2P) ;
    \                     ??TI2_Config_0:
    \   00002F 721B525B              BRES      L:0x525b, #0x5
-   1595            }
-   1596          
-   1597            /* Set the CCE Bit */
-   1598            TIM2->CCER1 |=  TIM_CCER1_CC2E;
+   1678            }
+   1679          
+   1680            /* Set the CCE Bit */
+   1681            TIM2->CCER1 |=  TIM_CCER1_CC2E;
    \                     ??TI2_Config_1:
    \   000033 7218525B              BSET      L:0x525b, #0x4
-   1599          }
+   1682          }
    \   000037 81                    RET
-   1600          /**
-   1601            * @}
-   1602            */
-   1603          
-   1604          /**
-   1605            * @}
-   1606            */
-   1607          
-   1608          /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
+   1683          /**
+   1684            * @}
+   1685            */
+   1686          
+   1687          /**
+   1688            * @}
+   1689            */
+   1690          
+   1691          /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
 
    Section sizes:
 
@@ -2656,6 +2769,12 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Libraries\STM8L15x_StdPeriph_Driver\s
      TIM2_SelectOCxM               45
      TIM2_SetCounter               15
      TIM2_SetAutoreload            15
+     NonHandledInterrupt            2
+     TRAP_IRQHandler                2
+     FLASH_IRQHandler               2
+     DMA1_CHANNEL0_1_IRQHandler     2
+     DMA1_CHANNEL2_3_IRQHandler     2
+     RTC_IRQHandler                 2
      TIM2_SetCompare1              15
      TIM2_SetCompare2              15
      TIM2_SetIC1Prescaler          27
@@ -2673,9 +2792,9 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Libraries\STM8L15x_StdPeriph_Driver\s
      TI2_Config                    56
 
  
- 1 657 bytes in section .near_func.text
+ 1 669 bytes in section .near_func.text
  
- 1 657 bytes of CODE memory
+ 1 669 bytes of CODE memory
 
 Errors: none
 Warnings: none

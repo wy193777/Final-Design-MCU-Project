@@ -1,6 +1,6 @@
 ###############################################################################
 #                                                                             #
-# IAR C/C++ Compiler V1.30.1.50036 for STM8             21/Apr/2014  16:51:42 #
+# IAR C/C++ Compiler V1.30.1.50036 for STM8             21/Apr/2014  17:47:50 #
 # Copyright 2010-2011 IAR Systems AB.                                         #
 #                                                                             #
 #    Source file  =  F:\Skydrive\Final Design\Servo Motor                     #
@@ -178,22 +178,34 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
    \   000009 CD0000                CALL      L:?push_l1
    \   00000C C60000                LD        A, L:working_flag
    \   00000F A100                  CP        A, #0x0
-   \   000011 271F                  JREQ      L:??TIM3_UPD_OVF_TRG_BRK_IRQHandler_0
+   \   000011 2733                  JREQ      L:??TIM3_UPD_OVF_TRG_BRK_IRQHandler_0
    \   000013 CE0000                LDW       X, L:time_interval_counter
    \   000016 5C                    INCW      X
    \   000017 CF0000                LDW       L:time_interval_counter, X
    \   00001A CE0000                LDW       X, L:time_interval_counter
    \   00001D C30000                CPW       X, L:time_interval
-   \   000020 2510                  JRC       L:??TIM3_UPD_OVF_TRG_BRK_IRQHandler_0
-   \   000022 CE0000                LDW       X, L:degree_interval_stored
-   \   000025 72BB0000              ADDW      X, L:servo_motor_position
-   \   000029 CF0000                LDW       L:servo_motor_position, X
-   \   00002C CE0000                LDW       X, L:servo_motor_position
-   \   00002F CD0000                CALL      L:TIM2_SetCompare1
+   \   000020 2524                  JRC       L:??TIM3_UPD_OVF_TRG_BRK_IRQHandler_0
+   \   000022 5F                    CLRW      X
+   \   000023 CF0000                LDW       L:time_interval_counter, X
+   \   000026 CE0000                LDW       X, L:servo_motor_position
+   \   000029 A31388                CPW       X, #0x1388
+   \   00002C 2E0C                  JRSGE     L:??TIM3_UPD_OVF_TRG_BRK_IRQHandler_1
+   \   00002E CE0000                LDW       X, L:degree_interval_stored
+   \   000031 72BB0000              ADDW      X, L:servo_motor_position
+   \   000035 CF0000                LDW       L:servo_motor_position, X
+   \   000038 2006                  JRA       L:??TIM3_UPD_OVF_TRG_BRK_IRQHandler_2
+   \                     ??TIM3_UPD_OVF_TRG_BRK_IRQHandler_1:
+   \   00003A AE1388                LDW       X, #0x1388
+   \   00003D CF0000                LDW       L:servo_motor_position, X
+   \                     ??TIM3_UPD_OVF_TRG_BRK_IRQHandler_2:
+   \   000040 CE0000                LDW       X, L:servo_motor_position
+   \   000043 CD0000                CALL      L:TIM2_SetCompare1
    \                     ??TIM3_UPD_OVF_TRG_BRK_IRQHandler_0:
-   \   000032 CD0000                CALL      L:?pop_l1
-   \   000035 CD0000                CALL      L:?pop_l0
-   \   000038 80                    IRET
+   \   000046 A601                  LD        A, #0x1
+   \   000048 CD0000                CALL      L:TIM3_ClearITPendingBit
+   \   00004B CD0000                CALL      L:?pop_l1
+   \   00004E CD0000                CALL      L:?pop_l0
+   \   000051 80                    IRET
 
    \                                 In section .near_func.text, align 1
    \   __interrupt void TIM3_CAP_IRQHandler(void)
@@ -413,209 +425,214 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
      65            
      66            while (1)
      67            {
-     68              if(config_complete_flag)
+     68              if(!working_flag)
    \                     ??main_0:
-   \   000023 C60000                LD        A, L:config_complete_flag
+   \   000023 C60000                LD        A, L:working_flag
    \   000026 A100                  CP        A, #0x0
-   \   000028 27F9                  JREQ      L:??main_0
+   \   000028 26F9                  JRNE      L:??main_0
      69              {
-     70                TIM2_SetCompare1(servo_motor_position);
-   \   00002A CE0000                LDW       X, L:servo_motor_position
-   \   00002D CD0000                CALL      L:TIM2_SetCompare1
-     71                Delay(1000);
-   \   000030 AE03E8                LDW       X, #0x3e8
-   \   000033 CD0000                CALL      L:Delay
-     72                degree_interval_stored = 4000 / degree_interval;
-   \   000036 90CE0000              LDW       Y, L:degree_interval
-   \   00003A AE0FA0                LDW       X, #0xfa0
-   \   00003D CD0000                CALL      L:?sdiv16_x_x_y
-   \   000040 CF0000                LDW       L:degree_interval_stored, X
-     73                working_flag = TRUE;
-   \   000043 35010000              MOV       L:working_flag, #0x1
-   \   000047 20DA                  JRA       L:??main_0
-     74                //TIM3_Cmd(ENABLE);
-     75              }
-     76            }
-     77          }
-     78          
-     79          /**
-     80            * @brief  Configure peripherals 
-     81            */
+     70                if(config_complete_flag)
+   \   00002A C60000                LD        A, L:config_complete_flag
+   \   00002D A100                  CP        A, #0x0
+   \   00002F 27F2                  JREQ      L:??main_0
+     71                {
+     72                  TIM2_SetCompare1(servo_motor_position);
+   \   000031 CE0000                LDW       X, L:servo_motor_position
+   \   000034 CD0000                CALL      L:TIM2_SetCompare1
+     73                  //Delay(1000);
+     74                  degree_interval_stored = 4000 / degree_interval;
+   \   000037 90CE0000              LDW       Y, L:degree_interval
+   \   00003B AE0FA0                LDW       X, #0xfa0
+   \   00003E CD0000                CALL      L:?sdiv16_x_x_y
+   \   000041 CF0000                LDW       L:degree_interval_stored, X
+     75                  working_flag = TRUE;
+   \   000044 35010000              MOV       L:working_flag, #0x1
+   \   000048 20D9                  JRA       L:??main_0
+     76                  //TIM3_Cmd(ENABLE);
+     77                } 
+     78              }
+     79            }
+     80          }
+     81          
+     82          /**
+     83            * @brief  Configure peripherals 
+     84            */
 
    \                                 In section .near_func.text, align 1
-     82          static void CLK_Config(void)
-     83          {
-     84            /* Enable TIM1 clock */
-     85            CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_8);
+     85          static void CLK_Config(void)
+     86          {
+     87            /* Enable TIM1 clock */
+     88            CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_8);
    \                     CLK_Config:
    \   000000 A603                  LD        A, #0x3
    \   000002 CD0000                CALL      L:CLK_SYSCLKDivConfig
-     86            CLK_PeripheralClockConfig(CLK_Peripheral_TIM2, ENABLE);
+     89            CLK_PeripheralClockConfig(CLK_Peripheral_TIM2, ENABLE);
    \   000005 35010000              MOV       S:?b0, #0x1
    \   000009 4F                    CLR       A
    \   00000A CD0000                CALL      L:CLK_PeripheralClockConfig
-     87            CLK_PeripheralClockConfig(CLK_Peripheral_TIM3, ENABLE);
+     90            CLK_PeripheralClockConfig(CLK_Peripheral_TIM3, ENABLE);
    \   00000D 35010000              MOV       S:?b0, #0x1
    \   000011 A601                  LD        A, #0x1
    \   000013 CC0000                JP        L:CLK_PeripheralClockConfig
-     88          }
-     89          
+     91          }
+     92          
 
    \                                 In section .near_func.text, align 1
-     90          static void GPIO_Config(void)
-     91          {
-     92            /* GPIOD configuration: TIM1 channel 1 (PD2), channel 2 (PD4) and channel 3 (PD5) */
-     93            GPIO_Init(GPIOB, GPIO_Pin_0, GPIO_Mode_Out_PP_Low_Fast);
+     93          static void GPIO_Config(void)
+     94          {
+     95            /* GPIOD configuration: TIM1 channel 1 (PD2), channel 2 (PD4) and channel 3 (PD5) */
+     96            GPIO_Init(GPIOB, GPIO_Pin_0, GPIO_Mode_Out_PP_Low_Fast);
    \                     GPIO_Config:
    \   000000 35E00000              MOV       S:?b0, #0xe0
    \   000004 A601                  LD        A, #0x1
    \   000006 AE5005                LDW       X, #0x5005
    \   000009 CD0000                CALL      L:GPIO_Init
-     94            GPIO_Init(GPIOE, GPIO_Pin_7, GPIO_Mode_Out_PP_Low_Fast);  
+     97            GPIO_Init(GPIOE, GPIO_Pin_7, GPIO_Mode_Out_PP_Low_Fast);  
    \   00000C 35E00000              MOV       S:?b0, #0xe0
    \   000010 A680                  LD        A, #0x80
    \   000012 AE5014                LDW       X, #0x5014
    \   000015 CD0000                CALL      L:GPIO_Init
-     95            GPIO_Init(GPIOC, GPIO_Pin_7, GPIO_Mode_Out_PP_Low_Fast);
+     98            GPIO_Init(GPIOC, GPIO_Pin_7, GPIO_Mode_Out_PP_Low_Fast);
    \   000018 35E00000              MOV       S:?b0, #0xe0
    \   00001C A680                  LD        A, #0x80
    \   00001E AE500A                LDW       X, #0x500a
    \   000021 CC0000                JP        L:GPIO_Init
-     96            //GPIO_SetBits(GPIOE, GPIO_Pin_7);
-     97          }
-     98          
+     99            //GPIO_SetBits(GPIOE, GPIO_Pin_7);
+    100          }
+    101          
 
    \                                 In section .near_func.text, align 1
-     99          static void TIM2_Config(void)
-    100          {
-    101            /*
-    102            - TIM2CLK = 2 MHz
-    103            - TIM2 counter clock = TIM1CLK / TIM1_PRESCALER+1 = 2 MHz/39999+1 = 50 Hz
-    104            - x / 40000 * 20 = time of high (ms)
-    105            - servo motor 0.5 ms -> 0   degree x = 1000
-    106            - servo motor 1.0 ms -> 45  degree x = 2000
-    107            - servo motor 1.5 ms -> 90  degree x = 3000
-    108            - servo motor 2.0 ms -> 135 degree x = 4000
-    109            - servo motor 2.5 ms -> 180 degree x = 5000
-    110            */
-    111            /*
-    112            - The TIM2 CCR1 register value is equal to 3000: 
-    113            - So the TIM2 Channel 1 generates a periodic signal with a frequency equal to 50 Hz.
-    114            - PB0
-    115            */
-    116            /* PWM1 Mode configuration: Channel1 */
-    117            TIM2_TimeBaseInit(TIM2_Prescaler_1, TIM2_CounterMode_Up, 39999);
+    102          static void TIM2_Config(void)
+    103          {
+    104            /*
+    105            - TIM2CLK = 2 MHz
+    106            - TIM2 counter clock = TIM1CLK / TIM1_PRESCALER+1 = 2 MHz/39999+1 = 50 Hz
+    107            - x / 40000 * 20 = time of high (ms)
+    108            - servo motor 0.5 ms -> 0   degree x = 1000
+    109            - servo motor 1.0 ms -> 45  degree x = 2000
+    110            - servo motor 1.5 ms -> 90  degree x = 3000
+    111            - servo motor 2.0 ms -> 135 degree x = 4000
+    112            - servo motor 2.5 ms -> 180 degree x = 5000
+    113            */
+    114            /*
+    115            - The TIM2 CCR1 register value is equal to 3000: 
+    116            - So the TIM2 Channel 1 generates a periodic signal with a frequency equal to 50 Hz.
+    117            - PB0
+    118            */
+    119            /* PWM1 Mode configuration: Channel1 */
+    120            TIM2_TimeBaseInit(TIM2_Prescaler_1, TIM2_CounterMode_Up, 39999);
    \                     TIM2_Config:
    \   000000 AE9C3F                LDW       X, #0x9c3f
    \   000003 3F00                  CLR       S:?b0
    \   000005 4F                    CLR       A
    \   000006 CD0000                CALL      L:TIM2_TimeBaseInit
-    118            TIM2_OC1Init(TIM2_OCMode_PWM1, TIM2_OutputState_Enable, 0, TIM2_OCPolarity_High, TIM2_OCIdleState_Set);
+    121            TIM2_OC1Init(TIM2_OCMode_PWM1, TIM2_OutputState_Enable, 0, TIM2_OCPolarity_High, TIM2_OCIdleState_Set);
    \   000009 35010000              MOV       S:?b2, #0x1
    \   00000D 3F00                  CLR       S:?b1
    \   00000F 5F                    CLRW      X
    \   000010 35010000              MOV       S:?b0, #0x1
    \   000014 A660                  LD        A, #0x60
    \   000016 CD0000                CALL      L:TIM2_OC1Init
-    119            TIM2_OC1PreloadConfig(ENABLE);
+    122            TIM2_OC1PreloadConfig(ENABLE);
    \   000019 A601                  LD        A, #0x1
    \   00001B CD0000                CALL      L:TIM2_OC1PreloadConfig
-    120            TIM2_CtrlPWMOutputs(ENABLE);
+    123            TIM2_CtrlPWMOutputs(ENABLE);
    \   00001E A601                  LD        A, #0x1
    \   000020 CD0000                CALL      L:TIM2_CtrlPWMOutputs
-    121            TIM2_SetCompare1(3000);           //on 90 degree
+    124            TIM2_SetCompare1(3000);           //on 90 degree
    \   000023 AE0BB8                LDW       X, #0xbb8
    \   000026 CD0000                CALL      L:TIM2_SetCompare1
-    122            TIM2_Cmd(ENABLE);
+    125            TIM2_Cmd(ENABLE);
    \   000029 A601                  LD        A, #0x1
    \   00002B CC0000                JP        L:TIM2_Cmd
-    123          }
-    124          
-    125          
+    126          }
+    127          
+    128          
 
    \                                 In section .near_func.text, align 1
-    126          static void TIM3_Config(void)
-    127          {
-    128            /*
-    129            - interrupt every 100 ms
-    130            - let servo motor behave every time_interval * 100 ms
-    131            - 2M/(Prescaler*3125) = 10Hz
-    132            - 
-    133            */
-    134            
-    135            TIM3_TimeBaseInit(TIM3_Prescaler_64, TIM3_CounterMode_Up, 3125);
+    129          static void TIM3_Config(void)
+    130          {
+    131            /*
+    132            - interrupt every 100 ms
+    133            - let servo motor behave every time_interval * 100 ms
+    134            - 2M/(Prescaler*3125) = 10Hz
+    135            - 
+    136            */
+    137            
+    138            TIM3_TimeBaseInit(TIM3_Prescaler_64, TIM3_CounterMode_Up, 3125);
    \                     TIM3_Config:
    \   000000 AE0C35                LDW       X, #0xc35
    \   000003 3F00                  CLR       S:?b0
    \   000005 A606                  LD        A, #0x6
    \   000007 CD0000                CALL      L:TIM3_TimeBaseInit
-    136            TIM3_SetAutoreload(3125);
+    139            TIM3_SetAutoreload(3125);
    \   00000A AE0C35                LDW       X, #0xc35
    \   00000D CD0000                CALL      L:TIM3_SetAutoreload
-    137            TIM3_ITConfig(TIM3_IT_Update, ENABLE);
+    140            TIM3_ITConfig(TIM3_IT_Update, ENABLE);
    \   000010 35010000              MOV       S:?b0, #0x1
    \   000014 A601                  LD        A, #0x1
    \   000016 CD0000                CALL      L:TIM3_ITConfig
-    138            TIM3_UpdateDisableConfig(ENABLE);
+    141            TIM3_ARRPreloadConfig(ENABLE);
    \   000019 A601                  LD        A, #0x1
-   \   00001B CD0000                CALL      L:TIM3_UpdateDisableConfig
-    139            TIM3_Cmd(ENABLE);
+   \   00001B CD0000                CALL      L:TIM3_ARRPreloadConfig
+    142            //TIM3_UpdateDisableConfig(ENABLE);
+    143            TIM3_Cmd(ENABLE);
    \   00001E A601                  LD        A, #0x1
    \   000020 CC0000                JP        L:TIM3_Cmd
-    140            
-    141            /*
-    142            TIM1_TimeBaseInit(64, TIM1_CounterMode_Up, 3125, 0);
-    143            TIM1_SetAutoreload(3125);
-    144            TIM1_ITConfig(TIM1_IT_Update, ENABLE);
-    145            TIM1_Cmd(ENABLE);
-    146            */
-    147          }
-    148          
-    149          
+    144            
+    145            /*
+    146            TIM1_TimeBaseInit(64, TIM1_CounterMode_Up, 3125, 0);
+    147            TIM1_SetAutoreload(3125);
+    148            TIM1_ITConfig(TIM1_IT_Update, ENABLE);
+    149            TIM1_Cmd(ENABLE);
+    150            */
+    151          }
+    152          
+    153          
 
    \                                 In section .near_func.text, align 1
-    150          static void USART_Config(void)
-    151          {
-    152            //PA3 Send
-    153            //PA2 receive
-    154            current_buffer_size = 0;
+    154          static void USART_Config(void)
+    155          {
+    156            //PA3 Send
+    157            //PA2 receive
+    158            current_buffer_size = 0;
    \                     USART_Config:
    \   000000 5F                    CLRW      X
    \   000001 CF0000                LDW       L:current_buffer_size, X
-    155            current_buffer_position = 0;
+    159            current_buffer_position = 0;
    \   000004 5F                    CLRW      X
    \   000005 CF0000                LDW       L:current_buffer_position, X
-    156            SYSCFG_REMAPPinConfig(REMAP_Pin_USART1TxRxPortA, ENABLE);   //Map USART to PortA
+    160            SYSCFG_REMAPPinConfig(REMAP_Pin_USART1TxRxPortA, ENABLE);   //Map USART to PortA
    \   000008 A601                  LD        A, #0x1
    \   00000A AE011C                LDW       X, #0x11c
    \   00000D CD0000                CALL      L:SYSCFG_REMAPPinConfig
-    157            
-    158            GPIO_Init(GPIOA,GPIO_Pin_2,GPIO_Mode_In_PU_No_IT);    //USART_RX
+    161            
+    162            GPIO_Init(GPIOA,GPIO_Pin_2,GPIO_Mode_In_PU_No_IT);    //USART_RX
    \   000010 35400000              MOV       S:?b0, #0x40
    \   000014 A604                  LD        A, #0x4
    \   000016 AE5000                LDW       X, #0x5000
    \   000019 CD0000                CALL      L:GPIO_Init
-    159            //GPIO_Init(GPIOA,GPIO_Pin_3,GPIO_Mode_Out_PP_Low_Fast);     //USART_TX
-    160            GPIO_ExternalPullUpConfig(GPIOA, GPIO_Pin_3, ENABLE);        //Let this port been controlled by external signal
+    163            //GPIO_Init(GPIOA,GPIO_Pin_3,GPIO_Mode_Out_PP_Low_Fast);     //USART_TX
+    164            GPIO_ExternalPullUpConfig(GPIOA, GPIO_Pin_3, ENABLE);        //Let this port been controlled by external signal
    \   00001C 35010000              MOV       S:?b0, #0x1
    \   000020 A608                  LD        A, #0x8
    \   000022 AE5000                LDW       X, #0x5000
    \   000025 CD0000                CALL      L:GPIO_ExternalPullUpConfig
-    161            
-    162            CLK_PeripheralClockConfig(CLK_Peripheral_USART1, ENABLE);
+    165            
+    166            CLK_PeripheralClockConfig(CLK_Peripheral_USART1, ENABLE);
    \   000028 35010000              MOV       S:?b0, #0x1
    \   00002C A605                  LD        A, #0x5
    \   00002E CD0000                CALL      L:CLK_PeripheralClockConfig
-    163            //GPIO_ExternalPullUpConfig(GPIOA, GPIO_Pin_2|GPIO_Pin_3, ENABLE);
-    164            USART_DeInit(USART1);  
+    167            //GPIO_ExternalPullUpConfig(GPIOA, GPIO_Pin_2|GPIO_Pin_3, ENABLE);
+    168            USART_DeInit(USART1);  
    \   000031 AE5230                LDW       X, #0x5230
    \   000034 CD0000                CALL      L:USART_DeInit
-    165            USART_Init(USART1,
-    166                       9600, 
-    167                       USART_WordLength_8b,
-    168                       USART_StopBits_1,
-    169                       USART_Parity_No,
-    170                       (USART_Mode_TypeDef)(USART_Mode_Rx|USART_Mode_Tx));
+    169            USART_Init(USART1,
+    170                       9600, 
+    171                       USART_WordLength_8b,
+    172                       USART_StopBits_1,
+    173                       USART_Parity_No,
+    174                       (USART_Mode_TypeDef)(USART_Mode_Rx|USART_Mode_Tx));
    \   000037 350C0000              MOV       S:?b6, #0xc
    \   00003B 3F00                  CLR       S:?b5
    \   00003D 3F00                  CLR       S:?b4
@@ -626,71 +643,71 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
    \   000046 BF00                  LDW       S:?w0, X
    \   000048 AE5230                LDW       X, #0x5230
    \   00004B CD0000                CALL      L:USART_Init
-    171            USART_ClockInit(USART1,USART_Clock_Disable,USART_CPOL_Low,USART_CPHA_2Edge,USART_LastBit_Disable);
+    175            USART_ClockInit(USART1,USART_Clock_Disable,USART_CPOL_Low,USART_CPHA_2Edge,USART_LastBit_Disable);
    \   00004E 3F00                  CLR       S:?b2
    \   000050 35020000              MOV       S:?b1, #0x2
    \   000054 3F00                  CLR       S:?b0
    \   000056 4F                    CLR       A
    \   000057 AE5230                LDW       X, #0x5230
    \   00005A CD0000                CALL      L:USART_ClockInit
-    172            USART_ClearITPendingBit(USART1,USART_IT_RXNE);
+    176            USART_ClearITPendingBit(USART1,USART_IT_RXNE);
    \   00005D 90AE0255              LDW       Y, #0x255
    \   000061 AE5230                LDW       X, #0x5230
    \   000064 CD0000                CALL      L:USART_ClearITPendingBit
-    173            //USART_ITConfig(USART1, (USART_FLAG_TypeDef)(USART_IT_TXE | USART_IT_RXNE), ENABLE);
-    174            USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+    177            //USART_ITConfig(USART1, (USART_FLAG_TypeDef)(USART_IT_TXE | USART_IT_RXNE), ENABLE);
+    178            USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
    \   000067 A601                  LD        A, #0x1
    \   000069 90AE0255              LDW       Y, #0x255
    \   00006D AE5230                LDW       X, #0x5230
    \   000070 CD0000                CALL      L:USART_ITConfig
-    175            USART_Cmd(USART1, ENABLE);
+    179            USART_Cmd(USART1, ENABLE);
    \   000073 A601                  LD        A, #0x1
    \   000075 AE5230                LDW       X, #0x5230
    \   000078 CC0000                JP        L:USART_Cmd
-    176          }
-    177          
-    178          
+    180          }
+    181          
+    182          
 
    \                                 In section .near_func.text, align 1
-    179          void USART_SendByte(uint8_t data)
-    180          {
-    181            USART_SendData8(USART1, (unsigned char)data);
+    183          void USART_SendByte(uint8_t data)
+    184          {
+    185            USART_SendData8(USART1, (unsigned char)data);
    \                     USART_SendByte:
    \   000000 AE5230                LDW       X, #0x5230
    \   000003 CD0000                CALL      L:USART_SendData8
-    182            /* Loop until the end of transmission */
-    183            while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
+    186            /* Loop until the end of transmission */
+    187            while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
    \                     ??USART_SendByte_0:
    \   000006 90AE0080              LDW       Y, #0x80
    \   00000A AE5230                LDW       X, #0x5230
    \   00000D CD0000                CALL      L:USART_GetFlagStatus
    \   000010 A100                  CP        A, #0x0
    \   000012 27F2                  JREQ      L:??USART_SendByte_0
-    184          }
+    188          }
    \   000014 81                    RET
-    185          
+    189          
 
    \                                 In section .near_func.text, align 1
-    186          void USART_SendString(uint8_t* Data, uint16_t len)
-    187          {
+    190          void USART_SendString(uint8_t* Data, uint16_t len)
+    191          {
    \                     USART_SendString:
    \   000000 CD0000                CALL      L:?push_l2
    \   000003 CD0000                CALL      L:?push_w6
    \   000006 BF00                  LDW       S:?w6, X
    \   000008 90BF00                LDW       S:?w5, Y
-    188            //unit16_t i = 0;
-    189            for(int i = 0; i < len; i++)
+    192            //unit16_t i = 0;
+    193            for(int i = 0; i < len; i++)
    \   00000B 3F00                  CLR       S:?b9
    \   00000D 3F00                  CLR       S:?b8
    \   00000F 200F                  JRA       L:??USART_SendString_0
-    190            {
-    191              USART_SendByte(Data[i]);  
+    194            {
+    195              USART_SendByte(Data[i]);  
    \                     ??USART_SendString_1:
    \   000011 BE00                  LDW       X, S:?w4
    \   000013 72BB0000              ADDW      X, S:?w6
    \   000017 F6                    LD        A, (X)
    \   000018 CD0000                CALL      L:USART_SendByte
-    192            }
+    196            }
    \   00001B BE00                  LDW       X, S:?w4
    \   00001D 5C                    INCW      X
    \   00001E BF00                  LDW       S:?w4, X
@@ -698,15 +715,15 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
    \   000020 BE00                  LDW       X, S:?w4
    \   000022 B300                  CPW       X, S:?w5
    \   000024 25EB                  JRC       L:??USART_SendString_1
-    193          }
+    197          }
    \   000026 CC0000                JP        L:?epilogue_l2_w6
-    194          
+    198          
 
    \                                 In section .near_func.text, align 1
-    195          uint8_t USART_ReceiveByte(void)
-    196          {
-    197            uint8_t USART_RX_BUF;
-    198            while(USART_GetFlageStatus(USART1, USART_FLAG_RXNE) == RESET);
+    199          uint8_t USART_ReceiveByte(void)
+    200          {
+    201            uint8_t USART_RX_BUF;
+    202            while(USART_GetFlageStatus(USART1, USART_FLAG_RXNE) == RESET);
    \                     USART_ReceiveByte:
    \                     ??USART_ReceiveByte_0:
    \   000000 90AE0020              LDW       Y, #0x20
@@ -714,22 +731,22 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
    \   000007 CD0000                CALL      L:USART_GetFlageStatus
    \   00000A 5D                    TNZW      X
    \   00000B 27F3                  JREQ      L:??USART_ReceiveByte_0
-    199            USART_RX_BUF = USART_ReceiveData8(USART1);
+    203            USART_RX_BUF = USART_ReceiveData8(USART1);
    \   00000D AE5230                LDW       X, #0x5230
    \   000010 CC0000                JP        L:USART_ReceiveData8
-    200            return USART_RX_BUF;
-    201          }
-    202          
+    204            return USART_RX_BUF;
+    205          }
+    206          
 
    \                                 In section .near_func.text, align 1
-    203          void Delay(int time)
-    204          {
+    207          void Delay(int time)
+    208          {
    \                     Delay:
    \   000000 BF00                  LDW       S:?w0, X
-    205            for(int i = 0; i < time; i++)
+    209            for(int i = 0; i < time; i++)
    \   000002 905F                  CLRW      Y
    \   000004 2008                  JRA       L:??Delay_0
-    206              for(int j = 0; j < 100; j++);
+    210              for(int j = 0; j < 100; j++);
    \                     ??Delay_1:
    \   000006 5C                    INCW      X
    \                     ??Delay_2:
@@ -741,23 +758,23 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
    \   000011 2E03                  JRSGE     L:??Delay_3
    \   000013 5F                    CLRW      X
    \   000014 20F1                  JRA       L:??Delay_2
-    207          }
+    211          }
    \                     ??Delay_3:
    \   000016 81                    RET
-    208          
-    209          
-    210          #ifdef  USE_FULL_ASSERT
-    211          
-    212          void assert_failed(uint8_t* file, uint32_t line)
-    213          {
-    214            /* User can add his own implementation to report the file name and line number,
-    215               ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-    216          
-    217            /* Infinite loop */
-    218            while (1)
-    219            {}
-    220          }
-    221          #endif
+    212          
+    213          
+    214          #ifdef  USE_FULL_ASSERT
+    215          
+    216          void assert_failed(uint8_t* file, uint32_t line)
+    217          {
+    218            /* User can add his own implementation to report the file name and line number,
+    219               ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+    220          
+    221            /* Infinite loop */
+    222            while (1)
+    223            {}
+    224          }
+    225          #endif
 
    Section sizes:
 
@@ -789,7 +806,7 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
                                        2
      TIM2_CAP_IRQHandler               2
      TIM3_UPD_OVF_TRG_BRK_IRQHandler
-                                      57
+                                      82
      TIM3_CAP_IRQHandler               2
      TIM1_UPD_OVF_TRG_COM_IRQHandler
                                        2
@@ -803,7 +820,7 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
      CCR2_Val                          2
      CCR3_Val                          2
      ERROR_MESSAGE                     5
-     main                             73
+     main                             74
      CLK_Config                       22
      GPIO_Config                      36
      TIM2_Config                      46
@@ -818,9 +835,9 @@ F:\Skydrive\Final Design\Servo Motor STM8L\Project\Discover\src\main.c
   26 bytes in section .near.bss
    6 bytes in section .near.data
    7 bytes in section .near.rodata
- 699 bytes in section .near_func.text
+ 725 bytes in section .near_func.text
  
- 699 bytes of CODE  memory
+ 725 bytes of CODE  memory
    7 bytes of CONST memory
   32 bytes of DATA  memory
 

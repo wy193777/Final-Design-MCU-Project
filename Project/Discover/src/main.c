@@ -65,13 +65,16 @@ void main(void)
   
   while (1)
   {
-    if(config_complete_flag)
+    if(!working_flag)
     {
-      TIM2_SetCompare1(servo_motor_position);
-      Delay(1000);
-      degree_interval_stored = 4000 / degree_interval;
-      working_flag = TRUE;
-      //TIM3_Cmd(ENABLE);
+      if(config_complete_flag)
+      {
+        TIM2_SetCompare1(servo_motor_position);
+        //Delay(1000);
+        degree_interval_stored = 4000 / degree_interval;
+        working_flag = TRUE;
+        //TIM3_Cmd(ENABLE);
+      } 
     }
   }
 }
@@ -135,7 +138,8 @@ static void TIM3_Config(void)
   TIM3_TimeBaseInit(TIM3_Prescaler_64, TIM3_CounterMode_Up, 3125);
   TIM3_SetAutoreload(3125);
   TIM3_ITConfig(TIM3_IT_Update, ENABLE);
-  TIM3_UpdateDisableConfig(ENABLE);
+  TIM3_ARRPreloadConfig(ENABLE);
+  //TIM3_UpdateDisableConfig(ENABLE);
   TIM3_Cmd(ENABLE);
   
   /*

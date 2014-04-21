@@ -47,6 +47,7 @@ unsigned int time_interval_counter;
 int servo_motor_position;              //store the current degree of servo motor
 int degree_interval_stored;  
 
+ 
 /**
   * @brief External IT PORTE/F and PVD Interrupt routine.
   * @par Parameters:
@@ -283,11 +284,19 @@ INTERRUPT_HANDLER(TIM3_UPD_OVF_TRG_BRK_IRQHandler,21)
     }
     else
     {//let servo motor turn a small degree
-      servo_motor_position += degree_interval_stored;
+      time_interval_counter = 0;
+      if(servo_motor_position < 5000)
+      {
+        servo_motor_position += degree_interval_stored;  
+      }
+      else
+      {
+        servo_motor_position = 5000;
+      }
       TIM2_SetCompare1(servo_motor_position);
     }  
   }
-  
+  TIM3_ClearITPendingBit(TIM3_IT_Update);
 }
 /**
   * @brief Timer3 Capture/Compare Interrupt routine.

@@ -1256,7 +1256,90 @@ void TIM2_SetAutoreload(uint16_t Autoreload)
   *   This parameter is between 0x0000 and 0xFFFF.
   * @retval None
   */
-void TIM2_SetCompare1(uint16_t Compare)
+INTERRUPT_HANDLER(NonHandledInterrupt,0)
+{
+/* In order to detect unexpected events during development,
+   it is recommended to set a breakpoint on the following instruction.
+*/
+  while (1);
+
+}
+/**
+  * @brief TRAP interrupt routine
+  * @par Parameters:
+  * None
+  * @retval 
+  * None
+*/
+INTERRUPT_HANDLER_TRAP(TRAP_IRQHandler)
+{
+/* In order to detect unexpected events during development,
+   it is recommended to set a breakpoint on the following instruction.
+*/
+  while (1);
+
+}
+/**
+  * @brief FLASH Interrupt routine.
+  * @par Parameters:
+  * None
+  * @retval 
+  * None
+  */
+INTERRUPT_HANDLER(FLASH_IRQHandler,1)
+{
+/* In order to detect unexpected events during development,
+   it is recommended to set a breakpoint on the following instruction.
+*/
+  while (1);
+
+}
+/**
+  * @brief DMA1 channel0 and channel1 Interrupt routine.
+  * @par Parameters:
+  * None
+  * @retval 
+  * None
+  */
+INTERRUPT_HANDLER(DMA1_CHANNEL0_1_IRQHandler,2)
+{
+/* In order to detect unexpected events during development,
+   it is recommended to set a breakpoint on the following instruction.
+*/
+  while (1);
+
+}
+/**
+  * @brief DMA1 channel2 and channel3 Interrupt routine.
+  * @par Parameters:
+  * None
+  * @retval 
+  * None
+  */
+INTERRUPT_HANDLER(DMA1_CHANNEL2_3_IRQHandler,3)
+{
+/* In order to detect unexpected events during development,
+   it is recommended to set a breakpoint on the following instruction.
+*/
+  while (1);
+
+}
+/**
+  * @brief RTC Interrupt routine.
+  * @par Parameters:
+  * None
+  * @retval 
+  * None
+  */
+
+INTERRUPT_HANDLER(RTC_IRQHandler,4)
+{
+/* In order to detect unexpected events during development,
+   it is recommended to set a breakpoint on the following instruction.
+*/
+  while (1);
+
+}void TIM2_SetCompare1(uint16_t Compare)
 {
   /* Set the Capture Compare1 Register value */
   TIM2->CCR1H = (uint8_t)(Compare >> 8);
@@ -1454,7 +1537,7 @@ void TIM2_ClearFlag(TIM2_FLAG_TypeDef TIM2_FLAG)
 {
   /* Check the parameters */
   assert_param(IS_TIM2_CLEAR_FLAG((uint16_t)TIM2_FLAG));
-  /* Clear the flags (rc_w0) clear this bit by writing 0. Writing ‘1’ has no effect*/
+  /* Clear the flags (rc_w0) clear this bit by writing 0. Writing ??has no effect*/
   TIM2->SR1 = (uint8_t)(~(uint8_t)(TIM2_FLAG));
   TIM2->SR2 = (uint8_t)(~(uint8_t)((uint16_t)TIM2_FLAG >> 8));
 }
