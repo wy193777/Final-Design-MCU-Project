@@ -18,15 +18,20 @@ __IO uint16_t CCR3_Val = 8192;
 extern unsigned char usart_buffer[BUFFER_SIZE];
 extern uint16_t current_buffer_size;
 extern uint16_t current_buffer_position;
-extern short degree_interval;
-extern short time_interval;
-extern bool config_complete_flag;
+extern short degree_interval;                 //store degree interval info
+extern short time_interval;                   //store time interval number
+extern bool config_complete_flag;             //true if config transmited 
+extern bool working_flag;                     //true if servo motor under working
+extern unsigned int time_interval_counter;    //count when 100 ms interrupt occur
+extern int servo_motor_position;              //store the current degree of servo motor
+extern int degree_interval_stored;  
 extern const uint8_t ERROR_MESSAGE[5] = "ERROR";
 
 /* Private function prototypes -----------------------------------------------*/
 static void CLK_Config(void);
 static void GPIO_Config(void);
 static void TIM2_Config(void);
+static void TIM3_Config(void);
 static void USART_Config(void);
 
 extern void USART_SendByte(uint8_t data);
@@ -44,45 +49,30 @@ void main(void)
 {
    
   CLK_Config(); 
-  GPIO_Config();   
-  TIM2_Config();  
+  GPIO_Config();  
+  TIM3_Config();       //to generate 100 ms interrupt
+  TIM2_Config();       //to generate PWM to control servo motor
   USART_Config();
+  
+  
+  uint8_t Buf = 0;
+  working_flag = FALSE;
+  config_complete_flag = FALSE;
+  time_interval_counter = 0;
+  servo_motor_position = 1000;
   
   enableInterrupts();
   
-  //USART_SendString("Test\n", sizeof("Test\n"));
-  //delay_10us(100);
-  //USART_SendByte("\n");
-  Delay(100);
-  uint8_t Buf = 0;
-  
-  
   while (1)
   {
-//    USART_SendString("Test\n", sizeof("Test\n"));
-//    while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
-    
-//    Buf=USART_ReceiveData8(USART1);
-//    while(USART_GetFlagStatus(USART1, USART_FLAG_OR) == SET);
-//    if(Buf != 0)
-//    {
-//      USART_SendData8(USART1, Buf);
-//    }
-    //USART_SendString("Succeed!\n", sizeof("Succeed!\n")); 
-    //Delay(1000);
-    
-    /* This block of code is used to test whether the PC program can generate 
-       right information to send. 
-    Buf = USART_ReceiveData8(USART1);
-    if(Buf == 'C')
+    if(config_complete_flag)
     {
-      GPIO_SetBits(GPIOE, GPIO_Pin_7);
+      TIM2_SetCompare1(servo_motor_position);
+      Delay(1000);
+      degree_interval_stored = 4000 / degree_interval;
+      working_flag = TRUE;
+      //TIM3_Cmd(ENABLE);
     }
-    else
-    {
-      GPIO_ResetBits(GPIOE, GPIO_Pin_7); 
-    }
-    */
   }
 }
 
@@ -94,6 +84,7 @@ static void CLK_Config(void)
   /* Enable TIM1 clock */
   CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_8);
   CLK_PeripheralClockConfig(CLK_Peripheral_TIM2, ENABLE);
+  CLK_PeripheralClockConfig(CLK_Peripheral_TIM3, ENABLE);
 }
 
 static void GPIO_Config(void)
@@ -108,12 +99,18 @@ static void GPIO_Config(void)
 static void TIM2_Config(void)
 {
   /*
-  - TIM1CLK = 2 MHz
-  - TIM1 counter clock = TIM1CLK / TIM1_PRESCALER+1 = 2 MHz/39999+1 = 50 Hz
+  - TIM2CLK = 2 MHz
+  - TIM2 counter clock = TIM1CLK / TIM1_PRESCALER+1 = 2 MHz/39999+1 = 50 Hz
+  - x / 40000 * 20 = time of high (ms)
+  - servo motor 0.5 ms -> 0   degree x = 1000
+  - servo motor 1.0 ms -> 45  degree x = 2000
+  - servo motor 1.5 ms -> 90  degree x = 3000
+  - servo motor 2.0 ms -> 135 degree x = 4000
+  - servo motor 2.5 ms -> 180 degree x = 5000
   */
   /*
-  - The TIM1 CCR1 register value is equal to 3000: 
-  - So the TIM1 Channel 1 generates a periodic signal with a frequency equal to 50 Hz.
+  - The TIM2 CCR1 register value is equal to 3000: 
+  - So the TIM2 Channel 1 generates a periodic signal with a frequency equal to 50 Hz.
   - PB0
   */
   /* PWM1 Mode configuration: Channel1 */
@@ -121,9 +118,34 @@ static void TIM2_Config(void)
   TIM2_OC1Init(TIM2_OCMode_PWM1, TIM2_OutputState_Enable, 0, TIM2_OCPolarity_High, TIM2_OCIdleState_Set);
   TIM2_OC1PreloadConfig(ENABLE);
   TIM2_CtrlPWMOutputs(ENABLE);
-  TIM2_SetCompare1(3000);
+  TIM2_SetCompare1(3000);           //on 90 degree
   TIM2_Cmd(ENABLE);
 }
+
+
+static void TIM3_Config(void)
+{
+  /*
+  - interrupt every 100 ms
+  - let servo motor behave every time_interval * 100 ms
+  - 2M/(Prescaler*3125) = 10Hz
+  - 
+  */
+  
+  TIM3_TimeBaseInit(TIM3_Prescaler_64, TIM3_CounterMode_Up, 3125);
+  TIM3_SetAutoreload(3125);
+  TIM3_ITConfig(TIM3_IT_Update, ENABLE);
+  TIM3_UpdateDisableConfig(ENABLE);
+  TIM3_Cmd(ENABLE);
+  
+  /*
+  TIM1_TimeBaseInit(64, TIM1_CounterMode_Up, 3125, 0);
+  TIM1_SetAutoreload(3125);
+  TIM1_ITConfig(TIM1_IT_Update, ENABLE);
+  TIM1_Cmd(ENABLE);
+  */
+}
+
 
 static void USART_Config(void)
 {

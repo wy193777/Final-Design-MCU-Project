@@ -42,90 +42,11 @@ uint16_t current_buffer_size;
 short degree_interval;
 short time_interval;
 bool config_complete_flag;
-INTERRUPT_HANDLER(NonHandledInterrupt,0)
-{
-/* In order to detect unexpected events during development,
-   it is recommended to set a breakpoint on the following instruction.
-*/
-  while (1);
+bool working_flag;
+unsigned int time_interval_counter;
+int servo_motor_position;              //store the current degree of servo motor
+int degree_interval_stored;  
 
-}
-/**
-  * @brief TRAP interrupt routine
-  * @par Parameters:
-  * None
-  * @retval 
-  * None
-*/
-INTERRUPT_HANDLER_TRAP(TRAP_IRQHandler)
-{
-/* In order to detect unexpected events during development,
-   it is recommended to set a breakpoint on the following instruction.
-*/
-  while (1);
-
-}
-/**
-  * @brief FLASH Interrupt routine.
-  * @par Parameters:
-  * None
-  * @retval 
-  * None
-  */
-INTERRUPT_HANDLER(FLASH_IRQHandler,1)
-{
-/* In order to detect unexpected events during development,
-   it is recommended to set a breakpoint on the following instruction.
-*/
-  while (1);
-
-}
-/**
-  * @brief DMA1 channel0 and channel1 Interrupt routine.
-  * @par Parameters:
-  * None
-  * @retval 
-  * None
-  */
-INTERRUPT_HANDLER(DMA1_CHANNEL0_1_IRQHandler,2)
-{
-/* In order to detect unexpected events during development,
-   it is recommended to set a breakpoint on the following instruction.
-*/
-  while (1);
-
-}
-/**
-  * @brief DMA1 channel2 and channel3 Interrupt routine.
-  * @par Parameters:
-  * None
-  * @retval 
-  * None
-  */
-INTERRUPT_HANDLER(DMA1_CHANNEL2_3_IRQHandler,3)
-{
-/* In order to detect unexpected events during development,
-   it is recommended to set a breakpoint on the following instruction.
-*/
-  while (1);
-
-}
-/**
-  * @brief RTC Interrupt routine.
-  * @par Parameters:
-  * None
-  * @retval 
-  * None
-  */
-
-INTERRUPT_HANDLER(RTC_IRQHandler,4)
-{
-/* In order to detect unexpected events during development,
-   it is recommended to set a breakpoint on the following instruction.
-*/
-  while (1);
-
-}
 /**
   * @brief External IT PORTE/F and PVD Interrupt routine.
   * @par Parameters:
@@ -203,91 +124,6 @@ INTERRUPT_HANDLER(EXTI0_IRQHandler,8)
   */
 INTERRUPT_HANDLER(EXTI1_IRQHandler,9)
 {
-//
-//  uint32_t i=0;	
-//  
-//  disableInterrupts();
-//  
-//  /* User button pressed */
-//  KeyPressed = TRUE;
-//  
-//  if ((GPIOC->IDR & USER_GPIO_PIN) == 0x0) 
-//  {
-//          
-//  /* If user button pressed 4 seconds (approx.) set autotest */
-//  /* Autotest doesn't execute in Interrupt handler */
-//  while ((GPIOC->IDR & USER_GPIO_PIN) == 0x0)
-//  {
-//    i++;
-//    if (i == 0x011000)
-//    {
-//      EXTI_ClearITPendingBit(EXTI_IT_Pin1);	
-//      Auto_test =TRUE ;
-//      enableInterrupts();
-//      return;
-//    }
-//  }
-//  
-//  /* To pass to next state*/
-//    state_machine++;
-//    
-//    if (state_machine == MAX_STATE)
-//    {	
-//            state_machine = STATE_VREF;
-//    }
-//
-//    /* To update Bar graph */  
-//    switch (state_machine)
-//    {
-//      case STATE_VREF:
-//              GPIO_HIGH(LED_GREEN_PORT,LED_GREEN_PIN);	
-//              GPIO_LOW(LED_BLUE_PORT,LED_BLUE_PIN);
-//              BAR0_OFF;
-//              BAR1_OFF;
-//              BAR2_OFF;
-//              BAR3_OFF;
-//              break;
-//              
-//      case STATE_ICC_RUN:
-//              BAR0_ON;
-//              BAR1_OFF;
-//              BAR2_OFF;
-//              BAR3_OFF;
-//              break;
-//              
-//      case STATE_LPR_LCD:
-//              BAR0_ON;
-//              BAR1_ON;
-//              BAR2_OFF;
-//              BAR3_OFF;
-//              break;
-//              
-//      case STATE_LPR:
-//              BAR0_ON;
-//              BAR1_ON;
-//              BAR2_ON;
-//              BAR3_OFF;
-//              break;
-//              
-//      case STATE_HALT:
-//              BAR0_ON;
-//              BAR1_ON;
-//              BAR2_ON;
-//              BAR3_ON;
-//              break;					
-//    }	
-//  }
-//  
-//  /* To stop leds for current measurement test*/	
-//  if (state_machine != STATE_VREF)
-//  {
-//    GPIO_LOW(LED_GREEN_PORT,LED_GREEN_PIN);	
-//    GPIO_LOW(LED_BLUE_PORT,LED_BLUE_PIN);		
-//  }
-//  
-//  EXTI_ClearITPendingBit(EXTI_IT_Pin1);
-//  
-//  enableInterrupts();
 
 }
 
@@ -390,52 +226,7 @@ INTERRUPT_HANDLER(EXTI7_IRQHandler,15)
   while (1);
 
 }
-/**
-  * @brief LCD start of new frame Interrupt routine.
-  * @par Parameters:
-  * None
-  * @retval 
-  * None
-  */
-INTERRUPT_HANDLER(LCD_IRQHandler,16)
-{
-/* In order to detect unexpected events during development,
-   it is recommended to set a breakpoint on the following instruction.
-*/
-  while (1);
 
-}
-/**
-  * @brief CLK switch/CSS/TIM1 break Interrupt routine.
-  * @par Parameters:
-  * None
-  * @retval 
-  * None
-  */
-INTERRUPT_HANDLER(SWITCH_CSS_BREAK_DAC_IRQHandler,17)
-{
-/* In order to detect unexpected events during development,
-   it is recommended to set a breakpoint on the following instruction.
-*/
-  while (1);
-
-}
-
-/**
-  * @brief ADC1/Comparator Interrupt routine.
-  * @par Parameters:
-  * None
-  * @retval 
-  * None
-  */
-INTERRUPT_HANDLER(ADC1_COMP_IRQHandler,18)
-{
-/* In order to detect unexpected events during development,
-   it is recommended to set a breakpoint on the following instruction.
-*/
-  while (1);
-
-}
 
 /**
   * @brief TIM2 Update/Overflow/Trigger/Break Interrupt routine.
@@ -482,8 +273,21 @@ INTERRUPT_HANDLER(TIM3_UPD_OVF_TRG_BRK_IRQHandler,21)
 /* In order to detect unexpected events during development,
    it is recommended to set a breakpoint on the following instruction.
 */
-  while (1);
-
+  //while (1);
+  if(working_flag)
+  {
+    time_interval_counter += 1;
+    if(time_interval_counter < time_interval)
+    {//wait until next interrupt
+    
+    }
+    else
+    {//let servo motor turn a small degree
+      servo_motor_position += degree_interval_stored;
+      TIM2_SetCompare1(servo_motor_position);
+    }  
+  }
+  
 }
 /**
   * @brief Timer3 Capture/Compare Interrupt routine.
